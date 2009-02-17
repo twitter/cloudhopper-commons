@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<project name="ch-commons-sql" default="compile-main">
+
+    <!-- import common build file -->
+    <import file="../ant-common-build/common-build.xml" />
+
+    <target name="init" depends="common-init">
+        <!-- do nothing -->
+    </target>
+
+    <target name="compile-main" depends="common-compile-main">
+        <!-- do nothing -->
+    </target>
+
+    <target name="compile-test" depends="common-compile-test">
+        <!-- do nothing -->
+    </target>
+
+    <target name="clean" depends="common-clean">
+        <!-- do nothing -->
+    </target>
+
+    <target name="test-all" depends="common-test-all">
+        <!-- do nothing -->
+    </target>
+
+    <target name="test" depends="common-test">
+        <!-- do nothing -->
+    </target>
+
+    <target name="jar" depends="common-jar">
+        <!-- do nothing -->
+    </target>
+
+    <target name="deploy" depends="common-deploy">
+        <!-- do nothing -->
+    </target>
+
+</project>

@@ -1,0 +1,6 @@
+
+Cloudhopper Commons Sql Library
+--------------------------------------------------------------------------------
+
+1.0 - 2009-02-16
+   * Initial release extracted from ch-commons-util
