@@ -1,5 +1,5 @@
 
-Cloudhopper Commons GSM Library
+Cloudhopper Commons Locale Library
 --------------------------------------------------------------------------------
 
 1.0 - 2009-02-16
