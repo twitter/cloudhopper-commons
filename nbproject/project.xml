@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.ant.freeform</type>
+    <configuration>
+        <general-data xmlns="http://www.netbeans.org/ns/freeform-project/1">
+            <name>ch-commons-xbean</name>
+        </general-data>
+        <general-data xmlns="http://www.netbeans.org/ns/freeform-project/2">
+            <!-- Do not use Project Properties customizer when editing this file manually. -->
+            <name>ch-commons-xbean</name>
+            <properties/>
+            <folders>
+                <source-folder>
+                    <label>src/main/java</label>
+                    <type>java</type>
+                    <location>src/main/java</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>src/demo/java</label>
+                    <type>java</type>
+                    <location>src/demo/java</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>src/test/java</label>
+                    <type>java</type>
+                    <location>src/test/java</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>ch-commons-xbean</label>
+                    <location>.</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+            </folders>
+            <ide-actions>
+                <action name="build">
+                    <target>jar</target>
+                </action>
+                <action name="clean">
+                    <target>clean</target>
+                </action>
+                <action name="javadoc">
+                    <target>common-javadoc</target>
+                </action>
+                <action name="run">
+                    <target>run</target>
+                </action>
+                <action name="test">
+                    <target>test</target>
+                </action>
+                <action name="rebuild">
+                    <target>clean</target>
+                    <target>jar</target>
+                </action>
+            </ide-actions>
+            <view>
+                <items>
+                    <source-folder style="packages">
+                        <label>src/main/java</label>
+                        <location>src/main/java</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>src/demo/java</label>
+                        <location>src/demo/java</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>src/test/java</label>
+                        <location>src/test/java</location>
+                    </source-folder>
+                    <source-file>
+                        <location>build.xml</location>
+                    </source-file>
+                </items>
+                <context-menu>
+                    <ide-action name="build"/>
+                    <ide-action name="rebuild"/>
+                    <ide-action name="clean"/>
+                    <ide-action name="javadoc"/>
+                    <ide-action name="run"/>
+                    <ide-action name="test"/>
+                </context-menu>
+            </view>
+        </general-data>
+        <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/2">
+            <compilation-unit>
+                <package-root>src/main/java</package-root>
+                <classpath mode="compile">src/main/java:src/demo/java:src/test/java:lib/ch-commons-util-sources.jar:lib/ch-commons-util.jar:lib/commons-codec-sources.jar:lib/commons-codec.jar:lib/joda-time-sources.jar:lib/joda-time.jar:lib/junit-sources.jar:lib/junit.jar:lib/log4j-sources.jar:lib/log4j.jar</classpath>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>src/demo/java</package-root>
+                <classpath mode="compile">src/main/java:src/demo/java:src/test/java:lib/ch-commons-util-sources.jar:lib/ch-commons-util.jar:lib/commons-codec-sources.jar:lib/commons-codec.jar:lib/joda-time-sources.jar:lib/joda-time.jar:lib/junit-sources.jar:lib/junit.jar:lib/log4j-sources.jar:lib/log4j.jar</classpath>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>src/test/java</package-root>
+                <unit-tests/>
+                <classpath mode="compile">src/main/java:src/demo/java:src/test/java:lib/ch-commons-util-sources.jar:lib/ch-commons-util.jar:lib/commons-codec-sources.jar:lib/commons-codec.jar:lib/joda-time-sources.jar:lib/joda-time.jar:lib/junit-sources.jar:lib/junit.jar:lib/log4j-sources.jar:lib/log4j.jar</classpath>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+        </java-data>
+    </configuration>
+</project>
