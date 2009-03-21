@@ -9,7 +9,7 @@ package com.cloudhopper.commons.xbean;
  *
  * @author joelauer
  */
-public abstract class BasePropertyException extends XmlConfigurationException {
+public abstract class BasePropertyException extends XmlBeanException {
 
     private String propertyName;
     private String xmlPath;
@@ -19,7 +19,7 @@ public abstract class BasePropertyException extends XmlConfigurationException {
     }
 
     public BasePropertyException(String propertyName, String xmlPath, String msg, Throwable t) {
-        super(msg, t);
+        super(msg + " [property=" + propertyName + ", xmlPath=" + xmlPath + "]", t);
         this.propertyName = propertyName;
         this.xmlPath = xmlPath;
     }

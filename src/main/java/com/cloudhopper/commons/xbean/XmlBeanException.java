@@ -9,13 +9,13 @@ package com.cloudhopper.commons.xbean;
  *
  * @author joelauer
  */
-public abstract class XmlConfigurationException extends Exception {
+public abstract class XmlBeanException extends Exception {
 
-    public XmlConfigurationException(String msg) {
+    public XmlBeanException(String msg) {
         super(msg);
     }
 
-    public XmlConfigurationException(String msg, Throwable t) {
+    public XmlBeanException(String msg, Throwable t) {
         super(msg, t);
     }
 }
