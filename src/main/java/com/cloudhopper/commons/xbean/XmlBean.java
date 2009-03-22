@@ -71,10 +71,18 @@ public class XmlBean {
             }
         }
 
-        doConfigure(rootNode, obj);
+        // were any attributes included in the root?
+        if (rootNode.hasAttributes()) {
+            throw new PropertyNoAttributesExpectedException("[root node]", rootNode.getPath(), obj.getClass(), "No xml attributes expected for root node");
+        }
+
+        // create a hashmap to track properties
+        HashMap properties = new HashMap();
+
+        doConfigure(rootNode, obj, properties);
     }
 
-    private void doConfigure(XmlParser.Node rootNode, Object obj) throws XmlBeanException {
+    private void doConfigure(XmlParser.Node rootNode, Object obj, HashMap properties) throws XmlBeanException {
 
         // FIXME: do we do anything with attributes of a node?
 
@@ -92,14 +100,19 @@ public class XmlBean {
                 try {
                     property = ClassUtil.getBeanProperty(obj.getClass(), propertyName, true);
                 } catch (IllegalAccessException e) {
-                    throw new PropertyPermissionException(propertyName, node.getPath(), "Illegal access while attempting to reflect property from class", e);
+                    throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Illegal access while attempting to reflect property from class", e);
                 } catch (NoSuchMethodException e) {
-                    throw new PropertyPermissionException(propertyName, node.getPath(), "No such method while attempting to reflect property from class", e);
+                    throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "No such method while attempting to reflect property from class", e);
                 }
 
                 // if property is null, then this isn't a valid property on this object
                 if (property == null) {
-                    throw new PropertyNotFoundException(propertyName, node.getPath(), "Object '" + obj.getClass().getSimpleName() + "' does not contain property");
+                    throw new PropertyNotFoundException(propertyName, node.getPath(), obj.getClass(), "Property '" + propertyName + "' not found");
+                }
+
+                // were any attributes included?
+                if (node.hasAttributes()) {
+                    throw new PropertyNoAttributesExpectedException(propertyName, node.getPath(), obj.getClass(), "No xml attributes expected for property '" + propertyName + "'");
                 }
 
                 //
@@ -110,8 +123,17 @@ public class XmlBean {
                 // user's be able to configure fields in this case
                 // unless accessing private properties is allowed
                 if (!this.accessPrivateProperties && property.getSetMethod() == null) {
-                    throw new PropertyPermissionException(propertyName, node.getPath(), "Object '" + obj.getClass().getSimpleName() + "' contains this property, but not permitted to set its value");
+                    throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Not permitted to set property '" + propertyName + "'");
                 }
+
+                
+                // was this property already previously set?
+                if (properties.containsKey(node.getPath())) {
+                    throw new PropertyAlreadySetException(propertyName, node.getPath(), obj.getClass(), "Property '" + propertyName + "' was already previously set in the xml");
+                }
+                // add this property to our hashmap
+                properties.put(node.getPath(), null);
+
 
                 // is this a simple conversion?
                 if (isSimpleType(property.getType())) {
@@ -121,7 +143,7 @@ public class XmlBean {
 
                     // was any text set?  if not, throw an exception
                     if (string0 == null) {
-                        throw new PropertyIsEmptyException(propertyName, node.getPath(), "Property value was empty in xml file");
+                        throw new PropertyIsEmptyException(propertyName, node.getPath(), obj.getClass(), "Value for property '" + propertyName + "' was empty in xml");
                     }
 
                     // try to convert this to a Java object value
@@ -129,23 +151,23 @@ public class XmlBean {
                     try {
                         value = convertType(string0, property.getType());
                     } catch (ConversionException e) {
-                        throw new PropertyConversionException(propertyName, node.getPath(), "Property value '" + string0 + "' failed during conversion to a " + property.getType().getSimpleName());
+                        throw new PropertyConversionException(propertyName, node.getPath(), obj.getClass(), "The value '" + string0 + "' for property '" + propertyName + "' could not be converted to a(n) " + property.getType().getSimpleName() + ". " + e.getMessage());
                     }
 
                     // k, time to try to set the value
                     try {
                         property.set(obj, value);
                     } catch (InvocationTargetException e) {
+                        Throwable t = e;
                         // this generally means the setXXXX method on the object
                         // threw an exception -- we want to unwrap that and just
                         // return that exception instead
                         if (e.getCause() != null) {
-                            throw new PropertyInvocationException(propertyName, node.getPath(), e.getCause().getMessage(), e.getCause());
+                            t = e.getCause();
                         }
-                        // otherwise, just throw this
-                        throw new PropertyInvocationException(propertyName, node.getPath(), e.getMessage(), e);
+                        throw new PropertyInvocationException(propertyName, node.getPath(), obj.getClass(), "The value '" + string0 + "' for property '" + propertyName + "' caused an exception", t.getMessage(), t);
                     } catch (IllegalAccessException e) {
-                        throw new PropertyPermissionException(propertyName, node.getPath(), "Illegal access while setting property", e);
+                        throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Illegal access while setting property", e);
                     }
 
                 // otherwise, this is a "complicated" type
@@ -157,9 +179,16 @@ public class XmlBean {
                     try {
                         targetObj = property.get(obj);
                     } catch (IllegalAccessException e) {
-                        throw new PropertyPermissionException(propertyName, node.getPath(), "Illegal access while attempting to get property value from object", e);
+                        throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Illegal access while attempting to get property value from object", e);
                     } catch (InvocationTargetException e) {
-                        throw new PropertyInvocationException(propertyName, node.getPath(), e.getCause().getMessage(), e.getCause());
+                        Throwable t = e;
+                        // this generally means the setXXXX method on the object
+                        // threw an exception -- we want to unwrap that and just
+                        // return that exception instead
+                        if (e.getCause() != null) {
+                            t = e.getCause();
+                        }
+                        throw new PropertyInvocationException(propertyName, node.getPath(), obj.getClass(), "The existing value for property '" + propertyName + "' caused an exception during get", t.getMessage(), t);
                     }
                     
                     // if null, then we need to create a new instance of it
@@ -170,27 +199,27 @@ public class XmlBean {
                         } catch (InstantiationException e) {
                             throw new XmlBeanClassException("Failed while attempting to create object of type " + property.getType().getName(), e);
                         } catch (IllegalAccessException e) {
-                            throw new PropertyPermissionException(propertyName, node.getPath(), "Illegal access while attempting to create new instance of " + property.getType().getName(), e);
+                            throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Illegal access while attempting to create new instance of " + property.getType().getName(), e);
                         }
                     }
 
                     // recursively configure it
-                    doConfigure(node, targetObj);
+                    doConfigure(node, targetObj, properties);
 
                     try {
                         // save this reference object back, but only if successfully configured
                         property.set(obj, targetObj);
                     } catch (IllegalAccessException e) {
-                        throw new PropertyPermissionException(propertyName, node.getPath(), "Illegal access while attempting to set property", e);
+                        throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Illegal access while attempting to set property", e);
                     } catch (InvocationTargetException e) {
+                        Throwable t = e;
                         // this generally means the setXXXX method on the object
                         // threw an exception -- we want to unwrap that and just
                         // return that exception instead
                         if (e.getCause() != null) {
-                            throw new PropertyInvocationException(propertyName, node.getPath(), e.getCause().getMessage(), e.getCause());
+                            t = e.getCause();
                         }
-                        // otherwise, just throw this
-                        throw new PropertyInvocationException(propertyName, node.getPath(), e.getMessage(), e);
+                        throw new PropertyInvocationException(propertyName, node.getPath(), obj.getClass(), "The value(s) for property '" + propertyName + "' caused an exception", t.getMessage(), t);
                     }
                 }
             }
@@ -200,28 +229,56 @@ public class XmlBean {
 
     /**
      * Returns whether or not this property type is supported by a simple
-     * conversion of a String to a Java object.
+     * conversion of a String to a Java object. This method checks if the type
+     * is registered in the converter registry or if it represents an Enum.
+     * 
      * @param type The property type
      * @return True if its a simple conversion, false otherwise.
      */
     private boolean isSimpleType(Class type) {
-        return converterRegistry.containsKey(type);
+        return (converterRegistry.containsKey(type) || type.isEnum());
     }
 
     /**
-     * Converts the string value into an Object of the Class type.
+     * Converts the string value into an Object of the Class type. Will either
+     * delegate conversion to a PropertyConverter or will handle creating enums
+     * directly.
+     * 
      * @param string0 The string value to convert
      * @param type The Class type to convert it into
      * @return A new Object converted from the String value
      */
     private Object convertType(String string0, Class type) throws ConversionException {
-        PropertyConverter converter = converterRegistry.get(type);
-        
-        if (converter == null) {
-            throw new ConversionException("Unable to convert '" + string0 + "' to a " + type.getSimpleName() + " type");
-        }
+        // if enum, handle differently
+        if (type.isEnum()) {
+            Object obj = ClassUtil.findEnumConstant(type, string0);
+            if (obj == null) {
+                throw new ConversionException("Invalid constant '" + string0 + "' used, valid values [" + toListString(type.getEnumConstants()) + "]");
+            }
+            return obj;
+        // else, handle normally
+        } else {
+            PropertyConverter converter = converterRegistry.get(type);
 
-        return converter.convert(string0);
+            if (converter == null) {
+                throw new ConversionException("The type " + type.getSimpleName() + " is not supported");
+            }
+
+            return converter.convert(string0);
+        }
+    }
+
+    private String toListString(Object[] list) {
+        StringBuilder buf = new StringBuilder(200);
+        int i = 0;
+        for (Object obj : list) {
+            if (i != 0) {
+                buf.append(",");
+            }
+            buf.append(obj.toString());
+            i++;
+        }
+        return buf.toString();
     }
 
 }

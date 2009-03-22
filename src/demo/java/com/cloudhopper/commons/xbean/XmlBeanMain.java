@@ -21,7 +21,8 @@ public class XmlBeanMain {
                 .append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n")
                 .append("<configuration>\n")
                 .append("   <port>80</port>\n")
-                .append("   <port2>0</port2>\n")
+                .append("   <port>80</port>\n")
+                //.append("   <port2>0</port2>\n")
                 .append("   <host>https://www.google.com</host>\n")
                 .append("</configuration>")
                 .append("");

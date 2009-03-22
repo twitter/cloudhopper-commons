@@ -18,7 +18,9 @@ public class XmlBeanTest {
     public void configureSimpleProperties() throws Exception {
         // build xml
         StringBuilder string0 = new StringBuilder(200)
-                .append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n")
+                // NOTE: leave out xml version on purpose since it should have
+                // no effect on processing the configuration file
+                //.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n")
                 .append("<configuration>\n")
                 .append("   <port>80</port>\n")
                 .append("   <host>www.google.com</host>\n")
@@ -252,6 +254,7 @@ public class XmlBeanTest {
         Assert.assertEquals(80, config.getServer().port);
         Assert.assertEquals("www.google.com", config.getServer().host);
     }
+    
 
     @Test
     public void configureComplexWithProvidedInstance() throws Exception {
@@ -467,6 +470,141 @@ public class XmlBeanTest {
         // server should remain the same
         Assert.assertNull(config.getServer());
         Assert.assertEquals("http://www.google.com/", config.url);
+    }
+
+    @Test(expected=PropertyNoAttributesExpectedException.class)
+    public void configureNoAttributesExpectedInRootNode() throws Exception {
+        // build xml
+        StringBuilder string0 = new StringBuilder(200)
+                .append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n")
+                .append("<configuration id=\"stratus\">\n")       // should cause exception
+                .append("   <port>80</port>\n")
+                .append("   <host>www.google.com</host>\n")
+                .append("   <url>http://www.google.com/</url>\n")
+                .append("</configuration>")
+                .append("");
+
+        // parse xml
+        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
+        XmlParser parser = new XmlParser();
+        XmlParser.Node rootNode = parser.parse(is);
+
+        // object we'll configure
+        SimpleConfiguration config = new SimpleConfiguration();
+
+        // configure it using default options
+        XmlBean bean = new XmlBean();
+        bean.configure(rootNode, config);
+    }
+
+    @Test(expected=PropertyNoAttributesExpectedException.class)
+    public void configureNoAttributesExpectedInProperty() throws Exception {
+        // build xml
+        StringBuilder string0 = new StringBuilder(200)
+                .append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n")
+                .append("<configuration>\n")
+                .append("   <port>80</port>\n")
+                .append("   <host id=\"1\">www.google.com</host>\n")    // should cause exception
+                .append("   <url>http://www.google.com/</url>\n")
+                .append("</configuration>")
+                .append("");
+
+        // parse xml
+        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
+        XmlParser parser = new XmlParser();
+        XmlParser.Node rootNode = parser.parse(is);
+
+        // object we'll configure
+        SimpleConfiguration config = new SimpleConfiguration();
+
+        // configure it using default options
+        XmlBean bean = new XmlBean();
+        bean.configure(rootNode, config);
+    }
+
+
+    @Test
+    public void configureComplexTwice() throws Exception {
+        // build xml once
+        StringBuilder string0 = new StringBuilder(200)
+                .append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n")
+                .append("<configuration>\n")
+                .append("   <server>\n")
+                .append("     <port>80</port>\n")
+                .append("     <host>www.google.com</host>\n")
+                .append("   </server>\n")
+                .append("   <url>http://www.google.com/</url>\n")
+                .append("</configuration>")
+                .append("");
+
+        // parse xml
+        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
+        XmlParser parser = new XmlParser();
+        XmlParser.Node rootNode = parser.parse(is);
+
+        // object we'll configure
+        ComplexConfiguration config = new ComplexConfiguration();
+
+        // configure it using default options
+        XmlBean bean = new XmlBean();
+        bean.configure(rootNode, config);
+
+        // confirm properties
+        Assert.assertNotNull(config.getServer());
+        Assert.assertEquals("http://www.google.com/", config.url);
+        Assert.assertEquals(80, config.getServer().port);
+        Assert.assertEquals("www.google.com", config.getServer().host);
+
+
+        // build xml override some properties
+        StringBuilder string1 = new StringBuilder(200)
+                .append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n")
+                .append("<configuration>\n")
+                .append("   <server>\n")
+                .append("     <port>8080</port>\n")
+                .append("   </server>\n")
+                .append("   <url>http://www2.google.com/</url>\n")
+                .append("</configuration>");
+
+        // parse new xml
+        is = new ByteArrayInputStream(string1.toString().getBytes());
+        rootNode = parser.parse(is);
+
+        // configure it again
+        bean.configure(rootNode, config);
+
+        // confirm properties
+        Assert.assertNotNull(config.getServer());
+        Assert.assertEquals("http://www2.google.com/", config.url);
+        Assert.assertEquals(8080, config.getServer().port);
+        Assert.assertEquals("www.google.com", config.getServer().host);
+    }
+
+
+    @Test(expected=PropertyAlreadySetException.class)
+    public void configureSamePropertyTwiceCausesException() throws Exception {
+        // build xml once
+        StringBuilder string0 = new StringBuilder(200)
+                .append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n")
+                .append("<configuration>\n")
+                .append("  <server>\n")
+                .append("    <port>80</port>\n")
+                .append("    <port>8080</port>\n")             // this should cause an exception
+                .append("  </server>\n")
+                .append("</configuration>")
+                .append("");
+
+        // parse xml
+        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
+        XmlParser parser = new XmlParser();
+        XmlParser.Node rootNode = parser.parse(is);
+
+        // object we'll configure
+        ComplexConfiguration config = new ComplexConfiguration();
+
+        // configure it using default options
+        XmlBean bean = new XmlBean();
+        bean.configure(rootNode, config);
     }
 
     

@@ -7,11 +7,11 @@ package com.cloudhopper.commons.xbean;
  */
 public class PropertyPermissionException extends BasePropertyException {
 
-    public PropertyPermissionException(String propertyName, String xmlPath, String msg) {
-        this(propertyName, xmlPath, msg, null);
+    public PropertyPermissionException(String propertyName, String xmlPath, Class targetClass, String msg) {
+        this(propertyName, xmlPath, null, msg, null);
     }
 
-    public PropertyPermissionException(String propertyName, String xmlPath, String msg, Throwable t) {
-        super(propertyName, xmlPath, msg, t);
+    public PropertyPermissionException(String propertyName, String xmlPath, Class targetClass, String msg, Throwable t) {
+        super(propertyName, xmlPath, targetClass, msg, t);
     }
 }
