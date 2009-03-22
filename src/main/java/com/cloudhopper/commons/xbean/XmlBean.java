@@ -8,6 +8,8 @@ import java.util.HashMap;
 import com.cloudhopper.commons.util.ClassUtil;
 import com.cloudhopper.commons.xbean.convert.*;
 import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -72,7 +74,7 @@ public class XmlBean {
         doConfigure(rootNode, obj);
     }
 
-    private void doConfigure(XmlParser.Node rootNode, Object obj) throws XmlBeanException, Exception {
+    private void doConfigure(XmlParser.Node rootNode, Object obj) throws XmlBeanException {
 
         // FIXME: do we do anything with attributes of a node?
 
@@ -85,7 +87,15 @@ public class XmlBean {
                 String propertyName = node.getTag();
 
                 // find the property if it exists
-                ClassUtil.BeanProperty property = ClassUtil.getBeanProperty(obj.getClass(), propertyName, true);
+                ClassUtil.BeanProperty property = null;
+                
+                try {
+                    property = ClassUtil.getBeanProperty(obj.getClass(), propertyName, true);
+                } catch (IllegalAccessException e) {
+                    throw new PropertyPermissionException(propertyName, node.getPath(), "Illegal access while attempting to reflect property from class", e);
+                } catch (NoSuchMethodException e) {
+                    throw new PropertyPermissionException(propertyName, node.getPath(), "No such method while attempting to reflect property from class", e);
+                }
 
                 // if property is null, then this isn't a valid property on this object
                 if (property == null) {
@@ -132,24 +142,56 @@ public class XmlBean {
                         if (e.getCause() != null) {
                             throw new PropertyInvocationException(propertyName, node.getPath(), e.getCause().getMessage(), e.getCause());
                         }
-                        // otherwise, I guess thow a generic exception?
+                        // otherwise, just throw this
+                        throw new PropertyInvocationException(propertyName, node.getPath(), e.getMessage(), e);
+                    } catch (IllegalAccessException e) {
+                        throw new PropertyPermissionException(propertyName, node.getPath(), "Illegal access while setting property", e);
                     }
+
                 // otherwise, this is a "complicated" type
                 } else {
+
                     // try to "get" an instance of this variable if it exists
-                    Object targetObj = property.get(obj);
+                    Object targetObj = null;
+
+                    try {
+                        targetObj = property.get(obj);
+                    } catch (IllegalAccessException e) {
+                        throw new PropertyPermissionException(propertyName, node.getPath(), "Illegal access while attempting to get property value from object", e);
+                    } catch (InvocationTargetException e) {
+                        throw new PropertyInvocationException(propertyName, node.getPath(), e.getCause().getMessage(), e.getCause());
+                    }
                     
                     // if null, then we need to create a new instance of it
                     if (targetObj == null) {
-                        // create a new instance of this type
-                        targetObj = property.getType().newInstance();
+                        try {
+                            // create a new instance of this type
+                            targetObj = property.getType().newInstance();
+                        } catch (InstantiationException e) {
+                            throw new XmlBeanClassException("Failed while attempting to create object of type " + property.getType().getName(), e);
+                        } catch (IllegalAccessException e) {
+                            throw new PropertyPermissionException(propertyName, node.getPath(), "Illegal access while attempting to create new instance of " + property.getType().getName(), e);
+                        }
                     }
 
                     // recursively configure it
                     doConfigure(node, targetObj);
 
-                    // save this reference object back -- if successfully configured
-                    property.set(obj, targetObj);
+                    try {
+                        // save this reference object back, but only if successfully configured
+                        property.set(obj, targetObj);
+                    } catch (IllegalAccessException e) {
+                        throw new PropertyPermissionException(propertyName, node.getPath(), "Illegal access while attempting to set property", e);
+                    } catch (InvocationTargetException e) {
+                        // this generally means the setXXXX method on the object
+                        // threw an exception -- we want to unwrap that and just
+                        // return that exception instead
+                        if (e.getCause() != null) {
+                            throw new PropertyInvocationException(propertyName, node.getPath(), e.getCause().getMessage(), e.getCause());
+                        }
+                        // otherwise, just throw this
+                        throw new PropertyInvocationException(propertyName, node.getPath(), e.getMessage(), e);
+                    }
                 }
             }
         }

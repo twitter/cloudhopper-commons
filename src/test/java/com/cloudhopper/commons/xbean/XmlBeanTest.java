@@ -324,7 +324,7 @@ public class XmlBeanTest {
         Assert.assertEquals(null, config.getServer().host);
     }
 
-    @Test
+    @Test(expected=PropertyNotFoundException.class)
     public void configureComplexWithPropertyNotFoundException() throws Exception {
         // build xml
         StringBuilder string0 = new StringBuilder(200)
@@ -349,9 +349,130 @@ public class XmlBeanTest {
         bean.configure(rootNode, config);
     }
 
+    /**
+     * Xbean attempts to create a new instance of a class that doesn't have
+     * any empty constructor.  Causes an instantiation exception to be thrown.
+     */
+    @Test(expected=XmlBeanClassException.class)
+    public void configureComplexWithBadConstructor() throws Exception {
+        // build xml
+        StringBuilder string0 = new StringBuilder(200)
+                .append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n")
+                .append("<configuration>\n")
+                .append("   <complexServer />\n")
+                .append("</configuration>")
+                .append("");
+
+        // parse xml
+        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
+        XmlParser parser = new XmlParser();
+        XmlParser.Node rootNode = parser.parse(is);
+
+        // object we'll configure
+        ComplexConfiguration config = new ComplexConfiguration();
+
+        // configure it using default options
+        XmlBean bean = new XmlBean();
+        bean.setAccessPrivateProperties(true);
+        bean.configure(rootNode, config);
+    }
+
+    /**
+     * Tests whether failure to successfully configure a child complex object
+     * ensures that it isn't set on a property in the root object. Basically,
+     * ensures that configuring child objects are sort of "atomic".
+     */
+    @Test
+    public void configureComplexWithPropertyNotFoundExceptionEnsureOnlyOnePropertyChanged() throws Exception {
+        // build xml
+        StringBuilder string0 = new StringBuilder(200)
+                .append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n")
+                .append("<configuration>\n")
+                .append("   <url>http://www.google.com/</url>\n")
+                .append("   <server>\n")
+                .append("     <host>www2.google.com</host>\n")      // this should be changed since server reference already existed
+                .append("     <port2>80</port2>\n")                 // this should cause an error to be thrown
+                .append("   </server>\n")
+                .append("</configuration>")
+                .append("");
+
+        // parse xml
+        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
+        XmlParser parser = new XmlParser();
+        XmlParser.Node rootNode = parser.parse(is);
+
+        // object we'll configure
+        ComplexConfiguration config = new ComplexConfiguration();
+        Server server = new Server();
+        config.setServer(server);
+        server.setHost("www.google.com");
+        server.setPort(443);
+
+        // configure it using default options
+        XmlBean bean = new XmlBean();
+
+        try {
+            bean.configure(rootNode, config);
+            Assert.fail("Configure should have failed");
+        } catch (XmlBeanException e) {
+            // ignore it
+        }
+
+        // server should remain the same
+        Assert.assertSame(server, config.getServer());
+        Assert.assertEquals("http://www.google.com/", config.url);
+        Assert.assertEquals(443, config.getServer().port);
+        // this property should have changed since "server" was already stored in main config object
+        Assert.assertEquals("www2.google.com", config.getServer().host);
+    }
+
+
+    /**
+     * Tests if failing to configure a child complex object causes a new reference
+     * to never be saved on the parent object.  Different from previous test
+     * since a new instance was created and configured and then NOT saved.
+     */
+    @Test
+    public void configureComplexWithPropertyNotFoundExceptionEnsureNoPropertiesChanged() throws Exception {
+        // build xml
+        StringBuilder string0 = new StringBuilder(200)
+                .append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n")
+                .append("<configuration>\n")
+                .append("   <url>http://www.google.com/</url>\n")
+                .append("   <server>\n")
+                .append("     <host>www2.google.com</host>\n")      // this should be changed
+                .append("     <port2>80</port2>\n")                 // this should cause an error to be thrown and caused "server" to not be saved
+                .append("   </server>\n")
+                .append("</configuration>")
+                .append("");
+
+        // parse xml
+        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
+        XmlParser parser = new XmlParser();
+        XmlParser.Node rootNode = parser.parse(is);
+
+        // object we'll configure
+        ComplexConfiguration config = new ComplexConfiguration();
+
+        // configure it using default options
+        XmlBean bean = new XmlBean();
+
+        try {
+            bean.configure(rootNode, config);
+            Assert.fail("Configure should have failed");
+        } catch (XmlBeanException e) {
+            // ignore it
+        }
+
+        // server should remain the same
+        Assert.assertNull(config.getServer());
+        Assert.assertEquals("http://www.google.com/", config.url);
+    }
+
     
     public static class ComplexConfiguration {
         private Server server;
+        private ComplexServer complexServer;
         private String url;
 
         public void setServer(Server value) {
@@ -368,6 +489,16 @@ public class XmlBeanTest {
         }
     }
 
+
+    public static class ComplexServer {
+        private int port;
+        public ComplexServer(int port) {
+            this.port = port;
+        }
+
+    }
+
+
     public static class Server {
         private int port;
         private String host;
@@ -383,6 +514,7 @@ public class XmlBeanTest {
             this.host = value;
         }
     }
+
     
     public static class SimpleConfiguration {
 

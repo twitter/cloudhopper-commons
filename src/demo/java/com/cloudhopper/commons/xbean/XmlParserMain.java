@@ -17,7 +17,9 @@ public class XmlParserMain {
 
         StringBuilder string0 = new StringBuilder(200)
                 .append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n")
-                .append("<submitRequest sequenceId=\"1000\">\n")
+                //.append("<!DOCTYPE chapter PUBLIC \"-//OASIS//DTD DocBook XML//EN\" \"../dtds/docbookx.dtd\">")
+		//.append("<!DOCTYPE chapter PUBLIC \"-//OASIS//DTD DocBook XML//EN\">")
+		.append("<submitRequest sequenceId=\"1000\">\n")
                 .append("   <!-- this is a comment -->\n")
                 .append("   <account username=\"testaccount\" password=\"testpassword\"/>\n")
                 .append("   <messageRequest referenceId=\"MYMESSREF\">\n")
@@ -51,7 +53,7 @@ public class XmlParserMain {
 
     private static void dump(XmlParser.Node node, int indent) {
 
-        logger.debug(node.getPath());
+        //logger.debug(node.getPath());
 
         StringBuilder string0 = new StringBuilder(200);
 
