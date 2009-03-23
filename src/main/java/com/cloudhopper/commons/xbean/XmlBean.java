@@ -2,17 +2,20 @@
 package com.cloudhopper.commons.xbean;
 
 // java imports
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-
-
 import java.util.HashMap;
+import java.io.InputStream;
+import org.xml.sax.SAXException;
 
 // my imports
 import com.cloudhopper.commons.util.BeanProperty;
 import com.cloudhopper.commons.util.BeanUtil;
 import com.cloudhopper.commons.util.ClassUtil;
 import com.cloudhopper.commons.xbean.convert.*;
+import com.cloudhopper.commons.xml.XPath;
 import com.cloudhopper.commons.xml.XmlParser;
+import java.io.File;
 
 /**
  * Represents a Java bean configured and instantiated via XML.
@@ -66,8 +69,53 @@ public class XmlBean {
         this.accessPrivateProperties = value;
     }
 
-    public void configure(XmlParser.Node rootNode, Object obj) throws XmlBeanException, Exception {
 
+    public void configure(String xml, Object obj) throws XmlBeanException, IOException, SAXException {
+        configure(xml, obj, null);
+    }
+
+    public void configure(String xml, Object obj, String xpath) throws XPathNotFoundException, XmlBeanException, IOException, SAXException {
+        XmlParser parser = new XmlParser();
+        XmlParser.Node rootNode = parser.parse(xml);
+        configure(rootNode, obj, xpath);
+    }
+
+    public void configure(InputStream in, Object obj) throws XmlBeanException, IOException, SAXException {
+        configure(in, obj, null);
+    }
+
+    public void configure(InputStream in, Object obj, String xpath) throws XPathNotFoundException, XmlBeanException, IOException, SAXException {
+        XmlParser parser = new XmlParser();
+        XmlParser.Node rootNode = parser.parse(in);
+        configure(rootNode, obj);
+    }
+
+    public void configure(File file, Object obj) throws XmlBeanException, IOException, SAXException {
+        configure(file, obj, null);
+    }
+
+    public void configure(File file, Object obj, String xpath) throws XPathNotFoundException, XmlBeanException, IOException, SAXException {
+        XmlParser parser = new XmlParser();
+        XmlParser.Node rootNode = parser.parse(file);
+        configure(rootNode, obj);
+    }
+
+    public void configure(XmlParser.Node rootNode, Object obj, String xpath) throws XPathNotFoundException, XmlBeanException {
+        // if xpath isn't null
+        if (xpath != null) {
+            // attempt to select a new rootNode using the xpath
+            rootNode = XPath.select(rootNode, xpath);
+
+            // if node is null, then this xpath wasn't found
+            if (rootNode == null) {
+                throw new XPathNotFoundException("Xpath '" + xpath + "' not found from root node");
+            }
+        }
+        // delegate to configure method
+        configure(rootNode, obj);
+    }
+
+    public void configure(XmlParser.Node rootNode, Object obj) throws XmlBeanException {
         // root node doesn't matter -- unless we're going to validate its name
         if (this.rootTag != null) {
             if (!this.rootTag.equals(rootNode.getTag())) {
@@ -86,6 +134,10 @@ public class XmlBean {
         doConfigure(rootNode, obj, properties, true);
     }
 
+    /**
+     * Internal method for handling the configuration of an object. This method
+     * is recursively called for simple and complex properties.
+     */
     private void doConfigure(XmlParser.Node rootNode, Object obj, HashMap properties, boolean checkForDuplicates) throws XmlBeanException {
 
         // FIXME: do we do anything with attributes of a node?
