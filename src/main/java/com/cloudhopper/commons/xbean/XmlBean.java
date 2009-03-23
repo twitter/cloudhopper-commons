@@ -2,6 +2,8 @@
 package com.cloudhopper.commons.xbean;
 
 // java imports
+import com.cloudhopper.commons.util.BeanProperty;
+import com.cloudhopper.commons.util.BeanUtil;
 import java.util.HashMap;
 
 // my imports
@@ -95,14 +97,12 @@ public class XmlBean {
                 String propertyName = node.getTag();
 
                 // find the property if it exists
-                ClassUtil.BeanProperty property = null;
+                BeanProperty property = null;
                 
                 try {
-                    property = ClassUtil.getBeanProperty(obj.getClass(), propertyName, true);
+                    property = BeanUtil.findBeanProperty(obj.getClass(), propertyName, true);
                 } catch (IllegalAccessException e) {
                     throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Illegal access while attempting to reflect property from class", e);
-                } catch (NoSuchMethodException e) {
-                    throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "No such method while attempting to reflect property from class", e);
                 }
 
                 // if property is null, then this isn't a valid property on this object
@@ -122,8 +122,8 @@ public class XmlBean {
                 // is there actually a "setter" method -- we shouldn't let
                 // user's be able to configure fields in this case
                 // unless accessing private properties is allowed
-                if (!this.accessPrivateProperties && property.getSetMethod() == null) {
-                    throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Not permitted to set property '" + propertyName + "'");
+                if (!this.accessPrivateProperties && property.getAddMethod() == null && property.getSetMethod() == null) {
+                    throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Not permitted to add or set property '" + propertyName + "'");
                 }
 
                 
@@ -154,9 +154,9 @@ public class XmlBean {
                         throw new PropertyConversionException(propertyName, node.getPath(), obj.getClass(), "The value '" + string0 + "' for property '" + propertyName + "' could not be converted to a(n) " + property.getType().getSimpleName() + ". " + e.getMessage());
                     }
 
-                    // k, time to try to set the value
+                    // k, time to try to add or set the value
                     try {
-                        property.set(obj, value);
+                        property.addOrSet(obj, value);
                     } catch (InvocationTargetException e) {
                         Throwable t = e;
                         // this generally means the setXXXX method on the object
@@ -176,19 +176,25 @@ public class XmlBean {
                     // try to "get" an instance of this variable if it exists
                     Object targetObj = null;
 
-                    try {
-                        targetObj = property.get(obj);
-                    } catch (IllegalAccessException e) {
-                        throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Illegal access while attempting to get property value from object", e);
-                    } catch (InvocationTargetException e) {
-                        Throwable t = e;
-                        // this generally means the setXXXX method on the object
-                        // threw an exception -- we want to unwrap that and just
-                        // return that exception instead
-                        if (e.getCause() != null) {
-                            t = e.getCause();
+                    // only "get" the property if its possible -- e.g. if there
+                    // is only an addXXXX method available, then this would throw
+                    // an exception, so we'll check to see if getting the property
+                    // is possible first
+                    if (property.canGet()) {
+                        try {
+                            targetObj = property.get(obj);
+                        } catch (IllegalAccessException e) {
+                            throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Illegal access while attempting to get property value from object", e);
+                        } catch (InvocationTargetException e) {
+                            Throwable t = e;
+                            // this generally means the setXXXX method on the object
+                            // threw an exception -- we want to unwrap that and just
+                            // return that exception instead
+                            if (e.getCause() != null) {
+                                t = e.getCause();
+                            }
+                            throw new PropertyInvocationException(propertyName, node.getPath(), obj.getClass(), "The existing value for property '" + propertyName + "' caused an exception during get", t.getMessage(), t);
                         }
-                        throw new PropertyInvocationException(propertyName, node.getPath(), obj.getClass(), "The existing value for property '" + propertyName + "' caused an exception during get", t.getMessage(), t);
                     }
                     
                     // if null, then we need to create a new instance of it
@@ -208,7 +214,7 @@ public class XmlBean {
 
                     try {
                         // save this reference object back, but only if successfully configured
-                        property.set(obj, targetObj);
+                        property.addOrSet(obj, targetObj);
                     } catch (IllegalAccessException e) {
                         throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Illegal access while attempting to set property", e);
                     } catch (InvocationTargetException e) {

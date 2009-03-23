@@ -73,5 +73,29 @@ public class XPathTest {
         Assert.assertEquals(false, xp.matches("/no"));
     }
 
+    @Test
+    public void matchesNotIncludeParent1() throws Exception {
+        XPath xp = XPath.parse("/nodeA/nodeB");
+        Assert.assertEquals(false, xp.matches("/nodeA", false));
+        Assert.assertEquals(true, xp.matches("/nodeA/nodeB", false));
+        Assert.assertEquals(false, xp.matches("/nodeA/nodeB/nodeC", false));
+        Assert.assertEquals(false, xp.matches("/nodeA/nodeC", false));
+        Assert.assertEquals(false, xp.matches("/nodeB", false));
+        Assert.assertEquals(false, xp.matches("/nodeB/nodeB", false));
+        Assert.assertEquals(false, xp.matches("/no", false));
+    }
+
+    @Test
+    public void matchesNotIncludeParent2() throws Exception {
+        XPath xp = XPath.parse("/nodeA/nodeB/*");
+        Assert.assertEquals(false, xp.matches("/nodeA", false));
+        Assert.assertEquals(true, xp.matches("/nodeA/nodeB", false));
+        Assert.assertEquals(true, xp.matches("/nodeA/nodeB/nodeC", false));
+        Assert.assertEquals(false, xp.matches("/nodeA/nodeC", false));
+        Assert.assertEquals(false, xp.matches("/nodeB", false));
+        Assert.assertEquals(false, xp.matches("/nodeB/nodeB", false));
+        Assert.assertEquals(false, xp.matches("/no", false));
+    }
+
     
 }

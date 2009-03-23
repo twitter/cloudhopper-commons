@@ -333,7 +333,27 @@ public class XmlParser {
             logger.trace("node: " + tag + ", path: " + node.getPath());
 
             //
-            // is this node included on our includeXPath list if it exists?
+            // is this node in our excludeXPath?
+            //
+            if (excludeXPaths != null && excludeXPaths.size() > 0) {
+                String path = node.getPath();
+                boolean match = false;
+                for (int i = 0; !match && i < excludeXPaths.size(); i++) {
+                    XPath xpath = excludeXPaths.get(i);
+                    match = xpath.matches(path, false);
+
+                }
+                // if there was a match, then we want to exclude this node and any children nodes
+                if (match) {
+                    logger.debug("turning on noop mode (due to exclusion match)");
+                    noop = true;
+                    noopDepth = depth;
+                    return;
+                }
+            }
+
+            //
+            // is this node in our includeXPath list?
             //
             if (includeXPaths != null && includeXPaths.size() > 0) {
                 String path = node.getPath();
@@ -341,15 +361,11 @@ public class XmlParser {
                 for (int i = 0; !match && i < includeXPaths.size(); i++) {
                     XPath xpath = includeXPaths.get(i);
                     match = xpath.matches(path);
-                    //String xpath = includeXPaths.get(i);
-                    // does this xpath exist?
-                    //match = path.equals(xpath) || xpath.startsWith(path) && xpath.length() > path.length() && xpath.charAt(path.length()) == '/';
 
                 }
-
                 // if no match, then we do NOT want to include this node
                 if (!match) {
-                    logger.debug("turning on noop mode");
+                    logger.debug("turning on noop mode (due to NO inclusion match)");
                     noop = true;
                     noopDepth = depth;
                     return;

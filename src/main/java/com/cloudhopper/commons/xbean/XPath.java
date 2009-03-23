@@ -46,6 +46,19 @@ public class XPath {
      * @return True if the xpath matches, false otherwise.
      */
     public boolean matches(String xpath) {
+        return matches(xpath, true);
+    }
+
+    /**
+     * Does the path match?  If includeParent is true, then a parent match
+     * is included.  For example, an XPath of "/nodeA/nodeB" will include a match
+     * for "/nodeA" if includeParent is true.  Otherwise, "/nodeA" will return
+     * false.
+     *
+     * @param xpath A path such as "/nodeA/nodeB"
+     * @return True if the xpath matches, false otherwise.
+     */
+    public boolean matches(String xpath, boolean includeParent) {
         if (xpath == null || xpath.equals("")) {
             throw new IllegalArgumentException("xpath cannot be null or empty");
         }
@@ -56,7 +69,7 @@ public class XPath {
         }
 
         // the xpath might be a parent path
-        if (normalizedXPath.startsWith(xpath+"/")) {
+        if (includeParent && normalizedXPath.startsWith(xpath+"/")) {
             return true;
         }
 

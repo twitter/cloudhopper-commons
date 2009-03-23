@@ -2,17 +2,17 @@
 Cloudhopper Commons Util Library
 --------------------------------------------------------------------------------
 
-2.0 - 2009-02-16
+2.0 - 2009-03-22
   * WARN: Removed all non-util packages into their own projects since we now
     have a common build framework.  A large number of dependencies are now gone
     which should make all projects that use this library smaller.  Only classes
     in the net.cloudhopper.util package exist in this library.
   * Added StringUtil.capitalize() method -- removes need for WordUtils from
     Apache commons lang library in some other libraries.
-  * Added ClassUtil.getBeanProperty() method -- obtains properties that follow
-    the bean naming convention and allows simple access for getting and setting
-    values either via the setter/getter methods or by falling back to the underlying
-    field value.
+  * Added BeanUtil class and findBeanProperty() method -- obtains properties that follow
+    the bean naming convention and allows simple access for getting, setting, or
+    adding property values either via the setter/getter/adder methods or by falling
+    back to the underlying field value.
 
 1.6 - 2009-02-13
   * Added EncryptUtil class for simple 2-way encryption.

@@ -33,9 +33,11 @@ public class XmlParserMain {
 
         XmlParser parser = new XmlParser();
 
-        parser.addIncludeXPath("/submitRequest/messageRequest/text/*");
+        //parser.addIncludeXPath("/submitRequest/messageRequest/text/*");
         //parser.addIncludeXPath("/submitRequest/account");
         //parser.addIncludeXPath("/submitRequest/option");
+
+        parser.addExcludeXPath("/submitRequest/account");
 
         //parser.setTrimText(false);
         //parser.setValidating(false);
