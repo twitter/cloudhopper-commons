@@ -2,7 +2,8 @@
 package com.cloudhopper.commons.xbean;
 
 /**
- *
+ * Thrown if attributes are included for an xml element when no attributes
+ * are expected.
  * @author joelauer
  */
 public class PropertyNoAttributesExpectedException extends BasePropertyException {

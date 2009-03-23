@@ -3,7 +3,6 @@ package com.cloudhopper.commons.xbean;
 
 /**
  * Thrown if there is an exception during reflection or instantiation of a class.
- * 
  * @author joelauer
  */
 public class XmlBeanClassException extends XmlBeanException {

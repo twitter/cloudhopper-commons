@@ -18,7 +18,53 @@ import com.cloudhopper.commons.xml.XmlParser;
 import java.io.File;
 
 /**
- * Represents a Java bean configured and instantiated via XML.
+ * Represents a Java bean configured via XML. This class essentially is a much
+ * more simple version of Spring. Java objects are loosely configured with this
+ * class using reflection and method/field names matching elements in an xml
+ * document.
+ * <br><br>
+ * An element in an xml document represents a property that will be set on a
+ * Java object.  This class supports nested Java objects and their configuration
+ * as well. Nested objects are first retrieved via a getter. If they are null,
+ * this class will create a new instance with the default empty constructor.
+ * <br><br>
+ * Java objects can first be programmatically configured via Java code followed
+ * by overrides in an xml document. Or, Java objects can be configured over and
+ * over again by multiple xml documents.  Also, a subset of "xpath" is supported
+ * to allow elements inside an xml document to become the "root" of the xml document.
+ * <br><br>
+ * Also, a Java object is permitted to throw exceptions when a property is set
+ * and that exception will be rethrown inside a PropertyInvocationException.
+ * Properties are converted to their Java equivalents based on the Class type
+ * of the property of the Java object.
+ * <br><br>
+ * <b>Sample Java Classes:</b>
+ * <pre>{@code
+ * public class Server {
+ *   public void setPort(int port) { this.port = value; }
+ *   public void setHost(String value) { this.host = value; }
+ * }
+ *
+ * public class Config {
+ *   public void setServer(Server value) { this.server = value; }
+ * }}</pre>
+ *
+ * <b>Sample XML:</b>
+ * <pre>{@code
+ * <configuration>
+ *   <server>
+ *     <host>www.google.com</host>
+ *     <port>80</port>
+ *   </server>
+ * </configuration>
+ * }</pre>
+ *
+ * <b>Sample Client Java Code:</b>
+ * <pre>{@code
+ * XmlBean bean = new XmlBean();
+ * Config config = new Config();
+ * bean.configure(xml, config);
+ * }</pre>
  * 
  * @author joelauer
  */
@@ -60,46 +106,174 @@ public class XmlBean {
     }
 
     /**
-     * Whether private properties (without associated public getter/setter method)
+     * Controls if private properties (without associated public getter/setter method)
      * are okay to set on a bean.  If false, then a specific permission exception
-     * will be thrown.
-     * @param value
+     * will be thrown. This option is false by default.
+     * @param value True if underlying fields should be exposed, otherwise set to false.
      */
     public void setAccessPrivateProperties(boolean value) {
         this.accessPrivateProperties = value;
     }
 
-
+    /**
+     * Configures the object by setting the value of its properties with the
+     * values from the xml document.  Each element of the xml document represents
+     * a named property of the object.  For example, if "setFirstName" is a property
+     * of the object, then an element of "<firstName>Joe</firstName>" would set
+     * that value to "Joe".
+     * @param xml A string representation of the xml document
+     * @param obj The object to configure
+     * @throws com.cloudhopper.commons.xbean.XmlBeanException Thrown if an exception
+     *      occurs while configuring the object.
+     * @throws java.io.IOException Thrown if an exception occurs while attempting
+     *      to parse the input for the xml document.
+     * @throws org.xml.sax.SAXException Thrown if an exception occurs while parsing
+     *      the xml document.
+     */
     public void configure(String xml, Object obj) throws XmlBeanException, IOException, SAXException {
         configure(xml, obj, null);
     }
 
+    /**
+     * Parses the xml document and configures the object by setting the value of its properties with the
+     * values from the xml document.  Each element of the xml document represents
+     * a named property of the object.  For example, if "setFirstName" is a property
+     * of the object, then an element of "<firstName>Joe</firstName>" would set
+     * that value to "Joe".
+     * @param xml A string representation of the xml document
+     * @param obj The object to configure
+     * @param xpath The xpath used to select a new "root" node when configuring
+     *      the object. For example, "/nodeA/nodeB" would effectively configure
+     *      the object starting as though nodeB was the root node. Set to null
+     *      to ignore using the xpath.
+     * @throws com.cloudhopper.commons.xbean.XPathNotFoundException Thrown if the
+     *      provided xpath isn't found in the xml document.
+     * @throws com.cloudhopper.commons.xbean.XmlBeanException Thrown if an exception
+     *      occurs while configuring the object.
+     * @throws java.io.IOException Thrown if an exception occurs while attempting
+     *      to parse the input for the xml document.
+     * @throws org.xml.sax.SAXException Thrown if an exception occurs while parsing
+     *      the xml document.
+     */
     public void configure(String xml, Object obj, String xpath) throws XPathNotFoundException, XmlBeanException, IOException, SAXException {
         XmlParser parser = new XmlParser();
         XmlParser.Node rootNode = parser.parse(xml);
         configure(rootNode, obj, xpath);
     }
 
+    /**
+     * Parses the xml document and configures the object by setting the value of its properties with the
+     * values from the xml document.  Each element of the xml document represents
+     * a named property of the object.  For example, if "setFirstName" is a property
+     * of the object, then an element of "<firstName>Joe</firstName>" would set
+     * that value to "Joe".
+     * @param in An inputstream that contains the xml document
+     * @param obj The object to configure
+     * @throws com.cloudhopper.commons.xbean.XPathNotFoundException Thrown if the
+     *      provided xpath isn't found in the xml document.
+     * @throws com.cloudhopper.commons.xbean.XmlBeanException Thrown if an exception
+     *      occurs while configuring the object.
+     * @throws java.io.IOException Thrown if an exception occurs while attempting
+     *      to parse the input for the xml document.
+     * @throws org.xml.sax.SAXException Thrown if an exception occurs while parsing
+     *      the xml document.
+     */
     public void configure(InputStream in, Object obj) throws XmlBeanException, IOException, SAXException {
         configure(in, obj, null);
     }
 
+    /**
+     * Parses the xml document and configures the object by setting the value of its properties with the
+     * values from the xml document.  Each element of the xml document represents
+     * a named property of the object.  For example, if "setFirstName" is a property
+     * of the object, then an element of "<firstName>Joe</firstName>" would set
+     * that value to "Joe".
+     * @param in An inputstream that contains the xml document
+     * @param obj The object to configure
+     * @param xpath The xpath used to select a new "root" node when configuring
+     *      the object. For example, "/nodeA/nodeB" would effectively configure
+     *      the object starting as though nodeB was the root node. Set to null
+     *      to ignore using the xpath.
+     * @throws com.cloudhopper.commons.xbean.XPathNotFoundException Thrown if the
+     *      provided xpath isn't found in the xml document.
+     * @throws com.cloudhopper.commons.xbean.XmlBeanException Thrown if an exception
+     *      occurs while configuring the object.
+     * @throws java.io.IOException Thrown if an exception occurs while attempting
+     *      to parse the input for the xml document.
+     * @throws org.xml.sax.SAXException Thrown if an exception occurs while parsing
+     *      the xml document.
+     */
     public void configure(InputStream in, Object obj, String xpath) throws XPathNotFoundException, XmlBeanException, IOException, SAXException {
         XmlParser parser = new XmlParser();
         XmlParser.Node rootNode = parser.parse(in);
         configure(rootNode, obj);
     }
 
+    /**
+     * Parses the xml document and configures the object by setting the value of its properties with the
+     * values from the xml document.  Each element of the xml document represents
+     * a named property of the object.  For example, if "setFirstName" is a property
+     * of the object, then an element of "<firstName>Joe</firstName>" would set
+     * that value to "Joe".
+     * @param file The file object containing the xml document
+     * @param obj The object to configure
+     * @throws com.cloudhopper.commons.xbean.XPathNotFoundException Thrown if the
+     *      provided xpath isn't found in the xml document.
+     * @throws com.cloudhopper.commons.xbean.XmlBeanException Thrown if an exception
+     *      occurs while configuring the object.
+     * @throws java.io.IOException Thrown if an exception occurs while attempting
+     *      to parse the input for the xml document.
+     * @throws org.xml.sax.SAXException Thrown if an exception occurs while parsing
+     *      the xml document.
+     */
     public void configure(File file, Object obj) throws XmlBeanException, IOException, SAXException {
         configure(file, obj, null);
     }
 
+    /**
+     * Parses the xml document and configures the object by setting the value of its properties with the
+     * values from the xml document.  Each element of the xml document represents
+     * a named property of the object.  For example, if "setFirstName" is a property
+     * of the object, then an element of "<firstName>Joe</firstName>" would set
+     * that value to "Joe".
+     * @param file The file object containing the xml document
+     * @param obj The object to configure
+     * @param xpath The xpath used to select a new "root" node when configuring
+     *      the object. For example, "/nodeA/nodeB" would effectively configure
+     *      the object starting as though nodeB was the root node. Set to null
+     *      to ignore using the xpath.
+     * @throws com.cloudhopper.commons.xbean.XPathNotFoundException Thrown if the
+     *      provided xpath isn't found in the xml document.
+     * @throws com.cloudhopper.commons.xbean.XmlBeanException Thrown if an exception
+     *      occurs while configuring the object.
+     * @throws java.io.IOException Thrown if an exception occurs while attempting
+     *      to parse the input for the xml document.
+     * @throws org.xml.sax.SAXException Thrown if an exception occurs while parsing
+     *      the xml document.
+     */
     public void configure(File file, Object obj, String xpath) throws XPathNotFoundException, XmlBeanException, IOException, SAXException {
         XmlParser parser = new XmlParser();
         XmlParser.Node rootNode = parser.parse(file);
         configure(rootNode, obj);
     }
 
+    /**
+     * Configures the object by setting the value of its properties with the
+     * values from the xml document.  Each element of the xml document represents
+     * a named property of the object.  For example, if "setFirstName" is a property
+     * of the object, then an element of "<firstName>Joe</firstName>" would set
+     * that value to "Joe".
+     * @param rootNode The root node of the xml document
+     * @param obj The object to configure
+     * @param xpath The xpath used to select a new "root" node when configuring
+     *      the object. For example, "/nodeA/nodeB" would effectively configure
+     *      the object starting as though nodeB was the root node. Set to null
+     *      to ignore using the xpath.
+     * @throws com.cloudhopper.commons.xbean.XPathNotFoundException Thrown if the
+     *      provided xpath isn't found in the xml document.
+     * @throws com.cloudhopper.commons.xbean.XmlBeanException Thrown if an exception
+     *      occurs while configuring the object.
+     */
     public void configure(XmlParser.Node rootNode, Object obj, String xpath) throws XPathNotFoundException, XmlBeanException {
         // if xpath isn't null
         if (xpath != null) {
@@ -115,6 +289,17 @@ public class XmlBean {
         configure(rootNode, obj);
     }
 
+    /**
+     * Configures the object by setting the value of its properties with the
+     * values from the xml document.  Each element of the xml document represents
+     * a named property of the object.  For example, if "setFirstName" is a property
+     * of the object, then an element of "<firstName>Joe</firstName>" would set
+     * that value to "Joe".
+     * @param rootNode The root node of the xml document
+     * @param obj The object to configure
+     * @throws com.cloudhopper.commons.xbean.XmlBeanException Thrown if an exception
+     *      occurs while configuring the object.
+     */
     public void configure(XmlParser.Node rootNode, Object obj) throws XmlBeanException {
         // root node doesn't matter -- unless we're going to validate its name
         if (this.rootTag != null) {

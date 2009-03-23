@@ -2,7 +2,7 @@
 package com.cloudhopper.commons.xbean;
 
 /**
- *
+ * Thrown when access to a property or class is denied.
  * @author joelauer
  */
 public class PropertyPermissionException extends BasePropertyException {

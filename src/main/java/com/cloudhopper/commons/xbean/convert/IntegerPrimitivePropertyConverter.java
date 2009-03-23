@@ -4,6 +4,7 @@ package com.cloudhopper.commons.xbean.convert;
 import com.cloudhopper.commons.xbean.*;
 
 /**
+ * Converts a String to an int.
  * @author joelauer
  */
 public class IntegerPrimitivePropertyConverter implements PropertyConverter {

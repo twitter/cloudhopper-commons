@@ -2,7 +2,7 @@
 package com.cloudhopper.commons.xbean;
 
 /**
- *
+ * Thrown when a property is not found on a Java object.
  * @author joelauer
  */
 public class PropertyNotFoundException extends BasePropertyException {

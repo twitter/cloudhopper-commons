@@ -2,8 +2,7 @@
 package com.cloudhopper.commons.xbean;
 
 /**
- * Thrown when an xpath is not found.
- * 
+ * Thrown if an xpath is not found in an xml document.
  * @author joelauer
  */
 public class XPathNotFoundException extends XmlBeanException {

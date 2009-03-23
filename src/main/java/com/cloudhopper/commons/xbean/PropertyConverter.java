@@ -2,7 +2,7 @@
 package com.cloudhopper.commons.xbean;
 
 /**
- * Interface to convert from String values to Java objects.
+ * Interface to convert String values to Java objects.
  *
  * @author joelauer
  */

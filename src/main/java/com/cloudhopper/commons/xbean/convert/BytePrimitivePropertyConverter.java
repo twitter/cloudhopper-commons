@@ -4,6 +4,7 @@ package com.cloudhopper.commons.xbean.convert;
 import com.cloudhopper.commons.xbean.*;
 
 /**
+ * Converts a String to a byte.
  * @author joelauer
  */
 public class BytePrimitivePropertyConverter implements PropertyConverter {

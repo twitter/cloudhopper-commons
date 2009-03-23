@@ -4,6 +4,7 @@ package com.cloudhopper.commons.xbean.convert;
 import com.cloudhopper.commons.xbean.*;
 
 /**
+ * Converts a String to a boolean.
  * @author joelauer
  */
 public class BooleanPrimitivePropertyConverter implements PropertyConverter {

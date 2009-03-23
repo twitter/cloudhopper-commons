@@ -2,7 +2,8 @@
 package com.cloudhopper.commons.xbean;
 
 /**
- *
+ * Thrown if a property was included in an xml document, but not value was
+ * assigned to it.
  * @author joelauer
  */
 public class PropertyIsEmptyException extends BasePropertyException {

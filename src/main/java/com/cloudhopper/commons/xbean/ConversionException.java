@@ -1,12 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package com.cloudhopper.commons.xbean;
 
 /**
- *
+ * Thrown by PropertyConverter classes when a String fails conversion to a
+ * Java object.
  * @author joelauer
  */
 public class ConversionException extends Exception {
