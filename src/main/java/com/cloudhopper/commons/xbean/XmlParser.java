@@ -166,36 +166,6 @@ public class XmlParser {
         excludeXPaths.add(XPath.parse(xpath));
     }
 
-
-    /* ------------------------------------------------------------ */
-    /**
-     *
-     * @return Returns the xpath.
-     */
-    /**
-    public String getXpath()
-    {
-        return _xpath;
-    }
-     */
-
-    /* ------------------------------------------------------------ */
-    /**
-     * Set an XPath A very simple subset of xpath is supported to select a partial tree. Currently
-     * only path like "/node1/nodeA | /node1/nodeB" are supported.
-     *
-     * @param xpath The xpath to set.
-     */
-    /**
-    public void setXpath(String xpath)
-    {
-        _xpath = xpath;
-        StringTokenizer tok = new StringTokenizer(xpath, "| ");
-        while (tok.hasMoreTokens())
-            _xpaths = LazyList.add(_xpaths, tok.nextToken());
-    }
-     */
-
     /* ------------------------------------------------------------ */
     /**
     public String getDTD()
@@ -283,8 +253,6 @@ public class XmlParser {
         private boolean noop;
         private int noopDepth;
 
-        //private int
-
         Handler() {
             reset();
         }
@@ -300,7 +268,7 @@ public class XmlParser {
 
         @Override
         public void processingInstruction( String target, String value ) {
-            logger.debug("processing instr!");
+            //logger.debug("processing instr!");
         }
 
         @Override
@@ -309,7 +277,7 @@ public class XmlParser {
             String tag = (uri == null || uri.equals("")) ? qName : localName;
 
             // debug
-            logger.trace("startElement: tag=" + tag);
+            //logger.trace("startElement: tag=" + tag);
 
             // always increment our depth
             depth++;
@@ -318,7 +286,7 @@ public class XmlParser {
             // if NOOP, then skip
             //
             if (noop) {
-                logger.trace("in noop mode, skipping this element");
+                //logger.trace("in noop mode, skipping this element");
                 return;
             }
 
@@ -330,7 +298,7 @@ public class XmlParser {
             node.setParent(context);
 
             // debug
-            logger.trace("node: " + tag + ", path: " + node.getPath());
+            //logger.trace("node: " + tag + ", path: " + node.getPath());
 
             //
             // is this node in our excludeXPath?
@@ -345,7 +313,7 @@ public class XmlParser {
                 }
                 // if there was a match, then we want to exclude this node and any children nodes
                 if (match) {
-                    logger.debug("turning on noop mode (due to exclusion match)");
+                    //logger.debug("turning on noop mode (due to exclusion match)");
                     noop = true;
                     noopDepth = depth;
                     return;
@@ -365,7 +333,7 @@ public class XmlParser {
                 }
                 // if no match, then we do NOT want to include this node
                 if (!match) {
-                    logger.debug("turning on noop mode (due to NO inclusion match)");
+                    //logger.debug("turning on noop mode (due to NO inclusion match)");
                     noop = true;
                     noopDepth = depth;
                     return;
@@ -394,23 +362,22 @@ public class XmlParser {
             //
             if (noop) {
                 if (depth < noopDepth) {
-                    logger.trace("turning off noop mode");
+                    //logger.trace("turning off noop mode");
                     noop = false;
                 } else {
-                    logger.trace("skipping end of element since in noop");
+                    //logger.trace("skipping end of element since in noop");
                 }
                 return;
             }
 
             // reset the context to this context's parent
             context = context.getParent();
-            
         }
 
         @Override
         public void ignorableWhitespace(char buf[], int offset, int len) throws SAXException {
             // do nothing
-            logger.debug("ignorable whitespace included!");
+            //logger.debug("ignorable whitespace included!");
         }
 
         @Override
@@ -419,7 +386,7 @@ public class XmlParser {
             // if NOOP, then skip
             //
             if (noop) {
-                logger.trace("in noop mode, skipping characters");
+                //logger.trace("in noop mode, skipping characters");
                 return;
             }
 
@@ -441,7 +408,7 @@ public class XmlParser {
 
         @Override
         public void warning(SAXParseException ex) {
-            logger.debug(ex);
+            logger.warn(ex);
             logger.warn("WARNING @ " + getLocationString(ex) + " : " + ex.toString());
         }
 
@@ -450,15 +417,15 @@ public class XmlParser {
             // Save error and continue to report other errors
             if (error == null)
                 error = ex;
-            logger.debug(ex);
-            logger.warn("ERROR @ " + getLocationString(ex) + " : " + ex.toString());
+            //logger.debug(ex);
+            logger.error("ERROR @ " + getLocationString(ex) + " : " + ex.toString());
         }
 
         @Override
         public void fatalError(SAXParseException ex) throws SAXException {
             error = ex;
-            logger.debug(ex);
-            logger.warn("FATAL @ " + getLocationString(ex) + " : " + ex.toString());
+            //logger.debug(ex);
+            logger.error("FATAL @ " + getLocationString(ex) + " : " + ex.toString());
             throw ex;
         }
 
@@ -468,7 +435,7 @@ public class XmlParser {
 
         @Override
         public InputSource resolveEntity(String pid, String sid) {
-            logger.debug("resolveEntity(" + pid + ", " + sid + ")");
+            //logger.debug("resolveEntity(" + pid + ", " + sid + ")");
             /**
             if (logger.isDebugEnabled())
                 logger.debug("resolveEntity(" + pid + ", " + sid + ")");

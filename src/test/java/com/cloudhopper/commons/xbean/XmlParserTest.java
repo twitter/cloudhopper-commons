@@ -15,6 +15,36 @@ public class XmlParserTest {
     private static final Logger logger = Logger.getLogger(XmlParserTest.class);
 
     @Test
+    public void setTrimTextFalse() throws Exception {
+        StringBuilder string0 = new StringBuilder(200)
+            .append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n")
+            .append("<submitRequest sequenceId=\"1000\">\n")
+            .append("   <!-- this is a comment -->\n")
+            .append("   <account username=\"testaccount\" password=\"testpassword\"/>\n")
+            .append("   <option />\n")
+            .append("   <messageRequest referenceId=\"MYMESSREF\">\n")
+            .append("       <sourceAddress>  +13135551212  </sourceAddress>\n")
+            .append("       <destinationAddress>+13135551200</destinationAddress>\n")
+            .append("       <text><![CDATA[Hello World]]></text>\n")
+            .append("   </messageRequest>\n")
+            .append("</submitRequest>")
+            .append("");
+
+        XmlParser parser = new XmlParser();
+        parser.setTrimText(false);
+        XmlParser.Node root = parser.parse(string0.toString());
+
+        Assert.assertEquals(3, root.getChildrenSize());
+        Assert.assertEquals("submitRequest", root.getTag());
+        Assert.assertEquals(true, root.hasText());
+        Assert.assertEquals("messageRequest", root.getChild(2).getTag());
+        Assert.assertEquals("sourceAddress", root.getChild(2).getChild(0).getTag());
+        Assert.assertEquals("  +13135551212  ", root.getChild(2).getChild(0).getText());
+        Assert.assertEquals("destinationAddress", root.getChild(2).getChild(1).getTag());
+        Assert.assertEquals("text", root.getChild(2).getChild(2).getTag());
+    }
+
+    @Test
     public void includesXPath() throws Exception {
         StringBuilder string0 = new StringBuilder(200)
             .append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n")
