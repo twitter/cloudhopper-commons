@@ -31,9 +31,8 @@ public class XmlBeanMain {
 
         
         XmlParser parser = new XmlParser();
-        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
         logger.debug("Trying to parse...");
-        XmlParser.Node rootNode = parser.parse(is);
+        XmlParser.Node rootNode = parser.parse(string0.toString());
 
         // now configure it
         XmlBean bean = new XmlBean();

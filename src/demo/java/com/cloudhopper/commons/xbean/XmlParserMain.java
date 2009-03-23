@@ -19,9 +19,10 @@ public class XmlParserMain {
                 .append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n")
                 //.append("<!DOCTYPE chapter PUBLIC \"-//OASIS//DTD DocBook XML//EN\" \"../dtds/docbookx.dtd\">")
 		//.append("<!DOCTYPE chapter PUBLIC \"-//OASIS//DTD DocBook XML//EN\">")
-		.append("<submitRequest sequenceId=\"1000\">\n")
+                .append("<submitRequest sequenceId=\"1000\">\n")
                 .append("   <!-- this is a comment -->\n")
                 .append("   <account username=\"testaccount\" password=\"testpassword\"/>\n")
+                .append("   <option />\n")
                 .append("   <messageRequest referenceId=\"MYMESSREF\">\n")
                 //.append("       <sourceAddress>+13135551212</sourceAddress>\n")
                 .append("       <destinationAddress>+13135551200</destinationAddress>\n")
@@ -31,6 +32,11 @@ public class XmlParserMain {
                 .append("");
 
         XmlParser parser = new XmlParser();
+
+        parser.addIncludeXPath("/submitRequest/messageRequest/*");
+        //parser.addIncludeXPath("/submitRequest/account");
+        //parser.addIncludeXPath("/submitRequest/option");
+
         //parser.setTrimText(false);
         //parser.setValidating(false);
         //parser.setXpath("messageRequest");

@@ -1,6 +1,7 @@
 
 package com.cloudhopper.commons.xbean;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +15,7 @@ import java.util.NoSuchElementException;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
+import java.util.TreeMap;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -36,6 +38,9 @@ public class XmlParser {
     //private Map _redirectMap = new HashMap();
     private SAXParser _parser;
     private boolean trimText;
+    private ArrayList<XPath> includeXPaths;
+    private ArrayList<XPath> excludeXPaths;
+
     //private Map _observerMap;
     //private Stack _observers = new Stack();
     //private String _xpath;
@@ -60,6 +65,9 @@ public class XmlParser {
 
         // by default, trim "text" values of whitespace to leave them empty
         trimText = true;
+        // by default empty include and exclude xpaths
+        includeXPaths = new ArrayList<XPath>();
+        excludeXPaths = new ArrayList<XPath>();
 
         //boolean validating_dft = factory.getClass().toString().startsWith("org.apache.xerces.");
         //String validating_prop = System.getProperty("org.mortbay.xml.XmlParser.Validating", validating_dft ? "true" : "false");
@@ -128,6 +136,36 @@ public class XmlParser {
             _redirectMap.put(name, entity);
     }
      */
+
+    
+    /**
+     * Adds an include XPath to filter nodes that are returned while parsing
+     * the XML document. For example, adding "/configuration/testA" means that
+     * only nodes "configuration", "testA", and any of its children will be
+     * returned as nodes.  All other nodes will essentially be "hidden" from
+     * the returned DOM tree.
+     * @param xpath The XPath filter to include during parsing such as "/configuration/testA"
+     */
+    public void addIncludeXPath(String xpath) {
+        // FIXME: is this a valid xpath?
+        // FIXME: is this xpath already added?
+        includeXPaths.add(XPath.parse(xpath));
+    }
+
+    /**
+     * Adds an exclude XPath to filter nodes that are returned while parsing
+     * the XML document. For example, adding "/configuration/testA" means that
+     * node "/configuration/testA" and any of its children will be excluded
+     * as nodes returned while parsing.  All other nodes will be returned, but
+     * this one will essentially be "hidden".
+     * @param xpath The XPath filter to exclude during parsing such as "/configuration/testA"
+     */
+    public void addExcludeXPath(String xpath) {
+        // FIXME: is this a valid xpath?
+        // FIXME: is this xpath already added?
+        excludeXPaths.add(XPath.parse(xpath));
+    }
+
 
     /* ------------------------------------------------------------ */
     /**
@@ -203,33 +241,25 @@ public class XmlParser {
         return root;
     }
 
-    /* ------------------------------------------------------------ */
     /**
-     * Parse String URL.
+     * Parse XML from a String.
      */
-    public synchronized Node parse(String url) throws IOException, SAXException
-    {
-        if (logger.isDebugEnabled())
-            logger.debug("parse: " + url);
-        return parse(new InputSource(url));
+    public synchronized Node parse(String xml) throws IOException, SAXException {
+        ByteArrayInputStream is = new ByteArrayInputStream(xml.getBytes());
+        return parse(is);
     }
 
-    /* ------------------------------------------------------------ */
     /**
-     * Parse File.
+     * Parse XML from File.
      */
-    public synchronized Node parse(File file) throws IOException, SAXException
-    {
-        if (logger.isDebugEnabled())
-            logger.debug("parse: " + file);
+    public synchronized Node parse(File file) throws IOException, SAXException {
         return parse(new InputSource(file.toURI().toURL().toString()));
     }
 
     /**
-     * Parse InputStream.
+     * Parse XML from InputStream.
      */
-    public synchronized Node parse(InputStream in) throws IOException, SAXException
-    {
+    public synchronized Node parse(InputStream in) throws IOException, SAXException {
         //_dtd=null;
         Handler handler = new Handler();
         XMLReader reader = _parser.getXMLReader();
@@ -244,14 +274,16 @@ public class XmlParser {
         return root;
     }
 
-    /* ------------------------------------------------------------ */
-    /* ------------------------------------------------------------ */
     private class Handler extends DefaultHandler {
         
         Node root = null;
         SAXParseException error;
         private Node context;
         private int depth;
+        private boolean noop;
+        private int noopDepth;
+
+        //private int
 
         Handler() {
             reset();
@@ -262,6 +294,8 @@ public class XmlParser {
             error = null;
             context = null;
             depth = -1;
+            noop = false;
+            noopDepth = -1;
         }
 
         @Override
@@ -271,9 +305,22 @@ public class XmlParser {
 
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
-            //logger.debug("start element!");
-
+            // figure out tag
             String tag = (uri == null || uri.equals("")) ? qName : localName;
+
+            // debug
+            logger.trace("startElement: tag=" + tag);
+
+            // always increment our depth
+            depth++;
+
+            //
+            // if NOOP, then skip
+            //
+            if (noop) {
+                logger.trace("in noop mode, skipping this element");
+                return;
+            }
 
             // create the current node we're parsing
             Node node = new Node(tag, attrs);
@@ -282,67 +329,66 @@ public class XmlParser {
             // if this happens to be the root node, then it'll be null
             node.setParent(context);
 
-            // always increment our depth
-            depth++;
+            // debug
+            logger.trace("node: " + tag + ", path: " + node.getPath());
+
+            //
+            // is this node included on our includeXPath list if it exists?
+            //
+            if (includeXPaths != null && includeXPaths.size() > 0) {
+                String path = node.getPath();
+                boolean match = false;
+                for (int i = 0; !match && i < includeXPaths.size(); i++) {
+                    XPath xpath = includeXPaths.get(i);
+                    match = xpath.matches(path);
+                    //String xpath = includeXPaths.get(i);
+                    // does this xpath exist?
+                    //match = path.equals(xpath) || xpath.startsWith(path) && xpath.length() > path.length() && xpath.charAt(path.length()) == '/';
+
+                }
+
+                // if no match, then we do NOT want to include this node
+                if (!match) {
+                    logger.debug("turning on noop mode");
+                    noop = true;
+                    noopDepth = depth;
+                    return;
+                }
+            }
 
             // is this the first node (root)?
-            if (root == null && context == null) {
-                logger.trace("Found root node: " + tag);
+            if (depth == 0) {
                 root = node;
             } else {
                 // add this node as a child to the current context
-                context.addChild(node);
+                context.addChild(node);    
             }
-
+      
             // we're done, so set the current context to the current node
             context = node;
-
-            // check if the node matches any xpaths set?
-            /**
-            if (_xpaths != null)
-            {
-                String path = node.getPath();
-                boolean match = false;
-                for (int i = LazyList.size(_xpaths); !match && i-- > 0;)
-                {
-                    String xpath = (String) LazyList.get(_xpaths, i);
-
-                    match = path.equals(xpath) || xpath.startsWith(path) && xpath.length() > path.length() && xpath.charAt(path.length()) == '/';
-                }
-
-                if (match)
-                {
-                    _context.add(node);
-                    _context = node;
-                }
-                else
-                {
-                    _parser.getXMLReader().setContentHandler(_noop);
-                }
-            }
-            else
-            {
-                _context.add(node);
-                _context = node;
-            }
-
-            ContentHandler observer = null;
-            if (_observerMap != null)
-                observer = (ContentHandler) _observerMap.get(name);
-            _observers.push(observer);
-
-            for (int i = 0; i < _observers.size(); i++)
-                if (_observers.get(i) != null)
-                    ((ContentHandler) _observers.get(i)).startElement(uri, localName, qName, attrs);
-             */
         }
 
         @Override
         public void endElement(String uri, String localName, String qName) throws SAXException {
-            // reset the context to this context's parent
-            context = context.getParent();
             // always decrement our depth
             depth--;
+
+            //
+            // check if we should turn off noop
+            //
+            if (noop) {
+                if (depth < noopDepth) {
+                    logger.trace("turning off noop mode");
+                    noop = false;
+                } else {
+                    logger.trace("skipping end of element since in noop");
+                }
+                return;
+            }
+
+            // reset the context to this context's parent
+            context = context.getParent();
+            
         }
 
         @Override
@@ -353,6 +399,14 @@ public class XmlParser {
 
         @Override
         public void characters(char buf[], int offset, int len) throws SAXException {
+            //
+            // if NOOP, then skip
+            //
+            if (noop) {
+                logger.trace("in noop mode, skipping characters");
+                return;
+            }
+
             if (buf == null || buf.length <= 0) {
                 // do nothing
                 return;
