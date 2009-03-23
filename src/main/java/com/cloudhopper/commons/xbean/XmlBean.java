@@ -503,7 +503,7 @@ public class XmlBean {
         if (type.isEnum()) {
             Object obj = ClassUtil.findEnumConstant(type, string0);
             if (obj == null) {
-                throw new ConversionException("Invalid constant '" + string0 + "' used, valid values [" + toListString(type.getEnumConstants()) + "]");
+                throw new ConversionException("Invalid constant '" + string0 + "' used, supported values [" + toListString(type.getEnumConstants()) + "]");
             }
             return obj;
         // else, handle normally
