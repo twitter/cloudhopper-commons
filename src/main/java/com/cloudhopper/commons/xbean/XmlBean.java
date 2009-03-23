@@ -2,19 +2,21 @@
 package com.cloudhopper.commons.xbean;
 
 // java imports
-import com.cloudhopper.commons.util.BeanProperty;
-import com.cloudhopper.commons.util.BeanUtil;
+import java.lang.reflect.InvocationTargetException;
+
+
 import java.util.HashMap;
 
 // my imports
+import com.cloudhopper.commons.util.BeanProperty;
+import com.cloudhopper.commons.util.BeanUtil;
 import com.cloudhopper.commons.util.ClassUtil;
 import com.cloudhopper.commons.xbean.convert.*;
-import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.cloudhopper.commons.xml.XmlParser;
 
 /**
- *
+ * Represents a Java bean configured and instantiated via XML.
+ * 
  * @author joelauer
  */
 public class XmlBean {
@@ -81,10 +83,10 @@ public class XmlBean {
         // create a hashmap to track properties
         HashMap properties = new HashMap();
 
-        doConfigure(rootNode, obj, properties);
+        doConfigure(rootNode, obj, properties, true);
     }
 
-    private void doConfigure(XmlParser.Node rootNode, Object obj, HashMap properties) throws XmlBeanException {
+    private void doConfigure(XmlParser.Node rootNode, Object obj, HashMap properties, boolean checkForDuplicates) throws XmlBeanException {
 
         // FIXME: do we do anything with attributes of a node?
 
@@ -126,9 +128,14 @@ public class XmlBean {
                     throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Not permitted to add or set property '" + propertyName + "'");
                 }
 
+                // if we can "add" this property, then turn off checkForDuplicates
+                if (property.canAdd()) {
+                    checkForDuplicates = false;
+                }
                 
                 // was this property already previously set?
-                if (properties.containsKey(node.getPath())) {
+                // only use this check if an "add" method doesn't exist for the bean
+                if (checkForDuplicates && properties.containsKey(node.getPath())) {
                     throw new PropertyAlreadySetException(propertyName, node.getPath(), obj.getClass(), "Property '" + propertyName + "' was already previously set in the xml");
                 }
                 // add this property to our hashmap
@@ -210,7 +217,7 @@ public class XmlBean {
                     }
 
                     // recursively configure it
-                    doConfigure(node, targetObj, properties);
+                    doConfigure(node, targetObj, properties, checkForDuplicates);
 
                     try {
                         // save this reference object back, but only if successfully configured

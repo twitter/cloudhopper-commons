@@ -16,11 +16,7 @@
         <!-- do nothing -->
     </target>
 
-    <target name="run-parser" depends="common-compile-demo">
-        <javarun class="com.cloudhopper.commons.xbean.XmlParserMain" />
-    </target>
-
-    <target name="run-bean" depends="common-compile-demo">
+    <target name="run" depends="common-compile-demo">
         <javarun class="com.cloudhopper.commons.xbean.XmlBeanMain" />
     </target>
 

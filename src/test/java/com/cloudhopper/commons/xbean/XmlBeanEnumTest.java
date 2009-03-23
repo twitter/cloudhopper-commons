@@ -9,6 +9,7 @@ import org.junit.*;
 import org.apache.log4j.Logger;
 
 // my imports
+import com.cloudhopper.commons.xml.*;
 
 public class XmlBeanEnumTest {
 

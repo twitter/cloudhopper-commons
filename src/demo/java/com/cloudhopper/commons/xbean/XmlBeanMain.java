@@ -1,11 +1,14 @@
 package com.cloudhopper.commons.xbean;
 
 // java imports
-import java.io.*;
-
 import java.net.MalformedURLException;
 import java.net.URL;
+
+// third party imports
 import org.apache.log4j.Logger;
+
+// my imports
+import com.cloudhopper.commons.xml.*;
 
 /**
  *
