@@ -688,6 +688,9 @@ public class DataSourceConfiguration implements Cloneable {
     }
 
     @Override
+    /**
+     * Clones configuration.
+     */
     public Object clone() {
         try {
             return super.clone();
