@@ -21,24 +21,42 @@ import com.mchange.v2.c3p0.management.*;
  * @author joelauer
  */
 public class C3P0CustomManagementCoordinator implements ManagementCoordinator {
-    
-    //private final static String C3P0_REGISTRY_NAME = "com.mchange.v2.c3p0:type=C3P0Registry";
-    private final static String C3P0_REGISTRY_NAME = "com.cloudhopper:type=C3P0,name=C3P0Registry";
 
-    //MT: thread-safe
-    final static MLogger logger = MLog.getLogger( ActiveManagementCoordinator.class );
+    // static defaults -- these will work precisely the first time
+    // and then they'll be able to change while the JVM is running
+    private static String C3P0_JMX_DOMAIN = "com.cloudhopper";
+
+    /**
+     * Sets the JMX domain to use for registering the C3P0 registery.  This will
+     * work exactly once.  It must be set prior to starting any C3P0 instance.
+     * @param domain Such as "com.cloudhopper"
+     */
+    public static void setJmxDomainOnce(String domain) {
+        C3P0_JMX_DOMAIN = domain;
+    }
+
+    // MT: thread-safe
+    final static MLogger logger = MLog.getLogger(C3P0CustomManagementCoordinator.class);
 
     MBeanServer mbs;
+    String jmxDomain;
 
+    /**
+     * Creates a new instance of C3P0CustomManagementCoordinator and saves
+     * a copy of what the JMX domain was statically set to -- this is then used
+     * for the lifetime of this object.
+     */
     public C3P0CustomManagementCoordinator() throws Exception {
         this.mbs = ManagementFactory.getPlatformMBeanServer();
+        this.jmxDomain = C3P0_JMX_DOMAIN;
     }
 
     public void attemptManageC3P0Registry()
     {
         try
         {
-            ObjectName name = new ObjectName(C3P0_REGISTRY_NAME );
+            // create objectname for C3P0 registry
+            ObjectName name = new ObjectName(jmxDomain + ":type=C3P0,name=C3P0Registry");
             C3P0RegistryManager mbean = new C3P0RegistryManager();
 
             if (mbs.isRegistered(name))
@@ -69,7 +87,7 @@ public class C3P0CustomManagementCoordinator implements ManagementCoordinator {
     {
         try
         {
-            ObjectName name = new ObjectName(C3P0_REGISTRY_NAME );
+            ObjectName name = new ObjectName(jmxDomain + ":type=C3P0,name=C3P0Registry");
             if (mbs.isRegistered(name))
             {
                 mbs.unregisterMBean(name);
@@ -138,6 +156,6 @@ public class C3P0CustomManagementCoordinator implements ManagementCoordinator {
     }
 
     private String getPdsObjectNameStr(PooledDataSource pds) {
-        return "com.cloudhopper:type=C3P0,name=PooledDataSource[" + pds.getDataSourceName() + "]";
+        return jmxDomain + ":type=C3P0,name=PooledDataSource[" + pds.getDataSourceName() + "]";
     }
 }

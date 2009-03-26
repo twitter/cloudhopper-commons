@@ -56,6 +56,9 @@ public class C3P0DataSourceAdapter implements DataSourceAdapter {
             System.setProperty("com.mchange.v2.c3p0.management.ManagementCoordinator", "com.cloudhopper.commons.sql.c3p0.C3P0CustomManagementCoordinator");
         }
 
+        // set the JMX domain for the C3P0
+        C3P0CustomManagementCoordinator.setJmxDomainOnce(config.getJmxDomain());
+
         // create a new instance of the c3p0 datasource
         ComboPooledDataSource cpds = new ComboPooledDataSource(true);
 
@@ -73,6 +76,15 @@ public class C3P0DataSourceAdapter implements DataSourceAdapter {
             cpds.setMaxPoolSize(config.getMaxPoolSize());
             // we'll set the initial pool size to the minimum size
             cpds.setInitialPoolSize(config.getMinPoolSize());
+            // setup the validation query
+            cpds.setPreferredTestQuery(config.getValidationQuery());
+
+            // amount of time (in ms) to wait for getConnection() to succeed
+            cpds.setCheckoutTimeout((int)config.getCheckoutTimeout());
+
+            // properties I think aren't valid for c3p0
+            // defines how many times c3p0 will try to acquire a new Connection from the database before giving up.
+            cpds.setAcquireRetryAttempts(10);
 
         } catch (PropertyVetoException e) {
             throw new SQLConfigurationException("Property was vetoed during configuration", e);

@@ -28,8 +28,8 @@ public class ConnectionDemo {
             .append(" <datasource>")
             .append("  <name>jdbc/main</name>")
             
-            .append("  <provider>BASIC</provider>")
-            //.append("  <provider>C3P0</provider>")
+            //.append("  <provider>BASIC</provider>")
+            .append("  <provider>C3P0</provider>")
             //.append("  <provider>PROXOOL</provider>")
 
             .append("  <jmx>true</jmx>")
@@ -37,6 +37,10 @@ public class ConnectionDemo {
 
             .append("  <minPoolSize>5</minPoolSize>")
             .append("  <maxPoolSize>50</maxPoolSize>")
+
+            // you can override properties, but it doesn't make much sense to
+            .append("  <vendor>MSSQL</vendor>")
+            //.append("  <driver>com.MyDriver</driver>")
 
             // configure the datasource via url
             .append("  <url>jdbc:mysql://localhost:3306/stratus001?useTimezone=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC</url>")
@@ -50,10 +54,6 @@ public class ConnectionDemo {
             // can I provide default properties for certain values?
 
             //.append("  <url>testing</url>")
-
-            // you can override properties, but it doesn't make much sense to
-            //.append("  <vendor>MSSQL</vendor>")
-            //.append("  <driver>com.MyDriver</driver>")
 
             .append("  <username>root</username>")
             .append("  <password>test</password>")

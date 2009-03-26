@@ -15,6 +15,7 @@ public interface ManagedDataSourceMBean {
     public String getDatabaseVendor();
     public String getProvider();
     public String getUsername();
+    public String getValidationQuery();
 
     /** Monitoring Attributes */
     public Integer getMinConnectionCount();

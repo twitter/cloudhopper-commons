@@ -58,8 +58,8 @@ public abstract class ManagedDataSource implements ManagedDataSourceMBean {
         return config.getUsername();
     }
 
-    public Integer getTestCount() {
-        return null;
+    public String getValidationQuery() {
+        return config.getValidationQuery();
     }
 
 }
