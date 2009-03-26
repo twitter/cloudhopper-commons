@@ -1,34 +1,44 @@
 
 package com.cloudhopper.commons.sql;
 
-import javax.sql.DataSource;
-
 /**
- * Class for configuring a provider for obtaining a JDBC connection.
- * 
+ * Configuration of a DataSource to be used with a DataSourceManager.
  * @author joelauer
  */
-public class DataSourceFactory {
+public class DataSourceConfiguration implements Cloneable {
 
     private DataSourceProvider provider;
-    
     private DatabaseVendor vendor;
     private String driver;
-
     private String name;
     private String url;
     private String username;
     private String password;
-    
+    private int minPoolSize;
+    private int maxPoolSize;
+    private boolean jmx;
+    private String jmxDomain;
+
     private String validationQuery;
 
-    public DataSourceFactory() {
+    public DataSourceConfiguration() {
         // default provider is c3p0
         provider = DataSourceProvider.C3P0;
+        // by default, jmx is turned on
+        jmx = true;
+        // by default, jmx domain is "com.cloudhopper"
+        jmxDomain = "com.cloudhopper";
+        // by default, pool size is initially 1 up to 10
+        minPoolSize = 1;
+        maxPoolSize = 10;
     }
 
     public void setProvider(DataSourceProvider provider) {
         this.provider = provider;
+    }
+
+    public DataSourceProvider getProvider() {
+        return this.provider;
     }
 
     /**
@@ -65,11 +75,17 @@ public class DataSourceFactory {
     }
 
     /**
-     * Sets the name of this datasource such as "main" or "dbname".
-     * @param name The name associated with this datasource
+     * Sets the name of this DataSource such as "main" or "dbname".  This name
+     * is used by various implementations for naming a DataSource.  This name is
+     * also used in JMX registrations.
+     * @param name The name associated with this DataSource
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getName() {
+        return this.name;
     }
 
     /**
@@ -135,8 +151,16 @@ public class DataSourceFactory {
         this.url = url;
     }
 
+    public String getUrl() {
+        return this.url;
+    }
+
     public void setDriver(String driver) {
         this.driver = driver;
+    }
+
+    public String getDriver() {
+        return this.driver;
     }
 
     /**
@@ -153,48 +177,62 @@ public class DataSourceFactory {
         this.username = username;
     }
 
+    public String getUsername() {
+        return this.username;
+    }
+
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public DataSource createDataSource() throws SQLConfigurationException {
-        // FIXME: verify database driver exists?
-
-        return null;
+    public String getPassword() {
+        return this.password;
     }
 
-    // pooling properties...
-    /**
-    public void setValidationQuery(String validationQuery) {
-        this.validationQuery = validationQuery;
+    public void setJmx(boolean jmx) {
+        this.jmx = jmx;
     }
-     */
+
+    public boolean getJmx() {
+        return this.jmx;
+    }
 
     /**
-    <proxool>
-    <alias>xml-test</alias>
-    <driver-url>jdbc:hsqldb:.</driver-url>
-    <driver-class>org.hsqldb.jdbcDriver</driver-class>
-    <driver-properties>
-      <property name="user" value="sa"/>
-      <property name="password" value=""/>
-    </driver-properties>
-    <maximum-connection-count>10</maximum-connection-count>
-    <house-keeping-test-sql>select CURRENT_DATE</house-keeping-test-sql>
-    </proxool>
+     * Sets the domain to use for registering this connection to a JMX MBean
+     * server. (e.g. "com.cloudhopper")
+     * @param domain The domain to use for registering this DataSource
      */
+    public void setJmxDomain(String domain) {
+        this.jmxDomain = domain;
+    }
 
-    /**
-     * <Resource name="jdbc/confluence" auth="Container" type="javax.sql.DataSource"
-         username="yourusername"
-         password="yourpassword"
-         driverClassName="com.mysql.jdbc.Driver"
-         url="jdbc:mysql://localhost:3306/confluence?autoReconnect=true"
-         maxActive="15"
-         maxIdle="7"
-         validationQuery="Select 1" />
+    public String getJmxDomain() {
+        return this.jmxDomain;
+    }
 
-     */
+    public void setMinPoolSize(int size) throws SQLConfigurationException {
+        // must be > 0
+        if (size <= 0) {
+            throw new SQLConfigurationException("Minimum pool size must be > 0");
+        }
+        this.minPoolSize = size;
+    }
+
+    public int getMinPoolSize() {
+        return this.minPoolSize;
+    }
+
+    public void setMaxPoolSize(int size) throws SQLConfigurationException {
+        // must be > 0
+        if (size <= 0) {
+            throw new SQLConfigurationException("Maximum pool size must be > 0");
+        }
+        this.maxPoolSize = size;
+    }
+
+    public int getMaxPoolSize() {
+        return this.maxPoolSize;
+    }
 
     /**
     * driverClassName - Fully qualified Java class name of the JDBC driver to be used.
@@ -227,4 +265,14 @@ public class DataSourceFactory {
                 .append("]")
                 .toString();
     }
+
+    @Override
+    public Object clone() {
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new InternalError(e.toString());
+        }
+    }
+
 }

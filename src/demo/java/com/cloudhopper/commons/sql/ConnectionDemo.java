@@ -6,7 +6,6 @@ import java.sql.Connection;
 import javax.sql.DataSource;
 
 // third party imports
-import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.apache.log4j.Logger;
 
 // my imports
@@ -28,9 +27,20 @@ public class ConnectionDemo {
             .append("<configuration>")
             .append(" <datasource>")
             .append("  <name>jdbc/main</name>")
+            
+            .append("  <provider>BASIC</provider>")
+            //.append("  <provider>C3P0</provider>")
+            //.append("  <provider>PROXOOL</provider>")
+
+            .append("  <jmx>true</jmx>")
+            .append("  <jmxDomain>com.cloudhopper.stratus</jmxDomain>")
+
+            .append("  <minPoolSize>5</minPoolSize>")
+            .append("  <maxPoolSize>50</maxPoolSize>")
 
             // configure the datasource via url
             .append("  <url>jdbc:mysql://localhost:3306/stratus001?useTimezone=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC</url>")
+
             //.append("  <url>jdbc:jtds:sqlserver://localhost/dbname</url>")
             //.append("  <url>jdbc:jtds:sybase://localhost/dbname</url>")
             //.append("  <url>jdbc:unsupported://localhost/dbname</url>")
@@ -54,10 +64,14 @@ public class ConnectionDemo {
 
         XmlBean xbean = new XmlBean();
 
-        DataSourceFactory dsFactory = new DataSourceFactory();
-        xbean.configure(xml, dsFactory, "/configuration/datasource");
+        DataSourceConfiguration config = new DataSourceConfiguration();
+        xbean.configure(xml, config, "/configuration/datasource");
 
-        logger.debug("DataSource " + dsFactory.toString());
+        logger.debug("DataSource " + config.toString());
+
+        DataSource ds = DataSourceManager.create(config);
+
+        // dsFactory.destroyDataSource();
 
         /**
         ComboPooledDataSource cpds = new ComboPooledDataSource();
@@ -76,21 +90,36 @@ public class ConnectionDemo {
 
         /**
         DataSource ds = null;
+         */
 
-        Connection conn = ds.getConnection();
-        logger.debug("Connection Class: " + conn.getClass());
+        logger.debug("DataSource Class: " + ds.getClass());
 
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT 1");
+        for (int i = 0; i < 10; i++) {
+            logger.debug("Getting connection....");
+            Connection conn = ds.getConnection();
+            logger.debug("Connection Class: " + conn.getClass());
 
-        if (rs.next()) {
-            logger.debug("Result: " + rs.getInt(1));
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT 1");
+
+            if (rs.next()) {
+                logger.debug("Result: " + rs.getInt(1));
+            }
+
+            rs.close();
+            stmt.close();
+
+            // hold onto the connection for awhile
+            Thread.sleep(10000);
+            logger.debug("Closing connection....");
+            conn.close();
+
+            logger.debug("Doing nothing now...");
+            Thread.sleep(5000);
         }
 
-        rs.close();
-        stmt.close();
-        conn.close();
-         */
+        System.in.read();
+
     }
 
 }

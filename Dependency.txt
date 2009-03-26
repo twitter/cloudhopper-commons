@@ -10,9 +10,12 @@ commons-configuration-1.6.jar
 commons-dbcp-1.2.2.jar
 commons-dbutils-1.1.jar
 commons-lang-2.4.jar
+commons-logging-1.1.1.jar
 joda-time-1.6.jar
 log4j-1.2.15.jar
 mysql-connector-5.1.7.jar
+proxool-0.9.1.jar
+proxool-cglib-0.9.1.jar
 
 Runtime Scope:
 c3p0-0.9.1.2.jar
@@ -24,9 +27,12 @@ commons-configuration-1.6.jar
 commons-dbcp-1.2.2.jar
 commons-dbutils-1.1.jar
 commons-lang-2.4.jar
+commons-logging-1.1.1.jar
 joda-time-1.6.jar
 log4j-1.2.15.jar
 mysql-connector-5.1.7.jar
+proxool-0.9.1.jar
+proxool-cglib-0.9.1.jar
 
 Test Scope:
 c3p0-0.9.1.2.jar
@@ -38,7 +44,10 @@ commons-configuration-1.6.jar
 commons-dbcp-1.2.2.jar
 commons-dbutils-1.1.jar
 commons-lang-2.4.jar
+commons-logging-1.1.1.jar
 joda-time-1.6.jar
 junit-4.5.jar
 log4j-1.2.15.jar
 mysql-connector-5.1.7.jar
+proxool-0.9.1.jar
+proxool-cglib-0.9.1.jar

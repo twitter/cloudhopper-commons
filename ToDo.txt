@@ -1,0 +1,11 @@
+
+* Expose JMX
+  Implement custom management coordinator for c3p0 so that its JMX object name
+  can be customized, rather than use its default.
+
+* Expose debugging properties
+
+* Expose logging properties
+
+* Some method of shutting down or destroying connection pools -- might need to
+  implement some form of tracking
