@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 /**
  * Thrown if an error occurs while configuring a DataSourceFactory or DataSource.
+ * 
  * @author joelauer
  */
 public class SQLMissingDependencyException extends SQLException {

@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 // my imports
 import com.cloudhopper.commons.sql.DataSourceConfiguration;
 import com.cloudhopper.commons.sql.ManagedDataSource;
+import com.cloudhopper.commons.sql.adapter.DataSourceAdapter;
 
 /**
  * An implementation of a C3P0 "Managed" DataSource.
@@ -21,17 +22,9 @@ public class C3P0ManagedDataSource extends ManagedDataSource {
     // to monitor and track certain values for this particular datasource
     private ComboPooledDataSource cpds;
 
-    public C3P0ManagedDataSource(DataSourceConfiguration config, ComboPooledDataSource cpds) {
-        super(config, cpds);
+    public C3P0ManagedDataSource(DataSourceAdapter adapter, DataSourceConfiguration config, ComboPooledDataSource cpds) {
+        super(adapter, config, cpds);
         this.cpds = cpds;
-    }
-
-    public Integer getMinConnectionCount() {
-        return cpds.getMinPoolSize();
-    }
-
-    public Integer getMaxConnectionCount() {
-        return cpds.getMaxPoolSize();
     }
 
     public Integer getIdleConnectionCount() {

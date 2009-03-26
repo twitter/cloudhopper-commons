@@ -3,6 +3,7 @@ package com.cloudhopper.commons.sql;
 
 /**
  * Configuration of a DataSource to be used with a DataSourceManager.
+ *
  * @author joelauer
  */
 public class DataSourceConfiguration implements Cloneable {
@@ -25,7 +26,16 @@ public class DataSourceConfiguration implements Cloneable {
     private boolean validateOnCheckout;
     private boolean validateOnCheckin;
     private long validateIdleConnectionTimeout;
+    // number of milliseconds to wait before shrinking idle connections back to minimum
+    private long idleConnectionTimeout;
+    // number of milliseconds to wait before killing a connection that has not been
+    // closed and returned to the pool (zombie connections)
+    private long activeConnectionTimeout;
 
+    /**
+     * Creates a new instance of <code>DataSourceConfiguration</code> with
+     * default settings.
+     */
     public DataSourceConfiguration() {
         // default provider is c3p0
         provider = DataSourceProvider.C3P0;
@@ -42,14 +52,137 @@ public class DataSourceConfiguration implements Cloneable {
         // validate on checkout/checkin is false by default
         validateOnCheckout = false;
         validateOnCheckin = false;
-        // number of ms to test an idle connection - 0 means disabled
-        validateIdleConnectionTimeout = 0;
+        // number of ms to test an idle connection (10 seconds)
+        validateIdleConnectionTimeout = 10000;
+        // number of ms to wait before idle connections are killed (4 hours)
+        idleConnectionTimeout = 4 * 60 * 60 * 1000;
+        // number of ms to wait before active connections are killed (4 hours)
+        activeConnectionTimeout = 4 * 60 * 60 * 1000;
     }
+
+    /**
+     * Validates this configuration and checks that all required parameters are
+     * set.  Throws an exception if a property is missing.
+     * @throws SQLConfigurationException Thrown if a required property is
+     *      missing.
+     */
+    public void validate() throws SQLConfigurationException {
+        if (this.url == null) {
+            throw new SQLConfigurationException("url is a required property");
+        }
+        if (this.username == null) {
+            throw new SQLConfigurationException("username is a required property");
+        }
+        if (this.password == null) {
+            throw new SQLConfigurationException("password is a required property");
+        }
+        if (this.password == null) {
+            throw new SQLConfigurationException("name is a required property");
+        }
+        if (this.driver == null) {
+            throw new SQLConfigurationException("driver is a required property");
+        }
+    }
+
+    /**
+     * If supported by the provider, sets the number of milliseconds to wait
+     * before an extra idle connection (greater than minimum pool size) is
+     * destroyed and removed from the pool. The default value is 4 hours.
+     * <br><br><b>Provider Info:</b>
+     * <ul>
+     *      <li>Basic: Not Supported
+     *      <li>C3P0: maxIdleTimeExcessConnections Property
+     *      <li>Proxool: Not configurable -- proxool will implicitly not keep
+     *          any extra connections around based on house-keeping-sleep-time
+     *          property value.  This time is configured via setValidateIdleConnectionTimeout()
+     * </ul>
+     * @param ms The number of milliseconds to wait before destroying extra
+     *      connections that are idle.
+     * @throws SQLConfigurationException Thrown if the value is <= 0
+     */
+    public void setIdleConnectionTimeout(long ms) throws SQLConfigurationException {
+        if (ms <= 0) {
+            throw new SQLConfigurationException("Value must be > 0");
+        }
+        this.idleConnectionTimeout = ms;
+    }
+
+    /**
+     * Gets the number of milliseconds to wait
+     * before an extra idle connection (greater than minimum pool size) is
+     * destroyed and removed from the pool. The default value is 4 hours.
+     * <br><br><b>Provider Info:</b>
+     * <ul>
+     *      <li>Basic: Not Supported
+     *      <li>C3P0: maxIdleTimeExcessConnections Property
+     *      <li>Proxool: Not Supported (maximum-connection-lifetime Property
+     *              sort of might implement this, but not quite what we mean)
+     * </ul>
+     * @return The number of milliseconds to wait before destroying extra
+     *      connections that are idle.
+     */
+    public long getIdleConnectionTimeout() {
+        return this.idleConnectionTimeout;
+    }
+
+    /**
+     * If supported by the provider, sets the number of milliseconds to wait
+     * before an active connection is forcibly destroyed. An "active" connection
+     * is a connection that has not been closed (returned back to the pool).
+     * Basically, this is a way of finding zombie connections or bad code that
+     * fails to return a connection to the pool. The default value is 4 hours.
+     * <br><br>
+     * <b>NOTE:</b> This is potentially dangerous and should be set to a value
+     * greater than the time you expect your longest query to take.  Otherwise,
+     * a connection could be forcibly destroyed while its executing a long-running
+     * query.
+     * <br><br><b>Provider Info:</b>
+     * <ul>
+     *      <li>Basic: Not Supported
+     *      <li>C3P0: unreturnedConnectionTimeout Property
+     *      <li>Proxool: maximum-active-time Property
+     * </ul>
+     * @param ms The number of milliseconds to wait before destroying an active
+     *      connection.
+     * @throws SQLConfigurationException Thrown if the value is <= 0
+     */
+    public void setActiveConnectionTimeout(long ms) throws SQLConfigurationException {
+        if (ms <= 0) {
+            throw new SQLConfigurationException("Value must be > 0");
+        }
+        this.activeConnectionTimeout = ms;
+    }
+
+    /**
+     * Gets the number of milliseconds to wait
+     * before an active connection is forcibly destroyed. An "active" connection
+     * is a connection that has not been closed (returned back to the pool).
+     * Basically, this is a way of finding zombie connections or bad code that
+     * fails to return a connection to the pool. The default value is 4 hours.
+     * <br><br><b>Provider Info:</b>
+     * <ul>
+     *      <li>Basic: Not Supported
+     *      <li>C3P0: unreturnedConnectionTimeout Property
+     *      <li>Proxool: maximum-active-time Property
+     * </ul>
+     * @return The number of milliseconds to wait before destroying an active
+     *      connection.
+     */
+    public long getActiveConnectionTimeout() {
+        return this.activeConnectionTimeout;
+    }
+
 
     /**
      * Sets whether the connection is validated on "checkout". Default value is
      * false. While this property guarantees a connection will be valid, it will
      * cause slow performance.
+     * <br><br><b>Provider Info:</b>
+     * <ul>
+     *      <li>Basic: Not Supported
+     *      <li>C3P0: testConnectionOnCheckout Property
+     *      <li>Proxool: test-before-use Property
+     * </ul>
      * @param flag True to enable, otherwise false.
      */
     public void setValidateOnCheckout(boolean flag) {
@@ -60,6 +193,12 @@ public class DataSourceConfiguration implements Cloneable {
      * Gets whether the connection is validated on "checkout". Default value is
      * false. While this property guarantees a connection will be valid, it will
      * cause slow performance.
+     * <br><br><b>Provider Info:</b>
+     * <ul>
+     *      <li>Basic: Not Supported
+     *      <li>C3P0: testConnectionOnCheckout Property
+     *      <li>Proxool: test-before-use Property
+     * </ul>
      * @return True if enabled, otherwise false.
      */
     public boolean getValidateOnCheckout() {
@@ -70,6 +209,12 @@ public class DataSourceConfiguration implements Cloneable {
      * Sets whether the connection is validated after "checkin". Default value is
      * false. Most providers will asynchronously validate the connection then
      * return it to the general pool.
+     * <br><br><b>Provider Info:</b>
+     * <ul>
+     *      <li>Basic: Not Supported
+     *      <li>C3P0: testConnectionOnCheckin Property
+     *      <li>Proxool: test-after-use Property
+     * </ul>
      * @param flag True to enable, otherwise false.
      */
     public void setValidateOnCheckin(boolean flag) {
@@ -80,6 +225,12 @@ public class DataSourceConfiguration implements Cloneable {
      * Gets whether the connection is validated after "checkin". Default value is
      * false. Most providers will asynchronously validate the connection then
      * return it to the general pool.
+     * <br><br><b>Provider Info:</b>
+     * <ul>
+     *      <li>Basic: Not Supported
+     *      <li>C3P0: testConnectionOnCheckin Property
+     *      <li>Proxool: test-after-use Property
+     * </ul>
      * @return True if enabled, otherwise false.
      */
     public boolean getValidateOnCheckin() {
@@ -88,15 +239,21 @@ public class DataSourceConfiguration implements Cloneable {
 
     /**
      * If supported by the provider, sets the amount of time (in milliseconds)
-     * to wait before validating connections that are idle.  A value of zero
-     * disables this functionality.  Default value is zero.
+     * to wait before validating connections that are idle.  Default value is
+     * 10000 (10 seconds)
+     * <br><br><b>Provider Info:</b>
+     * <ul>
+     *      <li>Basic: Not Supported
+     *      <li>C3P0: idleConnectionTestPeriod Property
+     *      <li>Proxool: house-keeping-sleep-time Property
+     * </ul>
      * @param ms The number of milliseconds to wait before validating an idle
      *      connection.
-     * @throws SQLConfigurationException Thrown if the value is < 0
+     * @throws SQLConfigurationException Thrown if the value is <= 0
      */
     public void setValidateIdleConnectionTimeout(long ms) throws SQLConfigurationException {
-        if (ms < 0) {
-            throw new SQLConfigurationException("Value must be >= 0");
+        if (ms <= 0) {
+            throw new SQLConfigurationException("Value must be > 0");
         }
         this.validateIdleConnectionTimeout = ms;
     }
@@ -104,7 +261,13 @@ public class DataSourceConfiguration implements Cloneable {
     /**
      * Gets the amount of time (in milliseconds) to wait before validating
      * an idle connection. A value of zero indicates this is disabled.  Default
-     * value is zero.
+     * value is 10000 (10 seconds).
+     * <br><br><b>Provider Info:</b>
+     * <ul>
+     *      <li>Basic: Not Supported
+     *      <li>C3P0: idleConnectionTestPeriod Property
+     *      <li>Proxool: house-keeping-sleep-time Property
+     * </ul>
      * @return The number of milliseconds to wait before idle connections are
      *      validated.
      */
@@ -168,6 +331,12 @@ public class DataSourceConfiguration implements Cloneable {
     /**
      * Sets the SQL query to use when validating a connection.  This property
      * is automatically set to defaults by setting the vendor or the URL.
+     * <br><br><b>Provider Info:</b>
+     * <ul>
+     *      <li>Basic: Not Supported
+     *      <li>C3P0: preferredTestQuery Property
+     *      <li>Proxool: house-keeping-test-sql Property
+     * </ul>
      * @param query The SQL query to use when validating a connection
      */
     public void setValidationQuery(String query) {
@@ -186,6 +355,12 @@ public class DataSourceConfiguration implements Cloneable {
     /**
      * Gets the SQL query to use when validating a connection.  This property
      * is automatically set to defaults by setting the vendor or the URL.
+     * <br><br><b>Provider Info:</b>
+     * <ul>
+     *      <li>Basic: Not Supported
+     *      <li>C3P0: preferredTestQuery Property
+     *      <li>Proxool: house-keeping-test-sql Property
+     * </ul>
      * @return The SQL query to use when validating a connection
      */
     public String getValidationQuery() {
@@ -383,6 +558,12 @@ public class DataSourceConfiguration implements Cloneable {
     /**
      * If the provider supports connection pooling, sets the minimum number of
      * connections to have in the pool.  The default value is 1.
+     * <br><br><b>Provider Info:</b>
+     * <ul>
+     *      <li>Basic: Not Supported
+     *      <li>C3P0: minPoolSize and initialPoolSize Property
+     *      <li>Proxool: minimum-connection-count Property
+     * </ul>
      * @param size The minimum number of connections to pool
      * @throws SQLConfigurationException Thrown if the value is <= 0
      */
@@ -397,6 +578,12 @@ public class DataSourceConfiguration implements Cloneable {
     /**
      * Gets the minimum number of connections to have in the pool.  The default
      * value is 1.
+     * <br><br><b>Provider Info:</b>
+     * <ul>
+     *      <li>Basic: Not Supported
+     *      <li>C3P0: minPoolSize and initialPoolSize Property
+     *      <li>Proxool: minimum-connection-count Property
+     * </ul>
      * @return The minimum number of connections to pool
      */
     public int getMinPoolSize() {
@@ -406,6 +593,12 @@ public class DataSourceConfiguration implements Cloneable {
     /**
      * If the provider supports connection pooling, sets the maximum number of
      * connections to have in the pool.  The default value is 10.
+     * <br><br><b>Provider Info:</b>
+     * <ul>
+     *      <li>Basic: Not Supported
+     *      <li>C3P0: maxPoolSize Property
+     *      <li>Proxool: maximum-connection-count Property
+     * </ul>
      * @param size The maximum number of connections to pool
      * @throws SQLConfigurationException Thrown if the value is <= 0
      */
@@ -420,6 +613,12 @@ public class DataSourceConfiguration implements Cloneable {
     /**
      * Gets the maximum number of connections to have in the pool.  The default
      * value is 10.
+     * <br><br><b>Provider Info:</b>
+     * <ul>
+     *      <li>Basic: Not Supported
+     *      <li>C3P0: maxPoolSize Property
+     *      <li>Proxool: maximum-connection-count Property
+     * </ul>
      * @return The maximum number of connections to pool
      */
     public int getMaxPoolSize() {
@@ -433,6 +632,12 @@ public class DataSourceConfiguration implements Cloneable {
      * Zero means wait indefinitely. Setting any positive value will cause the
      * getConnection() call to timeout and break with an SQLException after the
      * specified number of milliseconds. Default value is 15000 (15 seconds).
+     * <br><br><b>Provider Info:</b>
+     * <ul>
+     *      <li>Basic: Not Supported (driver dependant I suspect)
+     *      <li>C3P0: checkoutTimeout Property
+     *      <li>Proxool: Not Supported (driver dependant I suspect)
+     * </ul>
      * @param ms The number of milliseconds
      * @throws SQLConfigurationException Thrown if the value is < 0
      */
@@ -449,6 +654,12 @@ public class DataSourceConfiguration implements Cloneable {
      * Zero means wait indefinitely. Setting any positive value will cause the
      * getConnection() call to timeout and break with an SQLException after the
      * specified number of milliseconds. Default value is 15000 (15 seconds).
+     * <br><br><b>Provider Info:</b>
+     * <ul>
+     *      <li>Basic: Not Supported (driver dependant I suspect)
+     *      <li>C3P0: checkoutTimeout Property
+     *      <li>Proxool: Not Supported (driver dependant I suspect)
+     * </ul>
      * @return The number of milliseconds
      */
     public long getCheckoutTimeout() {

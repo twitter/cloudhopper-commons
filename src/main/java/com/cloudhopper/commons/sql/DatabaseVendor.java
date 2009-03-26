@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package com.cloudhopper.commons.sql;
 
@@ -9,6 +5,7 @@ package com.cloudhopper.commons.sql;
  * Enumeration of database vendors such as MySQL, MS SQL, Oracle, etc.
  * Every vendor has certain properties associated with them such as a valid
  * default driver, validation query, etc.
+ * 
  * @author joelauer
  */
 public enum DatabaseVendor {

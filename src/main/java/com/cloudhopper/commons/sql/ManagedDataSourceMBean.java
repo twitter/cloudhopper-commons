@@ -8,7 +8,8 @@ package com.cloudhopper.commons.sql;
  */
 public interface ManagedDataSourceMBean {
 
-    /** Configuration Attributes */
+    // Configuration Attributes
+
     public String getName();
     public String getUrl();
     public String getDriver();
@@ -17,9 +18,16 @@ public interface ManagedDataSourceMBean {
     public String getUsername();
     public String getValidationQuery();
 
-    /** Monitoring Attributes */
-    public Integer getMinConnectionCount();
-    public Integer getMaxConnectionCount();
+    public Integer getMinPoolSize();
+    public Integer getMaxPoolSize();
+    public Long getActiveConnectionTimeout();
+    public Long getIdleConnectionTimeout();
+    public Long getValidateIdleConnectionTimeout();
+    public Boolean getValidateOnCheckin();
+    public Boolean getValidateOnCheckout();
+
+    // Monitoring Attributes
+
     public Integer getIdleConnectionCount();
 
 }

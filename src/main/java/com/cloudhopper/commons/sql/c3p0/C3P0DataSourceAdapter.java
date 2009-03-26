@@ -18,7 +18,7 @@ import com.cloudhopper.commons.sql.*;
 import org.apache.log4j.Logger;
 
 /**
- * Adapter for a c3p0 datasource.
+ * Adapter for a c3p0 DataSource.
  * 
  * @author joelauer
  */
@@ -76,11 +76,32 @@ public class C3P0DataSourceAdapter implements DataSourceAdapter {
             cpds.setMaxPoolSize(config.getMaxPoolSize());
             // we'll set the initial pool size to the minimum size
             cpds.setInitialPoolSize(config.getMinPoolSize());
-            // setup the validation query
+
+            // set the validation query
             cpds.setPreferredTestQuery(config.getValidationQuery());
 
             // amount of time (in ms) to wait for getConnection() to succeed
             cpds.setCheckoutTimeout((int)config.getCheckoutTimeout());
+
+            // checkin validation
+            cpds.setTestConnectionOnCheckin(config.getValidateOnCheckin());
+
+            // checkout validation
+            cpds.setTestConnectionOnCheckout(config.getValidateOnCheckout());
+
+            // amount of time to wait to validate connections
+            // NOTE: in seconds
+            int seconds = (int)(config.getValidateIdleConnectionTimeout()/1000);
+            cpds.setIdleConnectionTestPeriod(seconds);
+
+            // set idleConnectionTimeout
+            // NOTE: in seconds
+            seconds = (int)(config.getIdleConnectionTimeout()/1000);
+            cpds.setMaxIdleTimeExcessConnections(seconds);
+
+            // set activeConnectionTimeout
+            seconds = (int)(config.getActiveConnectionTimeout()/1000);
+            cpds.setUnreturnedConnectionTimeout(seconds);
 
             // properties I think aren't valid for c3p0
             // defines how many times c3p0 will try to acquire a new Connection from the database before giving up.
@@ -103,7 +124,7 @@ public class C3P0DataSourceAdapter implements DataSourceAdapter {
             c3p0.testConnectionsOnCheckout 	hibernate.c3p0.validate hibernate 2.x only!
          */
         
-        return new C3P0ManagedDataSource(config, cpds);
+        return new C3P0ManagedDataSource(this, config, cpds);
     }
 
 }

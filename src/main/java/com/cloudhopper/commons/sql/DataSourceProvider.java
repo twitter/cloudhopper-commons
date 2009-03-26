@@ -8,6 +8,7 @@ import com.cloudhopper.commons.sql.adapter.*;
 
 /**
  * Enumeration of DataSource providers.
+ * 
  * @author joelauer
  */
 public enum DataSourceProvider {

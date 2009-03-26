@@ -39,7 +39,7 @@ public class ConnectionDemo {
             .append("  <maxPoolSize>50</maxPoolSize>")
 
             // you can override properties, but it doesn't make much sense to
-            .append("  <vendor>MSSQL</vendor>")
+            //.append("  <vendor>MSSQL</vendor>")
             //.append("  <driver>com.MyDriver</driver>")
 
             // configure the datasource via url

@@ -13,7 +13,7 @@ import com.cloudhopper.commons.sql.util.JmxUtil;
 import java.lang.management.ManagementFactory;
 
 /**
- * Adapter for a Proxool datasource.
+ * Adapter for a Proxool DataSource.
  * 
  * @author joelauer
  */
@@ -79,7 +79,7 @@ public class ProxoolDataSourceAdapter implements DataSourceAdapter {
         BasicDataSource ds = new BasicDataSource(config.getUrl(), config.getUsername(), config.getPassword());
 
         // done creating datasource wrapper, return it
-        return new BasicManagedDataSource(config, ds);
+        return new BasicManagedDataSource(this, config, ds);
     }
 
 }

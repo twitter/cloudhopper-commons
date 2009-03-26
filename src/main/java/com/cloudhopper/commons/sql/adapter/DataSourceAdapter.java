@@ -14,6 +14,7 @@ import com.cloudhopper.commons.sql.*;
  * must be able to "late bind" to any necessary third party jars by using
  * reflection, etc. in order to only require a runtime requirement instead of
  * compile-time.
+ * 
  * @author joelauer
  */
 public interface DataSourceAdapter {

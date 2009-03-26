@@ -12,9 +12,11 @@ import org.apache.log4j.Logger;
 
 // my imports
 import com.cloudhopper.commons.sql.adapter.DataSourceAdapter;
+import java.sql.Driver;
 
 /**
- * Class for creating and destroying DataSources.
+ * Class for creating and managing the lifecycle and monitoring of DataSources.
+ * 
  * @author joelauer
  */
 public class DataSourceManager {
@@ -27,6 +29,7 @@ public class DataSourceManager {
     
     public static DataSource create(DataSourceConfiguration configuration) throws SQLMissingDependencyException, SQLConfigurationException {
         // verify all required properties are configured and set
+        configuration.validate();
 
         // clone the configuration so we can save the properties used to create the ds
         DataSourceConfiguration config = (DataSourceConfiguration)configuration.clone();
@@ -34,7 +37,8 @@ public class DataSourceManager {
         // verify database driver exists and try to register the database driver
         try {
             // create a new instance
-            Class.forName(config.getDriver()).newInstance();
+            Driver driver = (Driver)Class.forName(config.getDriver()).newInstance();
+            // put out some properties to save 'em?
         } catch (Exception e) {
             throw new SQLMissingDependencyException("Database driver '" + config.getDriver() + "' failed to load. Perhaps missing jar file?", e);
         }
@@ -69,41 +73,5 @@ public class DataSourceManager {
         // return the datasource
         return mds.getDataSource();
     }
-     
-    /**
-    <proxool>
-    <alias>xml-test</alias>
-    <driver-url>jdbc:hsqldb:.</driver-url>
-    <driver-class>org.hsqldb.jdbcDriver</driver-class>
-    <driver-properties>
-      <property name="user" value="sa"/>
-      <property name="password" value=""/>
-    </driver-properties>
-    <maximum-connection-count>10</maximum-connection-count>
-    <house-keeping-test-sql>select CURRENT_DATE</house-keeping-test-sql>
-    </proxool>
-     */
-
-    /**
-     * <Resource name="jdbc/confluence" auth="Container" type="javax.sql.DataSource"
-         username="yourusername"
-         password="yourpassword"
-         driverClassName="com.mysql.jdbc.Driver"
-         url="jdbc:mysql://localhost:3306/confluence?autoReconnect=true"
-         maxActive="15"
-         maxIdle="7"
-         validationQuery="Select 1" />
-
-     */
-
-    /**
-    * driverClassName - Fully qualified Java class name of the JDBC driver to be used.
-    * maxActive - The maximum number of active instances that can be allocated from this pool at the same time.
-    * maxIdle - The maximum number of connections that can sit idle in this pool at the same time.
-    * maxWait - The maximum number of milliseconds that the pool will wait (when there are no available connections) for a connection to be returned before throwing an exception.
-    * password - Database password to be passed to our JDBC driver.
-    * url - Connection URL to be passed to our JDBC driver. (For backwards compatibility, the property driverName is also recognized.)
-    * user - Database username to be passed to our JDBC driver.
-    * validationQuery - SQL query that can be used by the pool to validate connections before they are returned to the application. If specified, this query MUST be an SQL SELECT statement that returns at least one row.
-     */
+    
 }

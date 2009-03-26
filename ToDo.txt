@@ -1,7 +1,15 @@
 
-* Expose JMX
-  Implement custom management coordinator for c3p0 so that its JMX object name
-  can be customized, rather than use its default.
+* Test cases for these scenarios:
+  - basic configuration stuff?  values are setup correctly?
+  - parsing of bad JDBC URLs?
+  - are required properties validated?
+  - waiting for a connection and timing out (if pool is exhausted, check that
+    it times-out properly)  is this detectable in JMX?
+  - what happens if the database connection pool fails -- does it eventually
+    fix itself?  is that somehow detectable in JMX?
+
+* Better aggregate JMX properties for determing if a pool is in "trouble" --
+  maybe some sort of simple warning or severe state.
 
 * Expose debugging properties
 
@@ -9,3 +17,5 @@
 
 * Some method of shutting down or destroying connection pools -- might need to
   implement some form of tracking
+
+* Support for statement caching configuration (in c3p0)

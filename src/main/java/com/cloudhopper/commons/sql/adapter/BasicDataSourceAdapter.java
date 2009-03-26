@@ -11,6 +11,7 @@ import com.cloudhopper.commons.sql.*;
  * obtains connections from the DriverManager.
  * <br><br>
  * <b>NOTE:</b> This adapter does not provide pooled connections.
+ * 
  * @author joelauer
  */
 public class BasicDataSourceAdapter implements DataSourceAdapter {
@@ -36,6 +37,6 @@ public class BasicDataSourceAdapter implements DataSourceAdapter {
         BasicDataSource ds = new BasicDataSource(config.getUrl(), config.getUsername(), config.getPassword());
 
         // done creating datasource wrapper, return it
-        return new BasicManagedDataSource(config, ds);
+        return new BasicManagedDataSource(this, config, ds);
     }
 }
