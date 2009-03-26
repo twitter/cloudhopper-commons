@@ -53,14 +53,17 @@ public class DataSourceManager {
         // delegate creating the new datasource to the adapter
         ManagedDataSource mds = adapter.create(config);
 
-        // hmm... if jmx is turned on, let's register the MBean
-        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-        try {
-            ObjectName name = new ObjectName(config.getJmxDomain() + ":type=ManagedDataSource,name=" + config.getName());
-            mbs.registerMBean(mds, name);
-        } catch (Exception e) {
-            // log the error, but don't throw an exception for this datasource
-            logger.error("Error while attempting to register ManagedDataSourceMBean '" + config.getName() + "'", e);
+        // if the user requested this datasource to be added to jmx
+        if (config.getJmx()) {
+            // hmm... if jmx is turned on, let's register the MBean
+            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+            try {
+                ObjectName name = new ObjectName(config.getJmxDomain() + ":type=ManagedDataSource,name=" + config.getName());
+                mbs.registerMBean(mds, name);
+            } catch (Exception e) {
+                // log the error, but don't throw an exception for this datasource
+                logger.error("Error while attempting to register ManagedDataSourceMBean '" + config.getName() + "'", e);
+            }
         }
 
         // return the datasource
