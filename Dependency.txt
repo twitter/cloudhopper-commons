@@ -6,10 +6,6 @@ ch-commons-util-2.0-20090327.180259-10.jar
 ch-commons-xbean-1.0-20090323.212852-5.jar
 ch-commons-xml-1.0-20090323.212625-5.jar
 commons-codec-1.3.jar
-commons-configuration-1.6.jar
-commons-dbcp-1.2.2.jar
-commons-dbutils-1.1.jar
-commons-lang-2.4.jar
 commons-logging-1.1.1.jar
 joda-time-1.6.jar
 log4j-1.2.15.jar
@@ -23,10 +19,6 @@ ch-commons-util-2.0-20090327.180259-10.jar
 ch-commons-xbean-1.0-20090323.212852-5.jar
 ch-commons-xml-1.0-20090323.212625-5.jar
 commons-codec-1.3.jar
-commons-configuration-1.6.jar
-commons-dbcp-1.2.2.jar
-commons-dbutils-1.1.jar
-commons-lang-2.4.jar
 commons-logging-1.1.1.jar
 joda-time-1.6.jar
 log4j-1.2.15.jar
@@ -40,10 +32,6 @@ ch-commons-util-2.0-20090327.180259-10.jar
 ch-commons-xbean-1.0-20090323.212852-5.jar
 ch-commons-xml-1.0-20090323.212625-5.jar
 commons-codec-1.3.jar
-commons-configuration-1.6.jar
-commons-dbcp-1.2.2.jar
-commons-dbutils-1.1.jar
-commons-lang-2.4.jar
 commons-logging-1.1.1.jar
 joda-time-1.6.jar
 junit-4.5.jar

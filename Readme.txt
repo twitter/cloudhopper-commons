@@ -1,4 +1,14 @@
 
+Overview
+--------------------------------------------------------------------------------
+Provides a consistent interface to configure, create, and manage various
+DataSource providers that may provide Connection pooling.  With no other
+dependencies, this library provides a basic DataSource that offers no pooling.
+A convenvient way to use connections in simple applications or unit tests. All
+configuration is controlled by one DataSourceConfiguration object that can
+be easily configured via the ch-commons-xbean project.  This library is not
+dependent on that library, however.
+
 JMX
 --------------------------------------------------------------------------------
 Every DataSource created by this library, provides an optional JMX registration
