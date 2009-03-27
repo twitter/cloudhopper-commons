@@ -19,3 +19,5 @@
   implement some form of tracking
 
 * Support for statement caching configuration (in c3p0)
+
+* Add Jakarta DBCP pooling impl?

@@ -393,7 +393,7 @@ public class DataSourceConfiguration implements Cloneable {
      * Gets the name of this DataSource such as "main" or "dbname".  This name
      * is used by a provider for naming a DataSource.  For example, this is the
      * name used for registering this DataSource via JMX and logging statements.
-     * @param name The name associated with this DataSource
+     * @return The name associated with this DataSource
      */
     public String getName() {
         return this.name;

@@ -17,9 +17,9 @@ import java.sql.Statement;
  *
  * @author joelauer
  */
-public class ConnectionDemo {
+public class ConnectionDemo2 {
 
-    private static Logger logger = Logger.getLogger(ConnectionDemo.class);
+    private static Logger logger = Logger.getLogger(ConnectionDemo2.class);
 
     public static void main(String[] args) throws Exception {
 
@@ -28,15 +28,18 @@ public class ConnectionDemo {
             .append(" <datasource>")
             .append("  <name>main</name>")
             
-            //.append("  <provider>BASIC</provider>")
+            .append("  <provider>BASIC</provider>")
             //.append("  <provider>C3P0</provider>")
-            .append("  <provider>PROXOOL</provider>")
+            //.append("  <provider>PROXOOL</provider>")
 
+            .append("  <debug>true</debug>")
             .append("  <jmx>true</jmx>")
             .append("  <jmxDomain>com.cloudhopper.stratus</jmxDomain>")
 
-            .append("  <minPoolSize>5</minPoolSize>")
-            .append("  <maxPoolSize>50</maxPoolSize>")
+            .append("  <minPoolSize>1</minPoolSize>")
+            .append("  <maxPoolSize>1</maxPoolSize>")
+            .append("  <checkoutTimeout>5000</checkoutTimeout>")
+            .append("  <activeConnectionTimeout>10000</activeConnectionTimeout>")
 
             // you can override properties, but it doesn't make much sense to
             //.append("  <vendor>MSSQL</vendor>")
@@ -94,33 +97,18 @@ public class ConnectionDemo {
 
         logger.debug("DataSource Class: " + ds.getClass());
 
-        for (int i = 0; i < 10; i++) {
-           try {
-                logger.debug("Getting connection....");
-                Connection conn = ds.getConnection();
-                logger.debug("Connection Class: " + conn.getClass());
+        // hmm... proxool doesn't seem to like immediately getting a connection
+        // and then checking it out...
+        //Thread.sleep(1000);
 
-                Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT 1");
+        logger.debug("Getting first connection....");
+        Connection conn = ds.getConnection();
 
-                if (rs.next()) {
-                    logger.debug("Result: " + rs.getInt(1));
-                }
-
-                // hold onto the connection for awhile
-                logger.debug("Going to hold onto connection for a few seconds....");
-                Thread.sleep(10000);
-                logger.debug("Closing rs, stmt, connection....");
-                rs.close();
-                stmt.close();
-                conn.close();
-
-                logger.debug("Doing nothing now...");
-                Thread.sleep(5000);
-            } catch (Exception e) {
-                logger.error(e);
-                Thread.sleep(10000);
-            }
+        logger.debug("Getting second connection, should timeout....");
+        try {
+            Connection conn2 = ds.getConnection();
+        } catch (Exception e) {
+            logger.error(e);
         }
 
         System.in.read();

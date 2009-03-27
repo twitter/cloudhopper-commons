@@ -36,7 +36,7 @@ public interface DataSourceAdapter {
      * @param config The configuration to use when creating the DataSource.  There
      *      are certain properties that will be pre-checked before this method
      *      gets called to verify properties are correct.
-     * @return
+     * @return A managed DataSource
      * @throws SQLMissingDependencyException
      * @throws SQLConfigurationException
      */

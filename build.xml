@@ -40,6 +40,10 @@
         <!-- do nothing -->
     </target>
 
+    <target name="javadoc" depends="common-javadoc">
+        <!-- do nothing -->
+    </target>
+
     <target name="deploy" depends="common-deploy">
         <!-- do nothing -->
     </target>
