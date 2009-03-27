@@ -26,7 +26,7 @@ public class ConnectionDemo {
         String xml = new StringBuilder(200)
             .append("<configuration>")
             .append(" <datasource>")
-            .append("  <name>jdbc/main</name>")
+            .append("  <name>main</name>")
             
             //.append("  <provider>BASIC</provider>")
             .append("  <provider>C3P0</provider>")
@@ -106,12 +106,12 @@ public class ConnectionDemo {
                 logger.debug("Result: " + rs.getInt(1));
             }
 
+            // hold onto the connection for awhile
+            logger.debug("Going to hold onto connection for a few seconds....");
+            Thread.sleep(10000);
+            logger.debug("Closing rs, stmt, connection....");
             rs.close();
             stmt.close();
-
-            // hold onto the connection for awhile
-            Thread.sleep(10000);
-            logger.debug("Closing connection....");
             conn.close();
 
             logger.debug("Doing nothing now...");

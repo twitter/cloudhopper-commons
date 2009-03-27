@@ -36,4 +36,22 @@ public class C3P0ManagedDataSource extends ManagedDataSource {
         }
     }
 
+    public Integer getBusyConnectionCount() {
+        try {
+            return cpds.getNumBusyConnectionsAllUsers();
+        } catch (Exception e) {
+            logger.error("Error while getting busy connection count", e);
+            return null;
+        }
+    }
+
+    public Integer getConnectionCount() {
+        try {
+            return cpds.getNumConnectionsAllUsers();
+        } catch (Exception e) {
+            logger.error("Error while getting connection count", e);
+            return null;
+        }
+    }
+
 }

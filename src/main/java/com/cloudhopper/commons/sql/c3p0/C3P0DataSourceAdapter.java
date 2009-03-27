@@ -2,13 +2,7 @@ package com.cloudhopper.commons.sql.c3p0;
 
 // java imports
 import com.cloudhopper.commons.sql.adapter.*;
-import com.cloudhopper.commons.sql.util.ReflectionUtil;
 import java.beans.PropertyVetoException;
-import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.SQLException;
-import javax.sql.DataSource;
-import java.sql.DriverManager;
 
 // third party imports
 import com.mchange.v2.c3p0.ComboPooledDataSource;
@@ -102,6 +96,12 @@ public class C3P0DataSourceAdapter implements DataSourceAdapter {
             // set activeConnectionTimeout
             seconds = (int)(config.getActiveConnectionTimeout()/1000);
             cpds.setUnreturnedConnectionTimeout(seconds);
+
+            if (config.getDebug()) {
+                cpds.setDebugUnreturnedConnectionStackTraces(true);
+            } else {
+                cpds.setDebugUnreturnedConnectionStackTraces(false);
+            }
 
             // properties I think aren't valid for c3p0
             // defines how many times c3p0 will try to acquire a new Connection from the database before giving up.

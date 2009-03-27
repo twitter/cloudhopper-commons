@@ -29,4 +29,12 @@ public class BasicManagedDataSource extends ManagedDataSource {
         return null;
     }
 
+    public Integer getConnectionCount() {
+        return null;
+    }
+
+    public Integer getBusyConnectionCount() {
+        return null;
+    }
+
 }

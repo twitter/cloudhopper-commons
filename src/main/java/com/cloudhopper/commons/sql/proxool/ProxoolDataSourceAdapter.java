@@ -1,16 +1,18 @@
 package com.cloudhopper.commons.sql.proxool;
 
 // java imports
-import com.cloudhopper.commons.sql.adapter.*;
-import com.cloudhopper.commons.sql.util.ReflectionUtil;
-import javax.sql.DataSource;
+import java.lang.management.ManagementFactory;
 import java.util.Properties;
+
+// third party imports
+import org.logicalcobwebs.proxool.ProxoolDriver;
+import org.logicalcobwebs.proxool.ProxoolFacade;
 
 // my imports
 import com.cloudhopper.commons.sql.*;
-import com.cloudhopper.commons.sql.adapter.BasicDataSource;
-import com.cloudhopper.commons.sql.util.JmxUtil;
-import java.lang.management.ManagementFactory;
+import com.cloudhopper.commons.sql.adapter.*;
+import com.cloudhopper.commons.util.ManagementUtil;
+import org.logicalcobwebs.proxool.ProxoolException;
 
 /**
  * Adapter for a Proxool DataSource.
@@ -18,9 +20,6 @@ import java.lang.management.ManagementFactory;
  * @author joelauer
  */
 public class ProxoolDataSourceAdapter implements DataSourceAdapter {
-
-    private static String PROXOOL_CLASS = "org.logicalcobwebs.proxool.ProxoolDriver";
-    private static String PROXOOL_FACADE_CLASS = "org.logicalcobwebs.proxool.ProxoolFacade";
 
     public boolean isPooled() {
         return true;
@@ -31,26 +30,48 @@ public class ProxoolDataSourceAdapter implements DataSourceAdapter {
     }
 
     public ManagedDataSource create(DataSourceConfiguration config) throws SQLMissingDependencyException, SQLConfigurationException {
+
         // verify proxool driver exists and register it
         try {
             // create a new instance
-            Class.forName(PROXOOL_CLASS).newInstance();
+            ProxoolDriver driver = new ProxoolDriver();
         } catch (Exception e) {
-            throw new SQLMissingDependencyException("Proxool driver '" + PROXOOL_CLASS + "' failed to load. Perhaps missing proxool jar file?", e);
+            throw new SQLMissingDependencyException("Proxool driver '" + ProxoolDriver.class.getName() + "' failed to load. Perhaps missing proxool jar file?", e);
         }
 
         // create new set of proxool properties
         Properties info = new Properties();
 
-        //info.setProperty("proxool.maximum-connection-count", "10");
-        //info.setProperty("proxool.house-keeping-test-sql", "select CURRENT_DATE");
+        // setup properties to use
+        info.setProperty("proxool.minimum-connection-count", Integer.toString(config.getMinPoolSize()));
+        info.setProperty("proxool.maximum-connection-count", Integer.toString(config.getMaxPoolSize()));
+
+        // set the validation query
+        info.setProperty("proxool.house-keeping-test-sql", config.getValidationQuery());
+
+        // amount of time (in ms) to wait for getConnection() to succeed
+        // not supported by Proxool -- maybe driver dependant????
+        //config.getCheckoutTimeout());
+
+        // checkin/checkout validation
+        info.setProperty("proxool.test-after-use", Boolean.toString(config.getValidateOnCheckin()));
+        info.setProperty("proxool.test-before-use", Boolean.toString(config.getValidateOnCheckout()));
+
+        // amount of time to wait to validate connections
+        info.setProperty("proxool.house-keeping-sleep-time", Long.toString(config.getValidateIdleConnectionTimeout()));
+
+        // set idleConnectionTimeout
+        // not supported by prooxool -- this is implicitly done...
+
+        // set activeConnectionTimeout
+        info.setProperty("proxool.maximum-active-time", Long.toString(config.getActiveConnectionTimeout()));
 
         // should jmx be turned on/off?
         if (config.getJmx()) {
             // enable jmx for proxool (no support for renaming domain, object name)
             info.setProperty("proxool.jmx", "true");
             // create list of all mbean servers...
-            String serverId = JmxUtil.getMBeanServerId(ManagementFactory.getPlatformMBeanServer());
+            String serverId = ManagementUtil.getMBeanServerId(ManagementFactory.getPlatformMBeanServer());
             // add agent-id property
             info.setProperty("proxool.jmx-agent-id", serverId);
         } else {
@@ -64,22 +85,22 @@ public class ProxoolDataSourceAdapter implements DataSourceAdapter {
         String driverUrl = config.getUrl();
 
         // create new url for proxool
-        String url = "proxool." + alias + ":" + driverClass + ":" + driverUrl;
+        String proxoolUrl = "proxool." + alias + ":" + driverClass + ":" + driverUrl;
 
         // register this connection
         // normally, you'd do this ProxoolFacade.registerConnectionPool(url, info);
         try {
-            Class facadeClass = Class.forName(PROXOOL_FACADE_CLASS);
-            ReflectionUtil.callStatic("registerConnectionPool", facadeClass, url, info);
-        } catch (ClassNotFoundException e) {
-            throw new SQLMissingDependencyException("Proxool '" + PROXOOL_FACADE_CLASS + "' failed to load. Perhaps missing proxool jar file?", e);
+            ProxoolFacade.registerConnectionPool(proxoolUrl, info);
+        } catch (ProxoolException e) {
+            throw new SQLConfigurationException("Failed while registering proxool connection", e);
+            //throw new SQLMissingDependencyException("Proxool '" + PROXOOL_FACADE_CLASS + "' failed to load. Perhaps missing proxool jar file?", e);
         }
 
         // create basic DataSource wrapper to handle calls to the DriverManager
-        BasicDataSource ds = new BasicDataSource(config.getUrl(), config.getUsername(), config.getPassword());
+        BasicDataSource ds = new BasicDataSource(proxoolUrl, config.getUsername(), config.getPassword());
 
         // done creating datasource wrapper, return it
-        return new BasicManagedDataSource(this, config, ds);
+        return new ProxoolManagedDataSource(this, config, ds);
     }
 
 }

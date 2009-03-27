@@ -28,6 +28,9 @@ public interface ManagedDataSourceMBean {
 
     // Monitoring Attributes
 
+    public Integer getConnectionCount();
     public Integer getIdleConnectionCount();
+    public Integer getBusyConnectionCount();
+
 
 }

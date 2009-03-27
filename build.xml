@@ -20,6 +20,10 @@
         <javarun class="com.cloudhopper.commons.sql.ConnectionDemo" />
     </target>
 
+    <target name="run2" depends="common-compile-demo">
+        <javarun class="com.cloudhopper.commons.sql.ConnectionDemo2" />
+    </target>
+
     <target name="clean" depends="common-clean">
         <!-- do nothing -->
     </target>

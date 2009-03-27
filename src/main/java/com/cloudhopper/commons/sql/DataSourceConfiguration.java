@@ -31,6 +31,8 @@ public class DataSourceConfiguration implements Cloneable {
     // number of milliseconds to wait before killing a connection that has not been
     // closed and returned to the pool (zombie connections)
     private long activeConnectionTimeout;
+    // are debug properties turned on?
+    private boolean debug;
 
     /**
      * Creates a new instance of <code>DataSourceConfiguration</code> with
@@ -58,6 +60,8 @@ public class DataSourceConfiguration implements Cloneable {
         idleConnectionTimeout = 4 * 60 * 60 * 1000;
         // number of ms to wait before active connections are killed (4 hours)
         activeConnectionTimeout = 4 * 60 * 60 * 1000;
+        // debug is off by default
+        debug = false;
     }
 
     /**
@@ -82,6 +86,14 @@ public class DataSourceConfiguration implements Cloneable {
         if (this.driver == null) {
             throw new SQLConfigurationException("driver is a required property");
         }
+    }
+
+    public void setDebug(boolean flag) {
+        this.debug = flag;
+    }
+
+    public boolean getDebug() {
+        return this.debug;
     }
 
     /**
