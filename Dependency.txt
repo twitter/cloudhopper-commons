@@ -2,6 +2,8 @@
 
 Compile Scope:
 c3p0-0.9.1.2.jar
+ch-commons-sql-c3p0-1.0-20090327.211942-1.jar
+ch-commons-sql-proxool-1.0-20090327.212014-1.jar
 ch-commons-util-2.0-20090327.180259-10.jar
 ch-commons-xbean-1.0-20090323.212852-5.jar
 ch-commons-xml-1.0-20090323.212625-5.jar
@@ -15,6 +17,8 @@ proxool-cglib-0.9.1.jar
 
 Runtime Scope:
 c3p0-0.9.1.2.jar
+ch-commons-sql-c3p0-1.0-20090327.211942-1.jar
+ch-commons-sql-proxool-1.0-20090327.212014-1.jar
 ch-commons-util-2.0-20090327.180259-10.jar
 ch-commons-xbean-1.0-20090323.212852-5.jar
 ch-commons-xml-1.0-20090323.212625-5.jar
@@ -28,6 +32,8 @@ proxool-cglib-0.9.1.jar
 
 Test Scope:
 c3p0-0.9.1.2.jar
+ch-commons-sql-c3p0-1.0-20090327.211942-1.jar
+ch-commons-sql-proxool-1.0-20090327.212014-1.jar
 ch-commons-util-2.0-20090327.180259-10.jar
 ch-commons-xbean-1.0-20090323.212852-5.jar
 ch-commons-xml-1.0-20090323.212625-5.jar

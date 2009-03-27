@@ -56,7 +56,7 @@
             <version>[5.1,)</version>
         </dependency>
 
-        <!--
+        <!-- add implementations back in for testing -->
         <dependency>
             <groupId>cloudhopper</groupId>
             <artifactId>ch-commons-sql-c3p0</artifactId>
@@ -67,7 +67,6 @@
             <artifactId>ch-commons-sql-proxool</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-        -->
         
     </dependencies>
 </project>
