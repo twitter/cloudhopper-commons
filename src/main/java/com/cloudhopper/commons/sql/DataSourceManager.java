@@ -15,7 +15,7 @@ import com.cloudhopper.commons.sql.adapter.DataSourceAdapter;
 import java.sql.Driver;
 
 /**
- * Class for creating and managing the lifecycle and monitoring of DataSources.
+ * Class for creating, managing, and monitoring of the life-cycle of DataSources.
  * 
  * @author joelauer
  */
@@ -73,5 +73,4 @@ public class DataSourceManager {
         // return the datasource
         return mds.getDataSource();
     }
-    
 }
