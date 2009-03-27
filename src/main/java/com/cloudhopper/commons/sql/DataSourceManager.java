@@ -51,7 +51,8 @@ public class DataSourceManager {
         try {
             adapter = (DataSourceAdapter)Class.forName(adapterClass).newInstance();
         } catch (Exception e) {
-            throw new SQLConfigurationException("Invalid DataSourceAdapter class specified. Should be impossible error?");
+            //throw new SQLConfigurationException("Invalid DataSourceAdapter class specified. Should be impossible error?");
+            throw new SQLMissingDependencyException("DataSourceAdapter '" + adapterClass + "' failed to load. Perhaps missing jar file?", e);
         }
 
         // delegate creating the new datasource to the adapter
