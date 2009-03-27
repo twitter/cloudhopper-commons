@@ -29,8 +29,8 @@ public class ConnectionDemo {
             .append("  <name>main</name>")
             
             //.append("  <provider>BASIC</provider>")
-            //.append("  <provider>C3P0</provider>")
-            .append("  <provider>PROXOOL</provider>")
+            .append("  <provider>C3P0</provider>")
+            //.append("  <provider>PROXOOL</provider>")
 
             .append("  <jmx>true</jmx>")
             .append("  <jmxDomain>com.cloudhopper.stratus</jmxDomain>")

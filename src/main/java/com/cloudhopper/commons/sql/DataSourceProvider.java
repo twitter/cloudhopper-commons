@@ -1,11 +1,6 @@
 
 package com.cloudhopper.commons.sql;
 
-import com.cloudhopper.commons.sql.c3p0.C3P0DataSourceAdapter;
-import com.cloudhopper.commons.sql.proxool.ProxoolDataSourceAdapter;
-import com.cloudhopper.commons.sql.adapter.BasicDataSourceAdapter;
-import com.cloudhopper.commons.sql.adapter.*;
-
 /**
  * Enumeration of DataSource providers.
  * 
