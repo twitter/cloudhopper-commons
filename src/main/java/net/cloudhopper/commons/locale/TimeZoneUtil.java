@@ -1,10 +1,6 @@
 package net.cloudhopper.commons.locale;
 
 // java imports
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -15,8 +11,6 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTimeZone;
 
 // my imports
-import net.cloudhopper.commons.util.NameValue;
-import org.joda.time.Duration;
 
 /**
  * This class implements utilities for working with timezones.

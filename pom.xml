@@ -8,16 +8,18 @@
             <version>[1.6,)</version>
         </dependency>
         <dependency>
-            <groupId>apache</groupId>
-            <artifactId>log4j</artifactId>
-            <version>[1.2.13,)</version>
-        </dependency>
-        <dependency>
             <groupId>joda</groupId>
             <artifactId>joda-time</artifactId>
             <version>1.6</version>
         </dependency>
         <!-- runtime scope -->
+        <!-- provided scope -->
+        <dependency>
+            <groupId>apache</groupId>
+            <artifactId>log4j</artifactId>
+            <version>[1.2.13,)</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- testing scope -->
         <dependency>
             <groupId>junit</groupId>
