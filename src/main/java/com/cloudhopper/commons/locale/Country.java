@@ -1,4 +1,4 @@
-package net.cloudhopper.commons.locale;
+package com.cloudhopper.commons.locale;
 
 import java.io.IOException;
 

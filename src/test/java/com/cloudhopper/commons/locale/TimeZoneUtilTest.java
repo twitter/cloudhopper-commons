@@ -1,7 +1,9 @@
 
-package net.cloudhopper.commons.locale;
+package com.cloudhopper.commons.locale;
 
 // java imports
+import com.cloudhopper.commons.locale.TimeZoneUtil;
+import com.cloudhopper.commons.locale.TimeZone;
 import java.io.IOException;
 
 // third party imports
