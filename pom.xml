@@ -14,23 +14,19 @@
             <version>2.0-SNAPSHOT</version>
         </dependency>
 	
-	<!--
+        <!-- provided scope -->
         <dependency>
             <groupId>c3p0</groupId>
             <artifactId>c3p0</artifactId>
             <version>[0.9.1.2,)</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>proxool</groupId>
             <artifactId>proxool</artifactId>
             <version>[0.9.1,)</version>
+            <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>apache</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>[1.0,)</version>
-        </dependency>
-        -->
         
         <!-- runtime scope -->
 
@@ -57,20 +53,6 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector</artifactId>
             <version>[5.1,)</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- add implementations back in for testing -->
-        <dependency>
-            <groupId>cloudhopper</groupId>
-            <artifactId>ch-commons-sql-c3p0</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>cloudhopper</groupId>
-            <artifactId>ch-commons-sql-proxool</artifactId>
-            <version>1.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         
