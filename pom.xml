@@ -2,12 +2,14 @@
 <project>
     <dependencies>
         <!-- compile scope -->
+        <!-- runtime scope -->
+        <!-- provided scope -->
         <dependency>
             <groupId>apache</groupId>
             <artifactId>log4j</artifactId>
             <version>[1.2.13,)</version>
+            <scope>provided</scope>
         </dependency>
-        <!-- runtime scope -->
         <!-- testing scope -->
         <dependency>
             <groupId>junit</groupId>
