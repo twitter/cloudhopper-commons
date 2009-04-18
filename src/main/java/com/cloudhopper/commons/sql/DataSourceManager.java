@@ -2,6 +2,9 @@
 package com.cloudhopper.commons.sql;
 
 // java imports
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.SQLException;
 import java.lang.management.ManagementFactory;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -12,7 +15,6 @@ import org.apache.log4j.Logger;
 
 // my imports
 import com.cloudhopper.commons.sql.adapter.DataSourceAdapter;
-import java.sql.Driver;
 
 /**
  * Class for creating, managing, and monitoring of the life-cycle of DataSources.
@@ -26,7 +28,33 @@ public class DataSourceManager {
     private DataSourceManager() {
         // do nothing
     }
-    
+
+    /**
+     * Verifies a DataSource is functional.  This method will call getConnection()
+     * on the DataSource and if that fails a SQLException will be thrown.
+     * @param ds The DataSource to verify
+     * @throws java.sql.SQLException Thrown if the call to getConnection() fails
+     *      to obtain a SQL connection.
+     */
+    public static void verify(DataSource ds) throws SQLException {
+        Connection conn = null;
+        try {
+            // get a connection -- this will test the connection works
+            conn = ds.getConnection();
+        } finally {
+            JdbcUtil.close(conn);
+        }
+    }
+
+    /**
+     * Creates a new DataSource from the DataSourceConfiguration.
+     * @param configuration The configuration of the DataSource
+     * @return A new DataSource tied to the configuration
+     * @throws SQLMissingDependencyException Thrown if a dependency (external jar)
+     *      is missing from the configuration.
+     * @throws SQLConfigurationException Thrown if there was an error while
+     *      configuring the DataSource.
+     */
     public static DataSource create(DataSourceConfiguration configuration) throws SQLMissingDependencyException, SQLConfigurationException {
         // verify all required properties are configured and set
         configuration.validate();
