@@ -70,5 +70,11 @@ AD AND 020 Andorra, Principality of
         Assert.assertEquals(countries.get(4), new Country("AD", ""));
     }
 
+    @Test
+    public void lookupByIso2() throws Exception {
+        Country result0 = CountryUtil.lookupByIso2("US");
+        Assert.assertEquals(result0.getCode(), "US");
+    }
+
     
 }

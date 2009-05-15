@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 // third party imports
@@ -23,8 +24,8 @@ public class CountryUtil {
     
     private static Logger logger = Logger.getLogger(CountryUtil.class);
 
-    //private static ArrayList<Country> countriesByCode;
-    private static ArrayList<Country> countriesByName;
+    private static HashMap<String,Country> byIso2;
+    private static ArrayList<Country> byName;
 
     static {
         // load the resource file
@@ -32,12 +33,23 @@ public class CountryUtil {
         if (is == null) {
             throw new RuntimeException("Not able to locate iso3166.txt file");
         }
+
         try {
-            countriesByName = parse(is);
+            byName = parse(is);
         } catch (Exception e) {
             throw new RuntimeException("Error while loading or parsing iso3166.txt resource", e);
         } finally {
             try { is.close(); } catch (Exception e) {}
+        }
+
+        // generate our list by iso2
+        byIso2 = new HashMap<String,Country>();
+        for (Country country : byName) {
+            // add a reference to the same country, check to make sure no overlap
+            Country prevCountry = byIso2.put(country.getCode(), country);
+            if (prevCountry != null) {
+                throw new RuntimeException("Overlap of country ISO2 value of " + country.getCode());
+            }
         }
 
         // copy into countries by name
@@ -67,6 +79,10 @@ public class CountryUtil {
         // only static
     }
 
+    public static Country lookupByIso2(String iso2) {
+        return byIso2.get(iso2);
+    }
+
     public static ArrayList<Country> parse(InputStream is) throws IOException {
         // convert into a buffered reader
         BufferedReader in =  new BufferedReader(new InputStreamReader(is));
@@ -94,7 +110,7 @@ public class CountryUtil {
      * @return
      */
     public static List<Country> getCountriesByName() {
-        return countriesByName;
+        return byName;
     }
     
 }
