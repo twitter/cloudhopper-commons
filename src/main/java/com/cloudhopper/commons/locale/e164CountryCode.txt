@@ -157,7 +157,7 @@
 # added Sep. 30, 2004 -- jjlauer
 423 LI
 43 AT
-44 UK
+44 GB
 45 DK
 46 SE
 47 NO
