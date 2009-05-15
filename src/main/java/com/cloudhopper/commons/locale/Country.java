@@ -13,7 +13,7 @@ import java.io.IOException;
  */
 public final class Country implements Cloneable, Comparable {
 
-    /** Constructs a new ISOCountry from an ISO code and name.  The code is
+    /** Constructs a new Country from an ISO code and name.  The code is
      *  length checked (length =2).  There is no other validation on the code
      *  or name. */
     Country(String code, String name) throws IllegalArgumentException {

@@ -1,0 +1,71 @@
+
+package com.cloudhopper.commons.locale;
+
+// java imports
+import com.cloudhopper.commons.locale.CountryUtil;
+import com.cloudhopper.commons.locale.Country;
+import java.io.IOException;
+
+// third party imports
+import java.util.List;
+import org.junit.*;
+import org.apache.log4j.Logger;
+
+// my imports
+
+/**
+ *
+ * @author joelauer
+ */
+public class E164CountryCodeUtilTest {
+
+    private static final Logger logger = Logger.getLogger(E164CountryCodeUtilTest.class);
+
+/**
+    @Test(expected=IOException.class)
+    public void parse() throws Exception {
+        Country c = Country.parse("");
+    }
+
+    @Test(expected=IOException.class)
+    public void parse2() throws Exception {
+        Country c = Country.parse("dffsdfasdf");
+    }
+
+    @Test(expected=IOException.class)
+    public void parse3() throws Exception {
+        Country c = Country.parse("AA AAA 123");
+    }
+
+    @Test(expected=IOException.class)
+    public void parse4() throws Exception {
+        Country c = Country.parse("AA AAA 123 ");
+    }
+
+    @Test(expected=IOException.class)
+    public void parse5() throws Exception {
+        Country c = Country.parse(null);
+    }
+
+    @Test
+    public void parseOK() throws Exception {
+        Country c = Country.parse("AA AAA 123 J");
+    }
+ */
+
+    @Test
+    public void lookup() throws Exception {
+        E164CountryCode result0 = E164CountryCodeUtil.lookup("1");
+        Assert.assertEquals("US", result0.getIso());
+        result0 = E164CountryCodeUtil.lookup("1313");
+        Assert.assertEquals("US", result0.getIso());
+        result0 = E164CountryCodeUtil.lookup("");
+        Assert.assertEquals(null, result0);
+        result0 = E164CountryCodeUtil.lookup("1416");
+        Assert.assertEquals("CA", result0.getIso());
+        result0 = E164CountryCodeUtil.lookup("18765551212");
+        Assert.assertEquals("JM", result0.getIso());
+    }
+
+    
+}
