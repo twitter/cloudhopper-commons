@@ -10,8 +10,12 @@ import com.cloudhopper.commons.vfs.provider.*;
  */
 public enum Protocol {
     
-    /** sftp */
-    SFTP("sftp", SftpVirtualFileSystem.class);
+    /** sftp (SSH/SCP Secure File Transfer Protocol) */
+    SFTP("sftp", SftpVirtualFileSystem.class),
+    /** ftp (File Transfer Protocol) */
+    FTP("ftp", FtpVirtualFileSystem.class),
+    /** ftps (SSL/TLS File Transfer Protocol) */
+    FTPS("ftps", FtpVirtualFileSystem.class);       // serviced by same provider
 
     private final String name;
     private final Class<? extends VirtualFileSystem> vfsClass;

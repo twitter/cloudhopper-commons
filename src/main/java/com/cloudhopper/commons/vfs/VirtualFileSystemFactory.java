@@ -50,6 +50,7 @@ public class VirtualFileSystemFactory {
 
         // setup any common properties
         vfs.setURL(url);
+        vfs.setProtocol(protocol);
 
         // validate the properties
         vfs.validateURL();

@@ -17,7 +17,8 @@ public class VFSMain {
 
     public static void main(String[] args) throws Exception {
 
-        String r = "sftp://joelauer@magnum";
+        //String r = "sftp://joelauer@magnum";
+        String r = "ftp://localhost";
 
         URL url = URLParser.parse(r);
 

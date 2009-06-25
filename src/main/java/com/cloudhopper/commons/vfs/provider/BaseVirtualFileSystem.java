@@ -3,6 +3,7 @@ package com.cloudhopper.commons.vfs.provider;
 
 import com.cloudhopper.commons.util.URL;
 import com.cloudhopper.commons.vfs.FileSystemException;
+import com.cloudhopper.commons.vfs.Protocol;
 import com.cloudhopper.commons.vfs.VirtualFileSystem;
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,10 +15,21 @@ import java.io.FileInputStream;
  */
 public abstract class BaseVirtualFileSystem implements VirtualFileSystem {
 
+    // url associated with this vfs
     private URL url;
+    // the protocol enumeration associated with this vfs
+    private Protocol protocol;
 
     public BaseVirtualFileSystem() {
         // do nothing
+    }
+
+    public void setProtocol(Protocol protocol) {
+        this.protocol = protocol;
+    }
+
+    public Protocol getProtocol() {
+        return this.protocol;
     }
 
     public void setURL(URL url) {
