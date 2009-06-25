@@ -1,0 +1,91 @@
+
+package com.cloudhopper.commons.vfs.provider;
+
+import com.cloudhopper.commons.util.URL;
+import com.cloudhopper.commons.vfs.FileSystemException;
+import com.cloudhopper.commons.vfs.VirtualFileSystem;
+import java.io.File;
+import java.io.FileInputStream;
+
+/**
+ * Base class for all virtual filesystem providers.
+ * 
+ * @author joelauer
+ */
+public abstract class BaseVirtualFileSystem implements VirtualFileSystem {
+
+    private URL url;
+
+    public BaseVirtualFileSystem() {
+        // do nothing
+    }
+
+    public void setURL(URL url) {
+        this.url = url;
+    }
+
+    /**
+     * Gets the URL associated with this virtual filesystem.
+     * @return
+     */
+    public URL getURL() {
+        return this.url;
+    }
+
+    /**
+     * Validate the URL configured with this filesystem.  Each protocol will
+     * have its own requirements that must be met.  For example, the sftp
+     * protocol requires a username while an ftp connection could be anonymous.
+     * @throws FileSystemException Thrown if the URL is not valid and cannot
+     *      be used with this particular filesystem.
+     */
+    public abstract void validateURL() throws FileSystemException;
+
+    
+    public void copy(File srcFile) throws FileSystemException {
+        // always just call the other method
+        copy(srcFile, srcFile.getName());
+    }
+
+    public void copy(File srcFile, String filename) throws FileSystemException {
+        // make sure the file exists
+        if (!srcFile.exists()) {
+            throw new FileSystemException("Source file " + srcFile.getName() + " does not exist");
+        }
+
+        // make sure we are permitted to read it
+        if (!srcFile.canRead()) {
+            throw new FileSystemException("Cannot read source file " + srcFile.getName() + " (permission denied?)");
+        }
+
+        // open an input stream
+        FileInputStream in = null;
+        try {
+            in = new FileInputStream(srcFile);
+        } catch (Exception e) {
+            throw new FileSystemException("Unable to create input stream for file " + srcFile.getName(), e);
+        }
+
+        try {
+            // delegate handling to input stream method
+            copy(in, filename);
+        } finally {
+            // make sure file input stream is closed
+            try { in.close(); } catch (Exception ex) {}
+        }
+    }
+
+    public void move(File srcFile) throws FileSystemException {
+        move(srcFile, srcFile.getName());
+    }
+
+    public void move(File srcFile, String filename) throws FileSystemException {
+        // initially, we need to copy this file first
+        copy(srcFile, filename);
+
+        // if there is an error during the copy, an exception would have been thrown
+        // therefore, it should be okay to delete the file now
+        srcFile.delete();
+    }
+
+}
