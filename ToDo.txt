@@ -1,0 +1,10 @@
+Cloudhopper, Inc.
+http://www.cloudhopper.com/
+Commons Xbean Library
+--------------------------------------------------------------------------------
+
+  * Add XmlBeanFactory class with helpful utility methods for quickly creating
+    instances of classes by reading xml files from the classpath, local disk,
+    or even possibly more options.
+  * Check that partial XML snippets actually work -- had issues using them while
+    working on cortex project.
