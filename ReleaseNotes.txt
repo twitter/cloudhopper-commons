@@ -1,6 +1,6 @@
 
 Cloudhopper, Inc.
-Commons Virtual FileSystem Library
+Commons Remote FileSystem Library
 --------------------------------------------------------------------------------
 
 1.0 - 2009-06-25

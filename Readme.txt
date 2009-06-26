@@ -1,9 +1,9 @@
 
 Cloudhopper, Inc.
-Commons Virtual FileSystem Library
+Commons Remote FileSystem Library
 --------------------------------------------------------------------------------
 
-Cloudhopper Commons VFS supports copying and moving files to virtual filesystems
+Cloudhopper Commons RFS supports copying and moving files to remote filesystems
 which are usually located on remote systems.  Various protocols are supported
 such as FTP, SSL FTP, Secure FTP, and possibly more in the future.  Each is
 configured with a simple URL-based syntax.  Authentication is supported for
