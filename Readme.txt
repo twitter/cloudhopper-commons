@@ -44,7 +44,7 @@ find the ".ssh" directory in that user's home directory.  Inside that directory,
 it will look for an "id_dsa" or "id_rsa" private key file.  It will then attempt
 to load them.
 
-FTP/S
+FTP and FTPS
 --------------------------------------------------------------------------------
 Provides access to the files on an FTP or FTPS server (SSL-protected).
 
@@ -54,6 +54,17 @@ URI Format
 
 Examples
 
-  sftp://myusername:mypassword@somehost
-  sftp://myusername:mypassword@somehost/
-  sftp://myusername:mypassword@somehost/pub/downloads/
+  ftp://myusername:mypassword@somehost
+  ftp://myusername:mypassword@somehost/
+  ftp://myusername:mypassword@somehost/pub/downloads/
+  ftps://myusername:mypassword@somehost
+  ftps://myusername:mypassword@somehost/
+  ftps://myusername:mypassword@somehost/pub/downloads/
+
+The default port is 21.  SSL/TLS support usually still connects via port 21 and
+then requests an SSL-protected session.  Only a hostname is required in the FTP
+or FTPS URIs.  If no username is provided, then this library will attempt to
+login anonymously with an empty password.  If an anonymous login requires a
+password to be sent, then you'll need to manually include those in the URI such
+that "ftp://anonymous:pass@host".  Also, after connecting, this library will
+immediately switch to both passive and binary modes.

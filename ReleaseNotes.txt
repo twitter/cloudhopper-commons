@@ -3,5 +3,5 @@ Cloudhopper, Inc.
 Commons Virtual FileSystem Library
 --------------------------------------------------------------------------------
 
-1.0 - 2009-06-24
+1.0 - 2009-06-25
    * Initial release
