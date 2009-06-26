@@ -1,22 +1,11 @@
 
-package com.cloudhopper.commons.vfs.provider;
+package com.cloudhopper.commons.rfs.provider;
 
-import com.jcraft.jsch.Session;
 
-import com.cloudhopper.commons.vfs.*;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.SftpATTRS;
-import com.jcraft.jsch.SftpException;
-import com.jcraft.jsch.UserInfo;
-import java.io.File;
-import java.io.FileInputStream;
+import com.cloudhopper.commons.rfs.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.logging.Level;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -25,19 +14,19 @@ import org.apache.commons.net.ftp.FTPSClient;
 import org.apache.log4j.Logger;
 
 /**
- * FTP and FTPS virtual filesystem.
+ * FTP and FTPS remote filesystem.
  * 
  * @author joelauer
  */
-public class FtpVirtualFileSystem extends BaseVirtualFileSystem {
-    private static final Logger logger = Logger.getLogger(FtpVirtualFileSystem.class);
+public class FtpRemoteFileSystem extends BaseRemoteFileSystem {
+    private static final Logger logger = Logger.getLogger(FtpRemoteFileSystem.class);
 
     // client (will support either FTP or FTPS)
     private FTPClient ftp;
     // are we in ssl mode?
     private boolean ssl;
 
-    public FtpVirtualFileSystem() {
+    public FtpRemoteFileSystem() {
         super();
         // default ssl mode to false
         ssl = false;

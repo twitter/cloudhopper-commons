@@ -17,7 +17,7 @@
     </target>
 
     <target name="run" depends="common-compile-demo">
-        <javarun class="com.cloudhopper.commons.vfs.VFSMain" />
+        <javarun class="com.cloudhopper.commons.rfs.RFSMain" />
     </target>
 
     <target name="clean" depends="common-clean">

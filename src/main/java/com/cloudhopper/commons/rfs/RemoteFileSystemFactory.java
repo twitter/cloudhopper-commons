@@ -1,5 +1,5 @@
 
-package com.cloudhopper.commons.vfs;
+package com.cloudhopper.commons.rfs;
 
 // java imports
 import java.net.MalformedURLException;
@@ -10,28 +10,32 @@ import org.apache.log4j.Logger;
 // my imports
 import com.cloudhopper.commons.util.URL;
 import com.cloudhopper.commons.util.URLParser;
-import com.cloudhopper.commons.vfs.provider.BaseVirtualFileSystem;
+import com.cloudhopper.commons.rfs.provider.BaseRemoteFileSystem;
 
 /**
- * Factory for creating virtual filesystem providers from a URL.
+ * Factory for creating remote filesystems from a URL.
  * 
  * @author joelauer
  */
-public class VirtualFileSystemFactory {
-    private static final Logger logger = Logger.getLogger(VirtualFileSystemFactory.class);
+public class RemoteFileSystemFactory {
+    private static final Logger logger = Logger.getLogger(RemoteFileSystemFactory.class);
 
-    private VirtualFileSystemFactory() {
+    private RemoteFileSystemFactory() {
         // only static methods
     }
 
-    public static VirtualFileSystem create(String url) throws MalformedURLException, FileSystemException {
+    /**
+     * Creates a new RemoteFileSystem by parsing the URL and creating the
+     * correct underlying provider to support the protocol.
+     */
+    public static RemoteFileSystem create(String url) throws MalformedURLException, FileSystemException {
         // parse url into a URL object
         URL r = URLParser.parse(url);
         // delegate responsibility to other method
         return create(r);
     }
 
-    public static VirtualFileSystem create(URL url) throws MalformedURLException, FileSystemException {
+    public static RemoteFileSystem create(URL url) throws MalformedURLException, FileSystemException {
         // try to match the url to a provider
         Protocol protocol = Protocol.findByName(url.getProtocol());
         if (protocol == null) {
@@ -39,11 +43,11 @@ public class VirtualFileSystemFactory {
         }
 
         // create a new instance of the provider and return it
-        BaseVirtualFileSystem vfs = null;
+        BaseRemoteFileSystem vfs = null;
         try {
             Class vfsClass = protocol.getProvider();
             // create a new instance, cast it
-            vfs = (BaseVirtualFileSystem)vfsClass.newInstance();
+            vfs = (BaseRemoteFileSystem)vfsClass.newInstance();
         } catch (Exception e) {
             throw new FileSystemException("Could not create instance of " + protocol.getProvider(), e);
         }

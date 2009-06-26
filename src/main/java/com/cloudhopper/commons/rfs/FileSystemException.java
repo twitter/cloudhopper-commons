@@ -1,8 +1,8 @@
 
-package com.cloudhopper.commons.vfs;
+package com.cloudhopper.commons.rfs;
 
 /**
- * Root exception for any interactions with a virtual filesystem.
+ * Root exception for any interactions with a remote filesystem.
  * 
  * @author joelauer
  */

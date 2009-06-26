@@ -1,26 +1,26 @@
 
-package com.cloudhopper.commons.vfs;
+package com.cloudhopper.commons.rfs;
 
-import com.cloudhopper.commons.vfs.provider.*;
+import com.cloudhopper.commons.rfs.provider.*;
 
 /**
- * Enumerates the protocols supported by this virtual filesystem.
+ * Enumerates the protocols supported by this remote filesystem.
  *
  * @author joelauer
  */
 public enum Protocol {
     
     /** sftp (SSH/SCP Secure File Transfer Protocol) */
-    SFTP("sftp", SftpVirtualFileSystem.class),
+    SFTP("sftp", SftpRemoteFileSystem.class),
     /** ftp (File Transfer Protocol) */
-    FTP("ftp", FtpVirtualFileSystem.class),
+    FTP("ftp", FtpRemoteFileSystem.class),
     /** ftps (SSL/TLS File Transfer Protocol) */
-    FTPS("ftps", FtpVirtualFileSystem.class);       // serviced by same provider
+    FTPS("ftps", FtpRemoteFileSystem.class);       // serviced by same provider
 
     private final String name;
-    private final Class<? extends VirtualFileSystem> vfsClass;
+    private final Class<? extends RemoteFileSystem> vfsClass;
 
-    Protocol(final String name, final Class<? extends VirtualFileSystem> vfsClass) {
+    Protocol(final String name, final Class<? extends RemoteFileSystem> vfsClass) {
         this.name = name;
         this.vfsClass = vfsClass;
     }
@@ -32,7 +32,7 @@ public enum Protocol {
         return this.name;
     }
 
-    public Class<? extends VirtualFileSystem> getProvider() {
+    public Class<? extends RemoteFileSystem> getProvider() {
         return this.vfsClass;
     }
 

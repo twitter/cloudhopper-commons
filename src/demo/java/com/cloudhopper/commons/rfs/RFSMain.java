@@ -1,5 +1,5 @@
 
-package com.cloudhopper.commons.vfs;
+package com.cloudhopper.commons.rfs;
 
 
 import com.cloudhopper.commons.util.URL;
@@ -11,14 +11,14 @@ import org.apache.log4j.Logger;
  *
  * @author joelauer
  */
-public class VFSMain {
+public class RFSMain {
 
-    private static final Logger logger = Logger.getLogger(VFSMain.class);
+    private static final Logger logger = Logger.getLogger(RFSMain.class);
 
     public static void main(String[] args) throws Exception {
 
         //String r = "sftp://joelauer@magnum";
-        String r = "ftp://joelauer:b1zn%40tch!@localhost/home/joelauer";
+        String r = "ftp://joelauer@localhost/home/joelauer";
 
         URL url = URLParser.parse(r);
 
@@ -27,12 +27,12 @@ public class VFSMain {
         logger.info("password [" + url.getPassword() + "]");
         logger.info("host [" + url.getHost() + "]");
 
-        VirtualFileSystem vfs = VirtualFileSystemFactory.create(url);
+        RemoteFileSystem rfs = RemoteFileSystemFactory.create(url);
 
-        logger.debug("created vfs instance: " + vfs.getClass());
+        logger.debug("created rfs instance: " + rfs.getClass());
 
         // connect to the fs
-        vfs.connect();
+        rfs.connect();
 
         File file = new File("Dependency.txt");
 
@@ -46,10 +46,10 @@ public class VFSMain {
          */
 
         // copy the file
-        vfs.copy(file);
+        rfs.copy(file);
 
         // disconnect from the fs
-        vfs.disconnect();
+        rfs.disconnect();
     }
 
 

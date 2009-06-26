@@ -1,26 +1,26 @@
 
-package com.cloudhopper.commons.vfs.provider;
+package com.cloudhopper.commons.rfs.provider;
 
 import com.cloudhopper.commons.util.URL;
-import com.cloudhopper.commons.vfs.FileSystemException;
-import com.cloudhopper.commons.vfs.Protocol;
-import com.cloudhopper.commons.vfs.VirtualFileSystem;
+import com.cloudhopper.commons.rfs.FileSystemException;
+import com.cloudhopper.commons.rfs.Protocol;
+import com.cloudhopper.commons.rfs.RemoteFileSystem;
 import java.io.File;
 import java.io.FileInputStream;
 
 /**
- * Base class for all virtual filesystem providers.
+ * Base class for all remote filesystem providers.
  * 
  * @author joelauer
  */
-public abstract class BaseVirtualFileSystem implements VirtualFileSystem {
+public abstract class BaseRemoteFileSystem implements RemoteFileSystem {
 
-    // url associated with this vfs
+    // url associated with this rfs
     private URL url;
-    // the protocol enumeration associated with this vfs
+    // the protocol enumeration associated with this rfs
     private Protocol protocol;
 
-    public BaseVirtualFileSystem() {
+    public BaseRemoteFileSystem() {
         // do nothing
     }
 
@@ -37,7 +37,7 @@ public abstract class BaseVirtualFileSystem implements VirtualFileSystem {
     }
 
     /**
-     * Gets the URL associated with this virtual filesystem.
+     * Gets the URL associated with this remote filesystem.
      * @return
      */
     public URL getURL() {

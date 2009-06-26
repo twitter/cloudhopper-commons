@@ -1,4 +1,3 @@
-
 Cloudhopper, Inc.
 Commons Remote FileSystem Library
 --------------------------------------------------------------------------------

@@ -1,9 +1,9 @@
 
-package com.cloudhopper.commons.vfs.provider;
+package com.cloudhopper.commons.rfs.provider;
 
 import com.jcraft.jsch.Session;
 
-import com.cloudhopper.commons.vfs.*;
+import com.cloudhopper.commons.rfs.*;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -11,13 +11,12 @@ import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 import com.jcraft.jsch.UserInfo;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 
 /**
- * SFTP virtual filesystem.
+ * SFTP remote filesystem.
  *
  * The URL configuration for SFTP is fairly simple.  However, the path component
  * is flexible.  To stay in the default directory after logging in, do not include
@@ -28,14 +27,14 @@ import org.apache.log4j.Logger;
  * 
  * @author joelauer
  */
-public class SftpVirtualFileSystem extends BaseVirtualFileSystem {
-    private static final Logger logger = Logger.getLogger(SftpVirtualFileSystem.class);
+public class SftpRemoteFileSystem extends BaseRemoteFileSystem {
+    private static final Logger logger = Logger.getLogger(SftpRemoteFileSystem.class);
 
     private JSch jsch;
     private Session session;
     private ChannelSftp channel;
 
-    public SftpVirtualFileSystem() {
+    public SftpRemoteFileSystem() {
         super();
     }
 
