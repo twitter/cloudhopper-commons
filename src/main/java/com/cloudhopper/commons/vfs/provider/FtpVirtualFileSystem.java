@@ -17,7 +17,9 @@ import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.logging.Level;
+import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 import org.apache.commons.net.ftp.FTPSClient;
 import org.apache.log4j.Logger;
@@ -91,12 +93,7 @@ public class FtpVirtualFileSystem extends BaseVirtualFileSystem {
             }
 
             logger.info("Connected to remote FTP server @ " + getURL().getHost() + " (not authenticated yet)");
-
-            // if we're using a secure protocol, encrypt the data channel
-            if (getProtocol() == Protocol.FTPS) {
-                logger.info("Requesting FTP data channel to also be encrypted with SSL/TLS");
-                ((FTPSClient)ftp).execPROT("P");
-            }
+            
         } catch (IOException e) {
             if (ftp.isConnected()) {
                 try { ftp.disconnect(); } catch (Exception ex) {}
@@ -105,64 +102,75 @@ public class FtpVirtualFileSystem extends BaseVirtualFileSystem {
             throw new FileSystemException("Unabled to connect to FTP server @ " + getURL().getHost(), e);
         }
 
-
-
-
-
-        /**
-
-
-
-
+        //
+        // login either anonymously or with user/pass combo
+        //
         try {
-            session = jsch.getSession(getURL().getUsername(), getURL().getHost(), (getURL().getPort() == null ? 22 : getURL().getPort().intValue()));
-        } catch (JSchException e) {
-            throw new FileSystemException("Unable to create SSH session: " + e.getMessage(), e);
-        }
-
-        try {
-            session.connect();
-        } catch (JSchException e) {
-            session = null;
-            throw new FileSystemException("Unable to connect to SSH server: " + e.getMessage(), e);
-        }
-
-        logger.info("Connected to remote SSH server " + getURL().getUsername() + "@" + getURL().getHost());
-
-        // create an SFTP channel
-        try {
-            channel = (ChannelSftp) session.openChannel("sftp");
-            channel.connect();
-        } catch (JSchException e) {
-            // in case the channel failed, always close the parent session first
-            try { session.disconnect(); } catch (Exception ex) { }
-            session = null;
-            throw new FileSystemException("Unable to create SFTP channel on SSH session: " + e.getMessage(), e);
-        }
-
-        // based on the URL, make a decision if we should attempt to change dirs
-        if (getURL().getPath() != null) {
-            logger.info("Changing SFTP directory to: " + getURL().getPath());
-            try {
-                channel.cd(getURL().getPath());
-            } catch (SftpException e) {
-                // make sure we disconnect
-                try { disconnect(); } catch (Exception ex) { }
-                session = null;
-                throw new FileSystemException("Unable to change directory on SFTP channel to " + getURL().getPath(), e);
+            boolean loggedIn = false;
+            if (getURL().getUsername() == null) {
+                logger.info("Logging in anonymously to FTP server");
+                loggedIn = ftp.login( "anonymous", "" );
+            } else {
+                logger.info("Logging in with username and password to FTP server");
+                loggedIn = ftp.login(getURL().getUsername(), (getURL().getPassword() == null ? "" : getURL().getPassword()));
             }
-        } else {
-            // staying in whatever directory we were assigned by default
-            // for information purposeds, let's try to print out that dir
-            try {
-                String currentDir = channel.pwd();
-                logger.info("Current SFTP directory: " + currentDir);
-            } catch (SftpException e) {
-                // ignore this error
-                logger.warn("Unable to get current directory -- safe to ignore");
+
+            // did the login work?
+            if (!loggedIn) {
+                throw new FileSystemException("Login failed with FTP server (reply=" + ftp.getReplyString() + ")");
             }
+
+            //
+            // if we're using a secure protocol, encrypt the data channel
+            //
+            if (getProtocol() == Protocol.FTPS) {
+                logger.info("Requesting FTP data channel to also be encrypted with SSL/TLS");
+                ((FTPSClient)ftp).execPROT("P");
+                // ignore if this actually worked or not -- file just fail to copy
+            }
+
+            //
+            // make sure we're using binary files
+            //
+            ftp.setFileType(FTP.BINARY_FILE_TYPE);
+            if (!FTPReply.isPositiveCompletion(ftp.getReplyCode())) {
+                throw new FileSystemException("FTP server failed to switch to binary file mode (reply=" + ftp.getReplyString() + ")");
+            }
+
+            //
+            // use passive mode as default because most of us are behind firewalls these days.
+            //
+            ftp.enterLocalPassiveMode();
+            if (!FTPReply.isPositiveCompletion(ftp.getReplyCode())) {
+                throw new FileSystemException("FTP server failed to switch to passive mode (reply=" + ftp.getReplyString() + ")");
+            }
+
+            //
+            // change directories if requested
+            //
+            if (getURL().getPath() != null) {
+                logger.info("Changing FTP directory to: " + getURL().getPath());
+                if (!ftp.changeWorkingDirectory(getURL().getPath())) {
+                    throw new FileSystemException("FTP server failed to change working directory (reply=" + ftp.getReplyString() + ")");
+                }
+            } else {
+                // staying in whatever directory we were assigned by default
+                // for information purposeds, let's try to print out that dir
+                String currentDir = ftp.printWorkingDirectory();
+                logger.info("Current FTP working directory: " + currentDir);
+            }
+
+        } catch (FileSystemException e) {
+            // make sure to disconnect, then rethrow error
+            try { ftp.disconnect(); } catch (Exception ex) { }
+            ftp = null;
+            throw e;
+        } catch (IOException e) {
+            // make sure we're definitely disconnected before we throw exception
+            try { ftp.disconnect(); } catch (Exception ex) { }
+            ftp = null;
+            throw new FileSystemException("Underlying IO exception with FTP server during login and setup process", e);
         }
-         */
     }
 
     public void disconnect() throws FileSystemException {
@@ -184,47 +192,49 @@ public class FtpVirtualFileSystem extends BaseVirtualFileSystem {
     }
 
     public boolean exists(String filename) throws FileSystemException {
-
-        /**
         // we have to be connected
-        if (channel == null) {
-            throw new FileSystemException("Not yet connected to SFTP server");
+        if (ftp == null) {
+            throw new FileSystemException("Not yet connected to FTP server");
         }
 
-        // easiest way to check if a file already exists is to do a file stat
-        // this method will error out if the remote file does not exist!
         try {
-            SftpATTRS attrs = channel.stat(filename);
-            // if we get here, then file exists
-            return true;
-        } catch (SftpException e) {
-            // map "no file" message to return correct result
-            if (e.getMessage().toLowerCase().indexOf("no such file") >= 0) {
+            // check if the file already exists
+            FTPFile[] files = ftp.listFiles(filename);
+
+            // did this command succeed?
+            if (!FTPReply.isPositiveCompletion(ftp.getReplyCode())) {
+                throw new FileSystemException("FTP server failed to get file listing (reply=" + ftp.getReplyString() + ")");
+            }
+
+            if (files != null && files.length > 0) {
+                // this file already exists
+                return true;
+            } else {
                 return false;
             }
-            // otherwise, this means an underlying error occurred
-            throw new FileSystemException("Underlying error with SFTP session while checking if file exists", e);
-        }
-         */
 
-        return false;
+        } catch (IOException e) {
+            throw new FileSystemException("Underlying IO exception with FTP server while checking if file exists", e);
+        }
     }
 
 
     public void copy(InputStream in, String filename) throws FileSystemException {
-        /**
         // does this filename already exist?
         if (exists(filename)) {
-            throw new FileSystemException("File " + filename + " already exists on SFTP server");
+            throw new FileSystemException("File " + filename + " already exists on FTP server");
         }
 
         // copy the file
         try {
-            channel.put(in, filename);
-        } catch (SftpException e) {
+            // this overwrites by default
+            boolean stored = ftp.storeFile(filename, in);
+            if (!stored) {
+                throw new FileSystemException("FTP server failed to store file (reply=" + ftp.getReplyString() + ")");
+            }
+        } catch (IOException e) {
             throw new FileSystemException("Failed to copy data during PUT with SFTP server", e);
         }
-         */
     }
     
 }

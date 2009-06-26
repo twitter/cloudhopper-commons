@@ -18,7 +18,7 @@ public class VFSMain {
     public static void main(String[] args) throws Exception {
 
         //String r = "sftp://joelauer@magnum";
-        String r = "ftp://localhost";
+        String r = "ftp://joelauer:b1zn%40tch!@localhost/home/joelauer";
 
         URL url = URLParser.parse(r);
 
@@ -46,7 +46,7 @@ public class VFSMain {
          */
 
         // copy the file
-        vfs.move(file);
+        vfs.copy(file);
 
         // disconnect from the fs
         vfs.disconnect();
