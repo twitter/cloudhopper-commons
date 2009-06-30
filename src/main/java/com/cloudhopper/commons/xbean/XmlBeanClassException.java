@@ -6,6 +6,7 @@ package com.cloudhopper.commons.xbean;
  * @author joelauer
  */
 public class XmlBeanClassException extends XmlBeanException {
+    private static final long serialVersionUID = 1L;
 
     public XmlBeanClassException(String msg) {
         this(msg, null);

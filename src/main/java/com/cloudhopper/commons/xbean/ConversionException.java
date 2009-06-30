@@ -7,6 +7,7 @@ package com.cloudhopper.commons.xbean;
  * @author joelauer
  */
 public class ConversionException extends Exception {
+    private static final long serialVersionUID = 1L;
 
     public ConversionException(String msg) {
         super(msg);

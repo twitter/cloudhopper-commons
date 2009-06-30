@@ -6,6 +6,7 @@ package com.cloudhopper.commons.xbean;
  * @author joelauer
  */
 public class PropertyNotFoundException extends BasePropertyException {
+    private static final long serialVersionUID = 1L;
 
     public PropertyNotFoundException(String propertyName, String xmlPath, Class targetClass, String msg) {
         this(propertyName, xmlPath, targetClass, msg, null);

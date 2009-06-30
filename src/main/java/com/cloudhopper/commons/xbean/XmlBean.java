@@ -314,7 +314,7 @@ public class XmlBean {
         }
 
         // create a hashmap to track properties
-        HashMap properties = new HashMap();
+        HashMap<String,String> properties = new HashMap<String,String>();
 
         doConfigure(rootNode, obj, properties, true);
     }
@@ -323,7 +323,7 @@ public class XmlBean {
      * Internal method for handling the configuration of an object. This method
      * is recursively called for simple and complex properties.
      */
-    private void doConfigure(XmlParser.Node rootNode, Object obj, HashMap properties, boolean checkForDuplicates) throws XmlBeanException {
+    private void doConfigure(XmlParser.Node rootNode, Object obj, HashMap<String,String> properties, boolean checkForDuplicates) throws XmlBeanException {
 
         // FIXME: do we do anything with attributes of a node?
 
