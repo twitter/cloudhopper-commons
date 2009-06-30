@@ -1,6 +1,8 @@
-
-Overview
+Cloudhopper, Inc.
+http://www.cloudhopper.com/
+Commons Sql Library
 --------------------------------------------------------------------------------
+
 Provides a consistent interface to configure, create, and manage various
 DataSource providers that may provide Connection pooling.  With no other
 dependencies, this library provides a basic DataSource that offers no pooling.
