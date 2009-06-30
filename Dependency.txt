@@ -2,25 +2,22 @@
 
 Compile Scope:
 c3p0-0.9.1.2.jar
-ch-commons-util-2.0-20090418.001909-13.jar
-commons-codec-1.3.jar
+ch-commons-util-2.1.jar
 joda-time-1.6.jar
 log4j-1.2.15.jar
 proxool-0.9.1.jar
 proxool-cglib-0.9.1.jar
 
 Runtime Scope:
-ch-commons-util-2.0-20090418.001909-13.jar
-commons-codec-1.3.jar
+ch-commons-util-2.1.jar
 joda-time-1.6.jar
 log4j-1.2.15.jar
 
 Test Scope:
 c3p0-0.9.1.2.jar
-ch-commons-util-2.0-20090418.001909-13.jar
+ch-commons-util-2.1.jar
 ch-commons-xbean-1.0-20090402.034712-6.jar
 ch-commons-xml-1.0-20090402.034546-6.jar
-commons-codec-1.3.jar
 joda-time-1.6.jar
 junit-4.5.jar
 log4j-1.2.15.jar

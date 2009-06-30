@@ -1,4 +1,7 @@
 
+* Assign a random name to the datasource if its set to null -- might allow for
+  a more zero-configuration setup.
+
 * Test cases for these scenarios:
   - basic configuration stuff?  values are setup correctly?
   - parsing of bad JDBC URLs?
@@ -19,5 +22,3 @@
   implement some form of tracking
 
 * Support for statement caching configuration (in c3p0)
-
-* Add Jakarta DBCP pooling impl?
