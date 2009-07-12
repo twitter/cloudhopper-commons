@@ -74,6 +74,8 @@ AD AND 020 Andorra, Principality of
     public void lookupByIso2() throws Exception {
         Country result0 = CountryUtil.lookupByIso2("US");
         Assert.assertEquals(result0.getCode(), "US");
+        result0 = CountryUtil.lookupByIso2("GB");
+        Assert.assertEquals(result0.getCode(), "GB");
     }
 
     

@@ -65,6 +65,8 @@ public class E164CountryCodeUtilTest {
         Assert.assertEquals("CA", result0.getIso());
         result0 = E164CountryCodeUtil.lookup("18765551212");
         Assert.assertEquals("JM", result0.getIso());
+        result0 = E164CountryCodeUtil.lookup("448765551212");
+        Assert.assertEquals("GB", result0.getIso());
     }
 
     

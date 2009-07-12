@@ -2,11 +2,14 @@
 Cloudhopper Commons Locale Library
 --------------------------------------------------------------------------------
 
+1.3 - 2009-07-12
+  * Fixed numerous incorrect country mappings in E164 Country Codes.
+
 1.2 - 2009-05-15
-   * Added ability to lookup a country by its ISO2 value.
+  * Added ability to lookup a country by its ISO2 value.
 
 1.1 - 2009-05-15
-   * Added E.164 Country Codes and Lookup Utility
+  * Added E.164 Country Codes and Lookup Utility
 
 1.0 - 2009-04-01
-   * Initial release extracted from ch-commons-util
+  * Initial release extracted from ch-commons-util
