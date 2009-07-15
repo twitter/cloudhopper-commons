@@ -13,26 +13,31 @@ import java.io.IOException;
  */
 public final class Country implements Cloneable, Comparable {
 
-    /** Constructs a new Country from an ISO code and name.  The code is
-     *  length checked (length =2).  There is no other validation on the code
-     *  or name. */
-    Country(String code, String name) throws IllegalArgumentException {
-        name_ = name;
+    /**
+     * Constructs a new Country from an ISO code and name.  The code is
+     * length checked (length =2).  There is no other validation on the code
+     * or name.  A country name is "Nigeria", but the long name "Nigeria, Republic of"
+     */
+    Country(String code, String name, String longName) throws IllegalArgumentException {
+        this.name = name;
+        this.longName = longName;
         if (code.length() != 2) {
             throw new IllegalArgumentException(CODE_LENGTH);
         } else {
-            code_ = code;
+            this.code = code;
         }
     }
 
     /** Return a copy of this object. */
+    @Override
     public Object clone() {
         Country country = null;
         try {
             country = (Country) super.clone();
-            if (country.code_ != null) {
-                country.code_ = getCode(); //String is immutable no need to clone
-                country.name_ = getName(); //String is immutable no need to clone
+            if (country.code != null) {
+                country.code = getCode(); //String is immutable no need to clone
+                country.name = getName(); //String is immutable no need to clone
+                country.longName = getLongName();
             }
         } catch (CloneNotSupportedException e) {
         } // Won't happen
@@ -42,14 +47,23 @@ public final class Country implements Cloneable, Comparable {
     /** Returns the country code string.  If this is a valid ISO code it should
      *  be comparable to another country code. */
     public String getCode() {
-        return code_;
+        return code;
     }
 
-    /** Returns the country name string.  This string is not validated in any
-     *  way and should not be used for comparative purposes. Only country codes
-     *  are used to compare ISOCountry equality.*/
+    /**
+     * Returns the name of a country such as "Nigeria".
+     * @see #getLongName() 
+     */
     public String getName() {
-        return name_;
+        return name;
+    }
+
+    /**
+     * Returns the name of a country such as "Nigeria, Federal Republic Of".
+     * @see #getName() 
+     */
+    public String getLongName() {
+        return longName;
     }
 
     /** Compares two ISOCountry objects for ordering.
@@ -83,20 +97,22 @@ public final class Country implements Cloneable, Comparable {
 
     @Override
     public int hashCode() {
-        return this.code_.hashCode();
+        return this.code.hashCode();
     }
 
     @Override
     public String toString() {
-        return "Country [code=" + this.code_ + ",name=" + this.name_ + "]";
+        return "Country [code=" + this.code + ", name=" + this.name + "]";
     }
 
     /** A string that stipulates the code length.  Used for error messages. */
     private static final String CODE_LENGTH = "An ISO country code is two characters in length.";
     /** An ISO country code.  Its length is validated in the constructor. */
-    private String code_;
+    private String code;
     /** An ISO country name.  Not validated. */
-    private String name_;
+    private String longName;
+    /** An ISO country short name (anything after a , is removed to a short name) */
+    private String name;
 
 
     // AF AFG 004 Afghanistan
@@ -111,14 +127,23 @@ public final class Country implements Cloneable, Comparable {
             int pos3 = line.indexOf(' ', pos2+1);
             if (pos3 < 0) throw new IOException("Invalid format, could not parse 3 char digit code");
             String num3 = line.substring(pos2+1, pos3);
-            // rest of line is name
-            String name = line.substring(pos3+1).trim();
+            // rest of line is the long name
+            String longName = line.substring(pos3+1).trim();
             // was there a name?
-            if (name == null || name.equals("")) {
+            if (longName == null || longName.equals("")) {
                 throw new IOException("Country name was null or empty");
             }
+
+            // parse long name into its short name (strip anything after the last comma)
+            String name = longName;
+            int pos4 = longName.lastIndexOf(',');
+            if (pos4 > 0) {
+                // strip out the final part such as ", Republic of" from something like "Nigeria, Republic Of"
+                name = longName.substring(0, pos4);
+            }
+
             // create the new country
-            return new Country(code2, name);
+            return new Country(code2, name, longName);
         } catch (Exception e) {
             throw new IOException("Failed while parsing country for line: " + line, e);
         }

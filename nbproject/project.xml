@@ -73,13 +73,13 @@
         <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/2">
             <compilation-unit>
                 <package-root>src/main/java</package-root>
-                <classpath mode="compile">src/main/java:src/demo/java:src/test/java:lib/ch-commons-util-sources.jar:lib/ch-commons-util.jar:lib/commons-codec-sources.jar:lib/commons-codec.jar:lib/joda-time-sources.jar:lib/joda-time.jar:lib/junit-sources.jar:lib/junit.jar:lib/log4j-sources.jar:lib/log4j.jar</classpath>
+                <classpath mode="compile">src/main/java:src/demo/java:src/test/java:lib/ch-commons-util-sources.jar:lib/ch-commons-util.jar:lib/joda-time-sources.jar:lib/joda-time.jar:lib/junit-sources.jar:lib/junit.jar:lib/log4j-sources.jar:lib/log4j.jar</classpath>
                 <source-level>1.5</source-level>
             </compilation-unit>
             <compilation-unit>
                 <package-root>src/test/java</package-root>
                 <unit-tests/>
-                <classpath mode="compile">src/main/java:src/demo/java:src/test/java:lib/ch-commons-util-sources.jar:lib/ch-commons-util.jar:lib/commons-codec-sources.jar:lib/commons-codec.jar:lib/joda-time-sources.jar:lib/joda-time.jar:lib/junit-sources.jar:lib/junit.jar:lib/log4j-sources.jar:lib/log4j.jar</classpath>
+                <classpath mode="compile">src/main/java:src/demo/java:src/test/java:lib/ch-commons-util-sources.jar:lib/ch-commons-util.jar:lib/joda-time-sources.jar:lib/joda-time.jar:lib/junit-sources.jar:lib/junit.jar:lib/log4j-sources.jar:lib/log4j.jar</classpath>
                 <source-level>1.5</source-level>
             </compilation-unit>
         </java-data>

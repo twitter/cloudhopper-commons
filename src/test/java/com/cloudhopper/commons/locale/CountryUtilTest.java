@@ -63,11 +63,15 @@ DZ DZA 012 Algeria, People's Democratic Republic of
 AS ASM 016 American Samoa
 AD AND 020 Andorra, Principality of
          */
-        Assert.assertEquals(countries.get(0), new Country("AF", ""));
-        Assert.assertEquals(countries.get(1), new Country("AL", ""));
-        Assert.assertEquals(countries.get(2), new Country("DZ", ""));
-        Assert.assertEquals(countries.get(3), new Country("AS", ""));
-        Assert.assertEquals(countries.get(4), new Country("AD", ""));
+        Assert.assertEquals(countries.get(0), new Country("AF", "", ""));
+        Assert.assertEquals(countries.get(1), new Country("AL", "", ""));
+        Assert.assertEquals(countries.get(2), new Country("DZ", "", ""));
+        Assert.assertEquals(countries.get(3), new Country("AS", "", ""));
+        Assert.assertEquals(countries.get(4), new Country("AD", "", ""));
+
+        Country c0 = countries.get(4);
+        Assert.assertEquals("Andorra", c0.getName());
+        Assert.assertEquals("Andorra, Principality of", c0.getLongName());
     }
 
     @Test
