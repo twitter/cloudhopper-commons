@@ -1,5 +1,6 @@
-
-Cloudhopper Commons Locale Library
+Cloudhopper, Inc.
+http://www.cloudhopper.com/
+Commons Locale Library
 --------------------------------------------------------------------------------
 
 1.4 - 2009-07-15
