@@ -233,7 +233,7 @@ VI VIR 850 US Virgin Islands
 UG UGA 800 Uganda, Republic of
 UA UKR 804 Ukraine
 AE ARE 784 United Arab Emirates
-GB GBR 826 United Kingdom of Great Britain & N. Ireland
+GB GBR 826 United Kingdom
 UM UMI 581 United States Minor Outlying Islands
 US USA 840 United States of America
 UY URY 858 Uruguay, Eastern Republic of
