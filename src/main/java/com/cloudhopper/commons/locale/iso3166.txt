@@ -60,7 +60,7 @@ CD COD 180 Congo, Democratic Republic of
 CG COG 178 Congo, People's Republic of
 CK COK 184 Cook Islands
 CR CRI 188 Costa Rica, Republic of
-CI CIV 384 Cote D'Ivoire, Ivory Coast, Republic of the
+CI CIV 384 Cote D'Ivoire
 CU CUB 192 Cuba, Republic of
 CY CYP 196 Cyprus, Republic of
 CZ CZE 203 Czech Republic
@@ -123,7 +123,7 @@ KP PRK 408 Korea, Democratic People's Republic of
 KR KOR 410 Korea, Republic of
 KW KWT 414 Kuwait, State of
 KG KGZ 417 Kyrgyz Republic
-LA LAO 418 Lao People's Democratic Republic
+LA LAO 418 Lao, People's Democratic Republic of
 LV LVA 428 Latvia
 LB LBN 422 Lebanon, Lebanese Republic
 LS LSO 426 Lesotho, Kingdom of
