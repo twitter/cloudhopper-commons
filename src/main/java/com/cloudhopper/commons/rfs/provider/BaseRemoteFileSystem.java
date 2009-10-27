@@ -84,7 +84,7 @@ public abstract class BaseRemoteFileSystem implements RemoteFileSystem {
             // delegate handling to input stream method
             copy(in, filename);
 
-            logger
+            logger.info("Successfully copied file " + srcFile.getName() + " to remote filesystem");
         } finally {
             // make sure file input stream is closed
             try { in.close(); } catch (Exception ex) {}
