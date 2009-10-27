@@ -50,12 +50,14 @@ Provides access to the files on an FTP or FTPS server (SSL-protected).
 URI Format
 
   ftp[s]://username[: password ]@hostname[: port ][ path ]
+      [? mode=active|passive & mkdir=true|false ]
 
 Examples
 
   ftp://myusername:mypassword@somehost
   ftp://myusername:mypassword@somehost/
   ftp://myusername:mypassword@somehost/pub/downloads/
+  ftp://myusername:mypassword@somehost/~/test
   ftps://myusername:mypassword@somehost
   ftps://myusername:mypassword@somehost/
   ftps://myusername:mypassword@somehost/pub/downloads/
@@ -65,5 +67,12 @@ then requests an SSL-protected session.  Only a hostname is required in the FTP
 or FTPS URIs.  If no username is provided, then this library will attempt to
 login anonymously with an empty password.  If an anonymous login requires a
 password to be sent, then you'll need to manually include those in the URI such
-that "ftp://anonymous:pass@host".  Also, after connecting, this library will
-immediately switch to both passive and binary modes.
+that "ftp://anonymous:pass@host".
+
+After connecting, this library will attempt to switch to passive mode by
+default. Unless the query parameter mode=active is added.  Also, if the mkdir
+paramter is set to true, then the directories will be created if they don't
+exist.
+
+If the path starts with ~, then the path is relative to the directory we're put
+into once logged in.  Otherwise, the path is relative to the root directory.
