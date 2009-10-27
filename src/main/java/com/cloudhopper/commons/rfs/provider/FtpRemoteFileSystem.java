@@ -7,6 +7,8 @@ import com.cloudhopper.commons.util.StringUtil;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -184,13 +186,58 @@ public class FtpRemoteFileSystem extends BaseRemoteFileSystem {
             }
 
             //
-            // change directories if requested
+            // handle making or changing directories
             //
-            if (getURL().getPath() != null) {
-                logger.info("Changing FTP directory to: " + getURL().getPath());
-                if (!ftp.changeWorkingDirectory(getURL().getPath())) {
-                    throw new FileSystemException("FTP server failed to change working directory (reply=" + ftp.getReplyString() + ")");
+            // if the path is not empty
+            if (!StringUtil.isEmpty(getURL().getPath())) {
+                // recursively iterate thru directory path and attempt to create the path
+                StringTokenizer path = new StringTokenizer(getURL().getPath(), "/");
+
+                // create an array list of tokens
+                ArrayList<String> pathParts = new ArrayList<String>();
+                while (path.hasMoreTokens()) {
+                    pathParts.add(path.nextToken());
                 }
+
+                // index we'll start searching for
+                int i = 0;
+
+                // determine path of directories we're going to take
+                if (pathParts.size() > 0 && pathParts.get(i).equals("~")) {
+                    // stay in home directory once logged in
+                    // just increment what we'll search from
+                    i = 1;
+                } else {
+                    // change to root directory first
+                    if (!ftp.changeWorkingDirectory("/")) {
+                        throw new FileSystemException("FTP server failed to change to root directory (reply=" + ftp.getReplyString() + ")");
+                    }
+                }
+
+                for ( ; i < pathParts.size(); i++) {
+                    // try to change to this directory
+                    String pathPart = pathParts.get(i);
+                    boolean changedDir = ftp.changeWorkingDirectory(pathPart);
+                    if (!changedDir) {
+                        if (!mkdir) {
+                            // now try to change to it again
+                            if (!ftp.changeWorkingDirectory(pathPart)) {
+                                throw new FileSystemException("Unable to change to directory " + getURL().getPath() + " on FTP server: " + pathPart + " does not exist");
+                            }
+                        } else {
+                            // try to create it
+                            if (!ftp.makeDirectory(pathPart)) {
+                                throw new FileSystemException("Unable to make directory '" + pathPart + "' on FTP server");
+                            }
+                            // now try to change to it again
+                            if (!ftp.changeWorkingDirectory(pathPart)) {
+                                throw new FileSystemException("Unable to change to new directory '" + pathPart + "' on FTP server");
+                            }
+                        }
+                    }
+                }
+                
+            // just print out our working directory
             } else {
                 // staying in whatever directory we were assigned by default
                 // for information purposeds, let's try to print out that dir
