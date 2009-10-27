@@ -226,6 +226,7 @@ public class FtpRemoteFileSystem extends BaseRemoteFileSystem {
                             }
                         } else {
                             // try to create it
+                            logger.info("Making new directory on FTP server: " + pathPart);
                             if (!ftp.makeDirectory(pathPart)) {
                                 throw new FileSystemException("Unable to make directory '" + pathPart + "' on FTP server");
                             }
