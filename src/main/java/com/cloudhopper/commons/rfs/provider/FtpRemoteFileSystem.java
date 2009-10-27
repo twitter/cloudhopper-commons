@@ -3,6 +3,7 @@ package com.cloudhopper.commons.rfs.provider;
 
 
 import com.cloudhopper.commons.rfs.*;
+import com.cloudhopper.commons.util.StringUtil;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
@@ -21,15 +22,26 @@ import org.apache.log4j.Logger;
 public class FtpRemoteFileSystem extends BaseRemoteFileSystem {
     private static final Logger logger = Logger.getLogger(FtpRemoteFileSystem.class);
 
+    public enum Mode {
+        PASSIVE,
+        ACTIVE
+    };
+
     // client (will support either FTP or FTPS)
     private FTPClient ftp;
     // are we in ssl mode?
     private boolean ssl;
+    // which mode should we switch to?  PASSIVE or ACTIVE?
+    private Mode mode;
+    // should we create the directory path if it doesn't exist?
+    private boolean mkdir;
 
     public FtpRemoteFileSystem() {
         super();
         // default ssl mode to false
         ssl = false;
+        // default mode to passive
+        mode = Mode.PASSIVE;
     }
 
     
@@ -39,6 +51,37 @@ public class FtpRemoteFileSystem extends BaseRemoteFileSystem {
         if (getURL().getHost() == null) {
             throw new FileSystemException("The FTP(s) protocol requires a host");
         }
+
+        // "mode" can either be PASSIVE or ACTIVE
+        String tempMode = getURL().getQueryProperty("mode");
+        if (StringUtil.isEmpty(tempMode)) {
+            mode = Mode.PASSIVE;
+        } else {
+            if (tempMode.equalsIgnoreCase("passive")) {
+                mode = Mode.PASSIVE;
+            } else if (tempMode.equalsIgnoreCase("active")) {
+                mode = Mode.ACTIVE;
+            } else {
+                throw new FileSystemException("Invalid FTP mode parameter value '" + tempMode + "'");
+            }
+        }
+        logger.info("FTP mode set to " + mode);
+
+        // "mkdir" can either be true or false
+        String tempMkdir = getURL().getQueryProperty("mkdir");
+        if (StringUtil.isEmpty(tempMkdir)) {
+            mkdir = false;
+        } else {
+            if (tempMkdir.equalsIgnoreCase("true")) {
+                mkdir = true;
+            } else if (tempMkdir.equalsIgnoreCase("false")) {
+                mkdir = false;
+            } else {
+                throw new FileSystemException("Invalid FTP mkdir parameter value '" + tempMkdir + "'");
+            }
+        }
+        logger.info("FTP create missing parent directories? " + mkdir);
+
     }
 
     public void connect() throws FileSystemException {
@@ -126,12 +169,18 @@ public class FtpRemoteFileSystem extends BaseRemoteFileSystem {
                 throw new FileSystemException("FTP server failed to switch to binary file mode (reply=" + ftp.getReplyString() + ")");
             }
 
-            //
-            // use passive mode as default because most of us are behind firewalls these days.
-            //
-            ftp.enterLocalPassiveMode();
-            if (!FTPReply.isPositiveCompletion(ftp.getReplyCode())) {
-                throw new FileSystemException("FTP server failed to switch to passive mode (reply=" + ftp.getReplyString() + ")");
+
+            // should we go into passive or active mode?
+            if (mode == Mode.ACTIVE) {
+                ftp.enterLocalActiveMode();
+                if (!FTPReply.isPositiveCompletion(ftp.getReplyCode())) {
+                    throw new FileSystemException("FTP server failed to switch to active mode (reply=" + ftp.getReplyString() + ")");
+                }
+            } else if (mode == Mode.PASSIVE) {
+                ftp.enterLocalPassiveMode();
+                if (!FTPReply.isPositiveCompletion(ftp.getReplyCode())) {
+                    throw new FileSystemException("FTP server failed to switch to passive mode (reply=" + ftp.getReplyString() + ")");
+                }
             }
 
             //

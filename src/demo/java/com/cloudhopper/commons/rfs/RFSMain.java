@@ -1,7 +1,6 @@
 
 package com.cloudhopper.commons.rfs;
 
-
 import com.cloudhopper.commons.util.URL;
 import com.cloudhopper.commons.util.URLParser;
 import java.io.File;
@@ -18,7 +17,7 @@ public class RFSMain {
     public static void main(String[] args) throws Exception {
 
         //String r = "sftp://joelauer@magnum";
-        String r = "ftp://joelauer@localhost/home/joelauer";
+        String r = "ftp://stratus:HotDog@lyn-nms-001/data/logs/lyn-stratus-020?mode=active&mkdir=true";
 
         URL url = URLParser.parse(r);
 

@@ -7,6 +7,7 @@ import com.cloudhopper.commons.rfs.Protocol;
 import com.cloudhopper.commons.rfs.RemoteFileSystem;
 import java.io.File;
 import java.io.FileInputStream;
+import org.apache.log4j.Logger;
 
 /**
  * Base class for all remote filesystem providers.
@@ -14,6 +15,7 @@ import java.io.FileInputStream;
  * @author joelauer
  */
 public abstract class BaseRemoteFileSystem implements RemoteFileSystem {
+    private static final Logger logger = Logger.getLogger(BaseRemoteFileSystem.class);
 
     // url associated with this rfs
     private URL url;
@@ -81,6 +83,8 @@ public abstract class BaseRemoteFileSystem implements RemoteFileSystem {
         try {
             // delegate handling to input stream method
             copy(in, filename);
+
+            logger
         } finally {
             // make sure file input stream is closed
             try { in.close(); } catch (Exception ex) {}
