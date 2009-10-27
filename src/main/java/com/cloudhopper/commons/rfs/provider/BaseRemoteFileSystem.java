@@ -102,6 +102,8 @@ public abstract class BaseRemoteFileSystem implements RemoteFileSystem {
         // if there is an error during the copy, an exception would have been thrown
         // therefore, it should be okay to delete the file now
         srcFile.delete();
+
+        logger.info("Successfully deleted file " + srcFile.getName() + " from local filesystem");
     }
 
 }
