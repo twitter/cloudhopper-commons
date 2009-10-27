@@ -7,7 +7,10 @@ Commons Remote FileSystem Library
    * Added support for provider URIs to include name/value pairs as normal URL
      query parameters.
    * Added support for FTP active vs. passive modes.
-   
+   * Added mkdir feature for FTP to support create missing directories
+   * Added support path starting with ~ so that the path is not changed to the
+     root directory first.  The relative path is from whatever directory the
+     FTP server puts us in after logging in.
 
 1.0 - 2009-06-25
    * Initial release
