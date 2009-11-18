@@ -1,0 +1,7 @@
+Cloudhopper, Inc.
+http://www.cloudhopper.com/
+Apache Jakarta HttpClient 4.x Extension Library
+--------------------------------------------------------------------------------
+
+1.0 - 2009-11-17
+  * Initial release 
