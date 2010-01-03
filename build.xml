@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="ch-httpclient-ext" default="compile-main">
+<project name="ch-httpclient-util" default="compile-main">
     <!-- import common build file -->
     <import file="../ant-common-build/common-build.xml" />
 
