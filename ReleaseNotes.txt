@@ -2,6 +2,11 @@ Cloudhopper, Inc.
 http://www.cloudhopper.com/
 Apache Jakarta HttpClient 4.x Utility Library
 --------------------------------------------------------------------------------
+1.2 - 2010-01-31
+  * Added normal HTTPS scheme for SchemeFactory
+
+1.1 - 2010-01-27
+  * Added ability to handle multiple HTTP status codes as "expected"
 
 1.0 - 2010-01-03
-  * Initial release 
+  * Initial release

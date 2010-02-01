@@ -13,7 +13,7 @@ import java.io.IOException;
 public class UnexpectedHttpStatusCodeException extends IOException {
     private static final long serialVersionUID = 1L;
 
-    int expected;
+    int[] expected;
     int actual;
     String responseBody;
 
@@ -24,9 +24,22 @@ public class UnexpectedHttpStatusCodeException extends IOException {
     public UnexpectedHttpStatusCodeException(int expectedStatusCode, int actualStatusCode, String msg) {
         this(expectedStatusCode, actualStatusCode, msg, null);
     }
+
     public UnexpectedHttpStatusCodeException(int expectedStatusCode, int actualStatusCode, String msg, String responseBody) {
+        this(new int[] { expectedStatusCode }, actualStatusCode, responseBody);
+    }
+
+    public UnexpectedHttpStatusCodeException(int[] expectedStatusCodes, String msg) {
+        this(expectedStatusCodes, -1, msg, null);
+    }
+
+    public UnexpectedHttpStatusCodeException(int[] expectedStatusCodes, int actualStatusCode, String msg) {
+        this(expectedStatusCodes, actualStatusCode, msg, null);
+    }
+
+    public UnexpectedHttpStatusCodeException(int[] expectedStatusCodes, int actualStatusCode, String msg, String responseBody) {
         super(msg);
-        this.expected = expectedStatusCode;
+        this.expected = expectedStatusCodes;
         this.actual = actualStatusCode;
         this.responseBody = responseBody;
     }
@@ -35,7 +48,7 @@ public class UnexpectedHttpStatusCodeException extends IOException {
      * Gets the status code we expected.
      * @return The status code we expected.
      */
-    public int getExpectedStatusCode() {
+    public int[] getExpectedStatusCodes() {
         return this.expected;
     }
 

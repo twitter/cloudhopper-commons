@@ -25,6 +25,11 @@ public class SchemeFactory {
         return new Scheme("http", PlainSocketFactory.getSocketFactory(), 80);
     }
 
+    static public Scheme createHttpsScheme() throws NoSuchAlgorithmException {
+        SSLSocketFactory socketFactory = new SSLSocketFactory(SSLContext.getDefault());
+        return new Scheme("https", socketFactory, 443);
+    }
+
     static public Scheme createDoNotVerifyHttpsScheme() throws NoSuchAlgorithmException, KeyManagementException {
         TrustManager sslTrustManager = new DoNotVerifySSLCertificateTrustManager();
         SSLContext sslcontext = SSLContext.getInstance("TLS");

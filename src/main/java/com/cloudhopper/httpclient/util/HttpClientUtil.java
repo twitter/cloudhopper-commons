@@ -2,9 +2,9 @@
 package com.cloudhopper.httpclient.util;
 
 import java.io.IOException;
+import java.util.Arrays;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.util.EntityUtils;
@@ -48,6 +48,10 @@ public class HttpClientUtil {
      *      code in the response does not match what we expect.
      */
     static public void expectStatusCode(int expectedStatusCode, HttpResponse response) throws UnexpectedHttpStatusCodeException {
+
+        expectStatusCodes(new int[] {expectedStatusCode}, response);
+
+        /**
         // verify the response wasn't null
         if (response == null) {
             throw new UnexpectedHttpStatusCodeException(expectedStatusCode, "HttpResponse was null [expected statusCode=" + expectedStatusCode + "]");
@@ -100,7 +104,74 @@ public class HttpClientUtil {
             }
 
             throw new UnexpectedHttpStatusCodeException(expectedStatusCode, status.getStatusCode(), message.toString());
-        }   
+        }
+         */
+    }
+
+
+    static public void expectStatusCodes(int [] expectedStatusCodes, HttpResponse response) throws UnexpectedHttpStatusCodeException {
+        // verify the response wasn't null
+        if (response == null) {
+            throw new UnexpectedHttpStatusCodeException(expectedStatusCodes, "HttpResponse was null [expected statusCodes " + Arrays.toString(expectedStatusCodes) + "]");
+        }
+
+        // get the status line
+        StatusLine status = response.getStatusLine();
+
+        // verify the status line object wasn't null
+        if (status == null) {
+            throw new UnexpectedHttpStatusCodeException(expectedStatusCodes, "HttpResponse contained a null StatusLine [expected statusCode=" + Arrays.toString(expectedStatusCodes) + "]");
+        }
+
+        // try to match any of the expected status codes
+        boolean wasExpected = false;
+        for (int expectedStatusCode : expectedStatusCodes) {
+            if (status.getStatusCode() == expectedStatusCode) {
+                wasExpected = true;
+                break;
+            }
+        }
+
+        // verify the expected status code matches
+        if (!wasExpected) {
+            // prepare the error message we'll set in the exception
+            StringBuilder message = new StringBuilder(200);
+            String body = null;
+
+            message.append("Unexpected HTTP status code: expected [");
+            message.append(Arrays.toString(expectedStatusCodes));
+            message.append("] actual [");
+            message.append(status.getStatusCode());
+            message.append("] reason [");
+            message.append(status.getReasonPhrase());
+            message.append("]");
+
+            // attempt to read the body of the response
+            HttpEntity entity = response.getEntity();
+
+            if (entity != null) {
+                try {
+                    // consume content and process it
+                    body = EntityUtils.toString(entity);
+                    // append the first 100 chars of response
+                    if (body != null) {
+                        message.append(" responseBody [");
+                        if (body.length() > 100) {
+                            message.append(body.substring(0, 100));
+                        } else {
+                            message.append(body);
+                        }
+                        message.append("]]");
+                    }
+                } catch (IOException e) {
+                    //logger.warn("IOException while trying to read content for unexpected status code", e);
+                } finally {
+                    try { entity.consumeContent(); } catch (Exception ignore) { }
+                }
+            }
+
+            throw new UnexpectedHttpStatusCodeException(expectedStatusCodes, status.getStatusCode(), message.toString());
+        }
     }
 
 }
