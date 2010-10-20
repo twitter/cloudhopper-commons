@@ -2,6 +2,9 @@ Cloudhopper, Inc.
 http://www.cloudhopper.com/
 Apache Jakarta HttpClient 4.x Utility Library
 --------------------------------------------------------------------------------
+1.4 - 2010-10-20
+  * Added keystore and truststore support to HttpClientFactory
+
 1.3 - 2010-10-15
   * Added keystore and truststore HTTPS scheme to SchemeFactory
 

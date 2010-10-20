@@ -1,8 +1,14 @@
 
 package com.cloudhopper.httpclient.util;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.security.cert.CertificateException;
 import java.security.KeyManagementException;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -33,6 +39,31 @@ public class HttpClientFactory {
         //
         Scheme httpsScheme = SchemeFactory.createDoNotVerifyHttpsScheme();
 
+        //
+        // register this new scheme on the https client
+        //
+        client.getConnectionManager().getSchemeRegistry().register(httpsScheme);
+    }
+
+    /**
+     * Adding support for SSL mutual authentication using specified keystore/truststore.
+     * Specifying keystore/truststore is optional. If unspecified, a normal SSL scheme
+     * is created.
+     */
+    static public void configureWithSslKeystoreTruststore( HttpClient client, 
+							   File keystoreFile,
+							   String keystorePassword,
+							   File truststoreFile,
+							   String truststorePassword ) 
+	throws CertificateException, FileNotFoundException, IOException, 
+	       KeyStoreException, KeyManagementException, NoSuchAlgorithmException, 
+	       UnrecoverableKeyException {
+
+        //
+        // create a new https scheme with no SSL verification
+        //
+        Scheme httpsScheme = SchemeFactory.createHttpsScheme( keystoreFile, keystorePassword,
+							      truststoreFile, truststorePassword );
         //
         // register this new scheme on the https client
         //
