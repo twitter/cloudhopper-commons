@@ -1,0 +1,68 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>cloudhopper</groupId>
+  <artifactId>ch-commons-xbean</artifactId>
+  <packaging>jar</packaging>
+  <version>1.1</version>
+  <name>Cloudhopper xbean library</name>
+
+  <parent>
+    <groupId>cloudhopper</groupId>
+    <artifactId>ch-parent</artifactId>
+    <version>1.0</version>
+  </parent>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.mycila.maven-license-plugin</groupId>
+        <artifactId>maven-license-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <!-- compile scope -->
+    <dependency>
+      <groupId>joda</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>${joda-time.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>cloudhopper</groupId>
+      <artifactId>ch-commons-util</artifactId>
+      <version>${ch-commons-util.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>cloudhopper</groupId>
+      <artifactId>ch-commons-xml</artifactId>
+      <version>${ch-commons-xml.version}</version>
+    </dependency>
+    <!-- provided scope -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>${log4j.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- runtime scope -->
+    <!-- testing scope -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <properties>
+    <ch-commons-util.version>[2.1,)</ch-commons-util.version>
+    <ch-commons-xml.version>[1.0,)</ch-commons-xml.version>
+  </properties>
+
+</project>
+
