@@ -7,7 +7,7 @@
   <groupId>cloudhopper</groupId>
   <artifactId>ch-commons-locale</artifactId>
   <packaging>jar</packaging>
-  <version>1.5</version>
+  <version>1.4</version>
   <name>Cloudhopper Locale library</name>
 
   <parent>
