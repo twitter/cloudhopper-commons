@@ -1,0 +1,74 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>cloudhopper</groupId>
+  <artifactId>ch-commons-rfs</artifactId>
+  <packaging>jar</packaging>
+  <version>1.1</version>
+  <name>Cloudhopper RFS library</name>
+
+  <parent>
+    <groupId>cloudhopper</groupId>
+    <artifactId>ch-parent</artifactId>
+    <version>1.0</version>
+  </parent>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.mycila.maven-license-plugin</groupId>
+        <artifactId>maven-license-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <!-- compile scope -->
+    <dependency>
+      <groupId>cloudhopper</groupId>
+      <artifactId>ch-commons-util</artifactId>
+      <version>${ch-commons-util.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>joda</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>${joda-time.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.jcraft</groupId>
+      <artifactId>jsch</artifactId>
+      <version>${jsch.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-net</groupId>
+      <artifactId>commons-net</artifactId>
+      <version>${commons-net.version}</version>
+    </dependency>
+    <!-- provided scope -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>${log4j.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- runtime scope -->
+    <!-- testing scope -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <properties>
+    <ch-commons-util.version>[1.6,)</ch-commons-util.version>
+    <jsch.version>0.1.41</jsch.version>
+    <commons-net.version>[2.2,)</commons-net.version>
+  </properties>
+
+</project>
+
