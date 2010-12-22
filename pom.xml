@@ -1,0 +1,103 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>cloudhopper</groupId>
+  <artifactId>ch-commons-sql</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0</version>
+  <name>Cloudhopper SQL library</name>
+
+  <parent>
+    <groupId>cloudhopper</groupId>
+    <artifactId>ch-parent</artifactId>
+    <version>1.0</version>
+  </parent>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.mycila.maven-license-plugin</groupId>
+        <artifactId>maven-license-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <!-- compile scope -->
+    <dependency>
+      <groupId>cloudhopper</groupId>
+      <artifactId>ch-commons-util</artifactId>
+      <version>${ch-commons-util.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>joda</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>${joda-time.version}</version>
+    </dependency>
+    <!-- provided scope -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>${log4j.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>c3p0</groupId>
+      <artifactId>c3p0</artifactId>
+      <version>${c3p0.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>proxool</groupId>
+      <artifactId>proxool</artifactId>
+      <version>${proxool.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- runtime scope -->
+    <!-- testing scope -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>cloudhopper</groupId>
+      <artifactId>ch-commons-xml</artifactId>
+      <version>${ch-commons-xml.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>cloudhopper</groupId>
+      <artifactId>ch-commons-xbean</artifactId>
+      <version>${ch-commons-xbean.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector</artifactId>
+      <version>${mysql-connector.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <properties>
+    <c3p0.version>0.9.1.2</c3p0.version>
+    <ch-commons-util.version>[2.1,)</ch-commons-util.version>
+    <ch-commons-xbean.version>[1.1,)</ch-commons-xbean.version>
+    <ch-commons-xml.version>[1.1,)</ch-commons-xml.version>
+    <mysql-connector.version>[5.1,)</mysql-connector.version>
+    <proxool.version>[0.9.1,)</proxool.version>
+  </properties>
+
+</project>
+
