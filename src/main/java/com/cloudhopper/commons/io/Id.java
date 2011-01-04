@@ -19,4 +19,5 @@ public class Id
     public String getHost() { return this.host; }
     public String getName() { return this.name; }
 
+    public String toString() { return host+":"+name; }
 }

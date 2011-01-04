@@ -6,22 +6,36 @@ import java.util.concurrent.Executors;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 
+import com.cloudhopper.commons.io.FileStore;
+
 /**
- * @author <a href="http://www.jboss.org/netty/">The Netty Project</a>
- * @author <a href="http://gleamynode.net/">Trustin Lee</a>
  */
 public class HttpStaticFileServer {
-    public static void main(String[] args) {
-        // Configure the server.
-        ServerBootstrap bootstrap = new ServerBootstrap(
-                new NioServerSocketChannelFactory(
-                        Executors.newCachedThreadPool(),
-                        Executors.newCachedThreadPool()));
 
+    public HttpStaticFileServer(FileStore store, int port) {
+	this.store = store;
+	this.port = port;
+    }
+
+    private int port;
+    private FileStore store;
+    private ServerBootstrap bootstrap;
+
+    public void start() 
+    {
+        // Configure the server.
+        bootstrap = new ServerBootstrap(new NioServerSocketChannelFactory(Executors.newCachedThreadPool(),
+									  Executors.newCachedThreadPool()));
+	
         // Set up the event pipeline factory.
-        bootstrap.setPipelineFactory(new HttpStaticFileServerPipelineFactory());
+        bootstrap.setPipelineFactory(new HttpStaticFileServerPipelineFactory(store));
 
         // Bind and start to accept incoming connections.
-        bootstrap.bind(new InetSocketAddress(8080));
+        bootstrap.bind(new InetSocketAddress(port));
+    }
+
+    public void stop()
+    {
+	bootstrap.releaseExternalResources();
     }
 }

@@ -77,9 +77,20 @@ public class SimpleNIOFileStore
     {
 	try {
 	    File f = getFile(id.getName());
-	    RandomAccessFile randomAccessFile = new RandomAccessFile(f, "rw");
+	    RandomAccessFile randomAccessFile = new RandomAccessFile(f, "r");
 	    FileChannel fileChannel = randomAccessFile.getChannel();
 	    return fileChannel;
+	} catch (IOException e) {
+	    throw new FileStoreException(e);
+	}
+    }
+
+    public RandomAccessFile getFile(Id id) throws FileStoreException
+    {
+	try {
+	    File f = getFile(id.getName());
+	    RandomAccessFile randomAccessFile = new RandomAccessFile(f, "r");
+	    return randomAccessFile;
 	} catch (IOException e) {
 	    throw new FileStoreException(e);
 	}

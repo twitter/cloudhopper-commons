@@ -2,6 +2,7 @@ package com.cloudhopper.commons.io;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
@@ -23,6 +24,8 @@ public interface FileStore
     public void transferToChannel(WritableByteChannel channel, Id id) throws FileStoreException;
 
     public ReadableByteChannel getChannel(Id id) throws FileStoreException;
+
+    public RandomAccessFile getFile(Id id) throws FileStoreException;
 
     public void remove(Id id) throws FileStoreException;
 

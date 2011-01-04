@@ -32,11 +32,18 @@ import org.jboss.netty.handler.ssl.SslHandler;
 import org.jboss.netty.handler.stream.ChunkedFile;
 import org.jboss.netty.util.CharsetUtil;
 
+import com.cloudhopper.commons.io.FileStore;
+import com.cloudhopper.commons.io.Id;
+
 /**
- * @author <a href="http://www.jboss.org/netty/">The Netty Project</a>
- * @author <a href="http://gleamynode.net/">Trustin Lee</a>
  */
 public class HttpStaticFileServerHandler extends SimpleChannelUpstreamHandler {
+
+    public HttpStaticFileServerHandler(FileStore store) {
+	this.store = store;
+    }
+
+    private FileStore store;
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
@@ -46,29 +53,13 @@ public class HttpStaticFileServerHandler extends SimpleChannelUpstreamHandler {
             return;
         }
 
-        final String path = sanitizeUri(request.getUri());
-        if (path == null) {
+        final Id id = new Id(null, sanitizeUri(request.getUri()));
+        if (id == null) {
             sendError(ctx, FORBIDDEN);
             return;
         }
 
-        File file = new File(path);
-        if (file.isHidden() || !file.exists()) {
-            sendError(ctx, NOT_FOUND);
-            return;
-        }
-        if (!file.isFile()) {
-            sendError(ctx, FORBIDDEN);
-            return;
-        }
-
-        RandomAccessFile raf;
-        try {
-            raf = new RandomAccessFile(file, "r");
-        } catch (FileNotFoundException fnfe) {
-            sendError(ctx, NOT_FOUND);
-            return;
-        }
+        RandomAccessFile raf = store.getFile(id);
         long fileLength = raf.length();
 
         HttpResponse response = new DefaultHttpResponse(HTTP_1_1, OK);
@@ -98,7 +89,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelUpstreamHandler {
                 @Override
                 public void operationProgressed(
                         ChannelFuture future, long amount, long current, long total) {
-                    System.out.printf("%s: %d / %d (+%d)%n", path, current, total, amount);
+                    System.out.printf("%s: %d / %d (+%d)%n", id, current, total, amount);
                 }
             });
         }
@@ -141,16 +132,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelUpstreamHandler {
         // Convert file separators.
         uri = uri.replace('/', File.separatorChar);
 
-        // Simplistic dumb security check.
-        // You will have to do something serious in the production environment.
-        if (uri.contains(File.separator + ".") ||
-            uri.contains("." + File.separator) ||
-            uri.startsWith(".") || uri.endsWith(".")) {
-            return null;
-        }
-
-        // Convert to absolute path.
-        return System.getProperty("user.dir") + File.separator + uri;
+	return uri;
     }
 
     private void sendError(ChannelHandlerContext ctx, HttpResponseStatus status) {

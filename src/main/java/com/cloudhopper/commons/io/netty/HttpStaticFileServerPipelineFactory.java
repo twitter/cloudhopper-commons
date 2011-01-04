@@ -9,11 +9,18 @@ import org.jboss.netty.handler.codec.http.HttpRequestDecoder;
 import org.jboss.netty.handler.codec.http.HttpResponseEncoder;
 import org.jboss.netty.handler.stream.ChunkedWriteHandler;
 
+import com.cloudhopper.commons.io.FileStore;
+
 /**
- * @author <a href="http://www.jboss.org/netty/">The Netty Project</a>
- * @author <a href="http://gleamynode.net/">Trustin Lee</a>
  */
 public class HttpStaticFileServerPipelineFactory implements ChannelPipelineFactory {
+
+    public HttpStaticFileServerPipelineFactory(FileStore store) {
+	this.store = store;
+    }
+
+    private FileStore store;
+
     @Override
     public ChannelPipeline getPipeline() throws Exception {
         // Create a default pipeline implementation.
@@ -29,7 +36,7 @@ public class HttpStaticFileServerPipelineFactory implements ChannelPipelineFacto
         pipeline.addLast("encoder", new HttpResponseEncoder());
         pipeline.addLast("chunkedWriter", new ChunkedWriteHandler());
 
-        pipeline.addLast("handler", new HttpStaticFileServerHandler());
+        pipeline.addLast("handler", new HttpStaticFileServerHandler(store));
         return pipeline;
     }
 }
