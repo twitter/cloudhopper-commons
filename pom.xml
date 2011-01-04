@@ -27,6 +27,16 @@
 
   <dependencies>
     <!-- compile scope -->
+    <dependency>
+      <groupId>cloudhopper</groupId>
+      <artifactId>ch-commons-util</artifactId>
+      <version>${ch-commons-util.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.netty</groupId>
+      <artifactId>netty</artifactId>
+      <version>${netty.version}</version>
+    </dependency>
     <!-- provided scope -->
     <dependency>
       <groupId>log4j</groupId>
@@ -45,6 +55,8 @@
   </dependencies>
 
   <properties>
+    <netty.version>3.2.3.Final</netty.version>
+    <ch-commons-util.version>[1.6,)</ch-commons-util.version>
   </properties>
 
 </project>
