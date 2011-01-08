@@ -11,7 +11,9 @@ import java.io.FileNotFoundException;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.channels.FileChannel;
 
+import org.apache.log4j.Logger;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFuture;
@@ -37,7 +39,10 @@ import com.cloudhopper.commons.io.Id;
 
 /**
  */
-public class HttpStaticFileServerHandler extends SimpleChannelUpstreamHandler {
+public class HttpStaticFileServerHandler
+    extends SimpleChannelUpstreamHandler
+{
+    private static final Logger logger = Logger.getLogger(HttpStaticFileServerHandler.class);
 
     public HttpStaticFileServerHandler(FileStore store) {
 	this.store = store;
@@ -53,14 +58,16 @@ public class HttpStaticFileServerHandler extends SimpleChannelUpstreamHandler {
             return;
         }
 
-        final Id id = new Id(null, sanitizeUri(request.getUri()));
+	String uid = sanitizeUri(request.getUri());
+	System.out.println("Got id: "+uid);
+        final Id id = new Id(null, uid);
         if (id == null) {
             sendError(ctx, FORBIDDEN);
             return;
         }
 
-        RandomAccessFile raf = store.getFile(id);
-        long fileLength = raf.length();
+	FileChannel fileChannel = store.getFileChannel(id);
+        long fileLength = fileChannel.size();
 
         HttpResponse response = new DefaultHttpResponse(HTTP_1_1, OK);
         setContentLength(response, fileLength);
@@ -72,27 +79,22 @@ public class HttpStaticFileServerHandler extends SimpleChannelUpstreamHandler {
 
         // Write the content.
         ChannelFuture writeFuture;
-        if (ch.getPipeline().get(SslHandler.class) != null) {
-            // Cannot use zero-copy with HTTPS.
-            writeFuture = ch.write(new ChunkedFile(raf, 0, fileLength, 8192));
-        } else {
-            // No encryption - use zero-copy.
-            final FileRegion region =
-                new DefaultFileRegion(raf.getChannel(), 0, fileLength);
-            writeFuture = ch.write(region);
-            writeFuture.addListener(new ChannelFutureProgressListener() {
+
+	// No encryption - use zero-copy.
+	final FileRegion region =
+	    new DefaultFileRegion(fileChannel, 0, fileLength);
+	writeFuture = ch.write(region);
+	writeFuture.addListener(new ChannelFutureProgressListener() {
                 @Override
-                public void operationComplete(ChannelFuture future) {
+		    public void operationComplete(ChannelFuture future) {
                     region.releaseExternalResources();
                 }
-
+		
                 @Override
-                public void operationProgressed(
-                        ChannelFuture future, long amount, long current, long total) {
+		    public void operationProgressed(ChannelFuture future, long amount, long current, long total) {
                     System.out.printf("%s: %d / %d (+%d)%n", id, current, total, amount);
                 }
             });
-        }
 
         // Decide whether to close the connection or not.
         if (!isKeepAlive(request)) {
@@ -128,10 +130,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelUpstreamHandler {
                 throw new Error();
             }
         }
-
-        // Convert file separators.
-        uri = uri.replace('/', File.separatorChar);
-
+	uri = uri.substring(uri.lastIndexOf('/')+1);
 	return uri;
     }
 

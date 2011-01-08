@@ -48,7 +48,8 @@ public class SimpleNIOFileStore
 	    File f = createFile(id.getName());
 	    RandomAccessFile randomAccessFile = new RandomAccessFile(f, "rw");
 	    FileChannel fileChannel = randomAccessFile.getChannel();
-	    channelCopy(channel, fileChannel);
+	    //channelCopy(channel, fileChannel);
+	    channelCopyToFile(channel, fileChannel);
 	} catch (IOException e) {
 	    throw new FileStoreException(e);
 	}
@@ -58,7 +59,8 @@ public class SimpleNIOFileStore
     public void transferToOutputStream(OutputStream os, Id id) throws FileStoreException
     {
 	try {
-	    channelCopy(getChannel(id), Channels.newChannel(os));
+	    //channelCopy(getChannel(id), Channels.newChannel(os));
+	    channelCopyFromFile(getFileChannel(id), Channels.newChannel(os));
 	} catch (IOException e) {
 	    throw new FileStoreException(e);
 	}
@@ -67,30 +69,20 @@ public class SimpleNIOFileStore
     public void transferToChannel(WritableByteChannel channel, Id id) throws FileStoreException
     {
 	try {
-	    channelCopy(getChannel(id), channel);
+	    //channelCopy(getChannel(id), channel);
+	    channelCopyFromFile(getFileChannel(id), channel);
 	}  catch (IOException e) {
 	    throw new FileStoreException(e);
 	}
     }
 
-    public ReadableByteChannel getChannel(Id id) throws FileStoreException
+    public FileChannel getFileChannel(Id id) throws FileStoreException
     {
 	try {
 	    File f = getFile(id.getName());
 	    RandomAccessFile randomAccessFile = new RandomAccessFile(f, "r");
 	    FileChannel fileChannel = randomAccessFile.getChannel();
 	    return fileChannel;
-	} catch (IOException e) {
-	    throw new FileStoreException(e);
-	}
-    }
-
-    public RandomAccessFile getFile(Id id) throws FileStoreException
-    {
-	try {
-	    File f = getFile(id.getName());
-	    RandomAccessFile randomAccessFile = new RandomAccessFile(f, "r");
-	    return randomAccessFile;
 	} catch (IOException e) {
 	    throw new FileStoreException(e);
 	}
@@ -156,9 +148,9 @@ public class SimpleNIOFileStore
     private File getFile(String name) throws IOException
     {
 	File tmpDir = new File(this.baseDir, getHashPathForLevel(name, 2));
-	if (!tmpDir.exists()) throw new FileNotFoundException();
+	if (!tmpDir.exists()) throw new FileNotFoundException("Could not find directory at "+tmpDir.getPath());
 	File tmpFile = new File(tmpDir, name);
-	if (tmpFile.exists()) throw new FileNotFoundException();
+	if (!tmpFile.exists()) throw new FileNotFoundException("Could not find file at "+tmpFile.getPath());
 	return tmpFile;
     }
 

@@ -44,9 +44,9 @@ public class FileServerMain
 	    
 	    Id fileId = store.write(fileChannel);
 	    
-	    saveFileFromUrl(new URL(fileId.getHost()+"/"+fileId.getName()), "test2.png");
+	    saveFileFromUrl(new URL("http://"+fileId.getHost()+":8080/"+fileId.getName()), "test2.png");
 	    
-	    server.stop();
+	    //server.stop();
 	} catch (Exception e) {
 	    log.error(e);
 	}
