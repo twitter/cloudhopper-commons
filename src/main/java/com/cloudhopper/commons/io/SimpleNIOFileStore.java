@@ -56,6 +56,16 @@ public class SimpleNIOFileStore
 	return id;
     }
 
+    public InputStream readStream(Id id) throws FileStoreException
+    {
+	return Channels.newInputStream(getFileChannel(id));
+    }
+
+    public ReadableByteChannel readChannel(Id id) throws FileStoreException
+    {
+	return getFileChannel(id);
+    }
+
     public void transferToOutputStream(OutputStream os, Id id) throws FileStoreException
     {
 	try {

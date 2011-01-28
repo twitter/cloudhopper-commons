@@ -32,6 +32,22 @@ public interface FileStore
     public Id write(ReadableByteChannel channel) throws FileStoreException;
 
     /**
+     * Read an file's bytes to an InputStream.
+     * @return The Id of the file you want to read. 
+     * @return The input stream
+     * @throws FileStoreException if the underlying FileStore cannot read the file.
+     */
+    public InputStream readStream(Id id) throws FileStoreException;
+
+    /**
+     * Read an file's bytes to a ReadableByteChannel.
+     * @return The Id of the file you want to read. 
+     * @return The readable byte channel
+     * @throws FileStoreException if the underlying FileStore cannot read the file.
+     */
+    public ReadableByteChannel readChannel(Id id) throws FileStoreException;
+
+    /**
      * Transfer a file's contents to a given OutputStream.
      * @param os The OutputStream to write to.
      * @param id The Id of the file you want to read.
