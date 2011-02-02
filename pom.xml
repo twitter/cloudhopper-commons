@@ -52,11 +52,18 @@
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>${commons-io.version}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <properties>
     <netty.version>3.2.3.Final</netty.version>
     <ch-commons-util.version>[1.6,)</ch-commons-util.version>
+    <commons-io.version>[2.0.1,)</commons-io.version>
   </properties>
 
 </project>
