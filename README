@@ -1,0 +1,25 @@
+ch-commons-util 
+
+The ch-commons-util package contains common utility classes for Cloudhopper-based
+Java projects.
+
+Installation
+---------------------------------------------------------------------------------
+
+Binary builds are publicly available at the Cloudhopper Maven repo:
+http://maven.cloudhopper.com/repos/third-party/cloudhopper
+
+Source builds require a parent POM available in a project:
+http://maven.cloudhopper.com/repos/third-party/cloudhopper/ch-maven-parent-public
+
+Contributors
+---------------------------------------------------------------------------------
+
+Joe Lauer
+
+License
+---------------------------------------------------------------------------------
+
+Copyright (C) 2011 Twitter, Inc.
+
+This work is licensed under the Apache License, Version 2.0. See LICENSE for details.
