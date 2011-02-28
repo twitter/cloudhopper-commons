@@ -1,0 +1,53 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>cloudhopper</groupId>
+  <artifactId>ch-commons-util</artifactId>
+  <packaging>jar</packaging>
+  <version>4.0</version>
+  <name>ch-commons-util</name>
+
+  <parent>
+    <groupId>cloudhopper</groupId>
+    <artifactId>ch-maven-parent-public</artifactId>
+    <version>1.0</version>
+  </parent>
+
+  <dependencies>
+    <!-- compile scope -->
+    <dependency>
+      <groupId>joda</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>${joda-time.version}</version>
+    </dependency>
+    <!-- provided scope -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>${log4j.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- only needed for LZMA algrorithm support in CompressionUtil -->
+    <dependency>
+      <groupId>cloudhopper</groupId>
+      <artifactId>ch-sevenzip</artifactId>
+      <version>${ch-sevenzip.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- runtime scope -->
+    <!-- testing scope -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <properties>
+    <ch-sevenzip.version>4.65</ch-sevenzip.version>
+  </properties>
+</project>
