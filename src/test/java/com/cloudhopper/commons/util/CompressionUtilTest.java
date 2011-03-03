@@ -61,7 +61,7 @@ public class CompressionUtilTest {
         File originalSourceFile = new File("ReleaseNotes.txt");
 
         // copy original source to build directory -- becomes our actual source file
-        File sourceFile = new File("build", originalSourceFile.getName());
+        File sourceFile = new File("target", originalSourceFile.getName());
         FileUtil.copy(originalSourceFile, sourceFile, true);
 
         // NOTE: just for junit, let's make sure the compressed file does not exist yet
@@ -87,7 +87,7 @@ public class CompressionUtilTest {
         File originalSourceFile = new File("ReleaseNotes.txt");
 
         // copy original source to build directory -- becomes our actual source file
-        File sourceFile = new File("build", originalSourceFile.getName());
+        File sourceFile = new File("target", originalSourceFile.getName());
         FileUtil.copy(originalSourceFile, sourceFile, true);
 
         // NOTE: just for junit, let's make sure the compressed file does not exist yet

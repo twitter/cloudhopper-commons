@@ -16,6 +16,15 @@
     <version>1.0</version>
   </parent>
 
+  <repositories>
+    <repository>
+      <id>cloudhopper-public</id>
+      <name>Cloudhopper Public Maven Repository</name>
+      <layout>default</layout>
+      <url>http://maven.cloudhopper.com/repos/third-party</url>
+    </repository>
+  </repositories>
+
   <dependencies>
     <!-- compile scope -->
     <dependency>
@@ -50,4 +59,5 @@
   <properties>
     <ch-sevenzip.version>4.65</ch-sevenzip.version>
   </properties>
+
 </project>

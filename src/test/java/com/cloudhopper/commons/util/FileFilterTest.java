@@ -39,7 +39,7 @@ public class FileFilterTest {
         //
         // create sample directory with a couple entries
         //
-        File targetDir = new File("build/sample/fileNameDateFilter");
+        File targetDir = new File("target/sample/fileNameDateFilter");
         targetDir.mkdirs();
 
         File file0 = new File(targetDir, "sample1.mpg");
@@ -68,7 +68,7 @@ public class FileFilterTest {
         //
         // create sample directory with a couple entries
         //
-        File targetDir = new File("build/sample/fileExtensionFilter");
+        File targetDir = new File("target/sample/fileExtensionFilter");
         targetDir.mkdirs();
 
 
@@ -122,7 +122,7 @@ public class FileFilterTest {
         //
         // create sample directory with a couple entries
         //
-        File targetDir = new File("build/sample/compositeFilter");
+        File targetDir = new File("target/sample/compositeFilter");
         targetDir.mkdirs();
 
         File file0 = new File(targetDir, "sample1-2009-06-23.csv");
@@ -159,7 +159,7 @@ public class FileFilterTest {
         //
         // create sample directory with a couple entries
         //
-        File targetDir = new File("build/sample/fileNameStartsWithFilter");
+        File targetDir = new File("target/sample/fileNameStartsWithFilter");
         targetDir.mkdirs();
 
 
@@ -188,7 +188,7 @@ public class FileFilterTest {
         //
         // create sample directory with a couple entries
         //
-        File targetDir = new File("build/sample/fileNameEndsWithFilter");
+        File targetDir = new File("target/sample/fileNameEndsWithFilter");
         targetDir.mkdirs();
 
 
