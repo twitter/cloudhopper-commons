@@ -1,0 +1,51 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>cloudhopper</groupId>
+  <artifactId>ch-commons-charset</artifactId>
+  <packaging>jar</packaging>
+  <version>2.0</version>
+  <name>ch-commons-charset</name>
+
+  <parent>
+    <groupId>cloudhopper</groupId>
+    <artifactId>ch-maven-parent-public</artifactId>
+    <version>1.0</version>
+  </parent>
+
+  <repositories>
+    <repository>
+      <id>cloudhopper-public</id>
+      <name>Cloudhopper Public Maven Repository</name>
+      <layout>default</layout>
+      <url>http://maven.cloudhopper.com/repos/third-party</url>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <!-- compile scope -->
+    <dependency>
+      <groupId>cloudhopper</groupId>
+      <artifactId>ch-commons-util</artifactId>
+      <version>[4.0,)</version>
+    </dependency>
+    <!-- provided scope -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>${log4j.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- runtime scope -->
+    <!-- testing scope -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

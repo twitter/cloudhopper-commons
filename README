@@ -1,0 +1,29 @@
+ch-commons-charset
+
+The ch-commons-charset library provides utility classes for converting between
+charsets (mostly "mobile" in nature) such as Unicode to GSM and vice versa.
+This library attempts to contain the fastest and most efficient methods for
+converting charsets to/from byte arrays. For example, the method to convert a
+Java string to a byte array of UTF-8 bytes is several times faster than using
+Java's String.getBytes("UTF-8") method.
+
+Installation
+---------------------------------------------------------------------------------
+
+Binary builds are publicly available at the Cloudhopper Maven repo:
+http://maven.cloudhopper.com/repos/third-party/cloudhopper
+
+Source builds require a parent POM available in a project:
+http://maven.cloudhopper.com/repos/third-party/cloudhopper/ch-maven-parent-public
+
+Contributors
+---------------------------------------------------------------------------------
+
+Joe Lauer
+
+License
+---------------------------------------------------------------------------------
+
+Copyright (C) 2011 Twitter, Inc.
+
+This work is licensed under the Apache License, Version 2.0. See LICENSE for details.
