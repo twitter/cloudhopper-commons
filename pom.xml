@@ -12,9 +12,18 @@
 
   <parent>
     <groupId>cloudhopper</groupId>
-    <artifactId>ch-parent</artifactId>
+    <artifactId>ch-maven-parent-internal</artifactId>
     <version>1.0</version>
   </parent>
+
+  <repositories>
+    <repository>
+      <id>cloudhopper-internal</id>
+      <name>Cloudhopper Internal Maven Repository</name>
+      <layout>default</layout>
+      <url>https://maven.cloudhopper.lan/repos/internal</url>
+    </repository>
+  </repositories>
 
   <build>
     <plugins>
