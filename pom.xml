@@ -73,7 +73,6 @@
     <netty.version>3.2.3.Final</netty.version>
     <ch-commons-util.version>[1.6,)</ch-commons-util.version>
     <commons-io.version>[2.0.1,)</commons-io.version>
-    <license.skip>true</license.skip>
   </properties>
 
 </project>
