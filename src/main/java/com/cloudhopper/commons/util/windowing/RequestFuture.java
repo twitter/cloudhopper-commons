@@ -48,12 +48,12 @@ public class RequestFuture<K,R,P> extends WindowEntryWrapper<K,R,P> {
      * @return The response received and matched to this request.
      * @throws ResponseTimeoutException Thrown if no response is received
      *      within the permitted timeout.
-     * @throws RequestCancelledException Thrown if the request is cancelled
+     * @throws RequestCancelledException Thrown if the request is canceled
      *      either before or while we are waiting for a response.
      * @throws InterruptedException Thrown if the calling thread is interrupted
      *      while we are attempting to acquire the lock inside the "window".
      */
-    public P await() throws ResponseTimeoutException, RequestCancelledException, InterruptedException {
+    public P await() throws ResponseTimeoutException, RequestCanceledException, InterruptedException {
         // k, if someone actually calls this method -- make sure to set the flag
         // this may have already been set earlier, but if not its safe to set here
         this.entry.setCallerStatus(CALLER_WAITING);
@@ -61,7 +61,7 @@ public class RequestFuture<K,R,P> extends WindowEntryWrapper<K,R,P> {
         // check if its finished first
         if (isFinished()) {
             if (isCancelled()) {
-                throw new RequestCancelledException("Request was cancelled");
+                throw new RequestCanceledException("Request was cancelled", getCause());
             } else {
                 return getResponse();
             }
@@ -89,7 +89,7 @@ public class RequestFuture<K,R,P> extends WindowEntryWrapper<K,R,P> {
 
             // if we got here then we're finished
             if (isCancelled()) {
-                throw new RequestCancelledException("Request was cancelled");
+                throw new RequestCanceledException("Request was cancelled", getCause());
             } else {
                 return getResponse();
             }

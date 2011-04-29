@@ -193,7 +193,7 @@ public class WindowTest {
             // this should timeout waiting for a response
             requestFuture.await();
             Assert.fail();
-        } catch (RequestCancelledException e) {
+        } catch (RequestCanceledException e) {
             // correct behavior
         }
     }

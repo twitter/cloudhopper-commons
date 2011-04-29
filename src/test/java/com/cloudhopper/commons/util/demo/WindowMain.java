@@ -48,6 +48,14 @@ public class WindowMain {
         logger.info(responseFuture1.getResponse());
         logger.info("Processing Time: " + responseFuture1.getProcessingTime() + " ms");
 
+        // cancel a request with an exception cause
+        RequestFuture<Integer,String,String> requestFuture2 = requestWindow.addRequest(2, "Request2", 1000);
+        ResponseFuture<Integer,String,String> responseFuture2 = requestWindow.cancelRequest(2, new Exception("Test Cause"));
+        logger.info("Request2 Processing Time: " + responseFuture2.getProcessingTime() + " ms");
+        logger.info("Request2 Canceled? " + responseFuture2.isCancelled());
+        logger.info("Request2 Cause: ", responseFuture2.getCause());
+        
+        
         System.out.println("Press any key to exit...");
         System.in.read();
     }

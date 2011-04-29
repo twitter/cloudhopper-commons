@@ -36,6 +36,12 @@ public interface WindowEntry<K,R,P> {
     public P getResponse();
 
     public long getResponseTime();
+    
+    /**
+     * Gets the underlying cause (exception). Useful if a request
+     * was canceled due to an exception.
+     */
+    public Throwable getCause();
 
     /**
      * Gets the "caller" status such as whether the caller is not waiting,

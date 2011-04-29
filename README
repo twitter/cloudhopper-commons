@@ -3,6 +3,7 @@ ch-commons-util
 The ch-commons-util package contains common utility classes for Cloudhopper-based
 Java projects.
 
+
 Installation
 ---------------------------------------------------------------------------------
 
@@ -12,10 +13,30 @@ http://maven.cloudhopper.com/repos/third-party/cloudhopper
 Source builds require a parent POM available in a project:
 http://maven.cloudhopper.com/repos/third-party/cloudhopper/ch-maven-parent-public
 
-Contributors
----------------------------------------------------------------------------------
 
-Joe Lauer
+Demo Code / Tutorials
+--------------------------------------------------------------------------------
+
+For examples on using this library as a client or server, please see:
+   src/test/java/com/cloudhopper/commons/util/demo
+
+To run some of the samples, there is a Makefile to automate running some of the
+Maven commands.  On Linux/Mac, you'd run:
+
+   make run-uptime
+   make run-window
+
+On Windows, you'd run:
+ 
+   nmake run-uptime
+   nmake run-window
+
+
+Contributors
+--------------------------------------------------------------------------------
+
+Joe Lauer (follow me on twitter http://twitter.com/jjlauer)
+
 
 License
 ---------------------------------------------------------------------------------

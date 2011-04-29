@@ -26,44 +26,59 @@ public class WindowEntryWrapper<K,R,P> implements WindowEntry<K,R,P> {
         this.entry = entry;
     }
 
+    @Override
     public int getCallerStatus() {
         return this.entry.getCallerStatus();
     }
 
+    @Override
     public K getKey() {
         return this.entry.getKey();
     }
 
+    @Override
     public R getRequest() {
         return this.entry.getRequest();
     }
 
+    @Override
     public P getResponse() {
         return this.entry.getResponse();
     }
 
+    @Override
     public long getRequestTime() {
         return this.entry.getRequestTime();
     }
 
+    @Override
     public long getResponseTime() {
         return this.entry.getResponseTime();
     }
 
+    @Override
     public boolean isFinished() {
         return this.entry.isFinished();
     }
 
+    @Override
     public long getProcessingTime() {
         return this.entry.getProcessingTime();
     }
 
+    @Override
     public boolean isSuccess() {
         return this.entry.isSuccess();
     }
 
+    @Override
     public boolean isCancelled() {
         return this.entry.isCancelled();
+    }
+
+    @Override
+    public Throwable getCause() {
+        return this.entry.getCause();
     }
 
 }

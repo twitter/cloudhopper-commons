@@ -85,6 +85,7 @@ public class Window<K,R,P> {
         this.expiredRequestListener = expiredRequestListener;
         this.requestExpiryTime = requestExpiryTime;
         this.expiredRequestScheduler = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
+            @Override
             public Thread newThread(Runnable r) {
                 Thread t = new Thread(r);
                 t.setDaemon(true);
@@ -93,6 +94,7 @@ public class Window<K,R,P> {
         });
         // create the actual reaper
         final Runnable expiredRequestReaper = new Runnable() {
+            @Override
             public void run() {
 //                logger.debug("expiredRequestReaper running");
                 // grab current time that we'll compare all requests against
@@ -258,25 +260,29 @@ public class Window<K,R,P> {
     }
 
     /**
-     * Adds a response to this "window" if a corrosponding request exists.
+     * Adds a response to this "window" if a corresponding request exists.
      * If no request matches this response (by its key), then this method will
      * return null.  If a request is matched, it is returned wrapped inside
      * a ResponseFuture object to be used by the caller to help finish processing.
      * <BR>
-     * If a request is matched, any threads waiting for a response are signalled
+     * If a request is matched, any threads waiting for a response are signaled
      * so that they can continue processing.
      * @param key The key for the response which should match its originating
      *      request (the protocol's sequence number is a good choice)
      * @param response The response to set and match to the original request.
-     *      Using null as a resposne has the effect of "cancelling" the request.
+     *      Using null as a response has the effect of "canceling" the request.
      * @return An optional "future" object which includes the original request
      *      that this response matches.  If no request is matched, this method
      *      will return null.  In that case, either the original request either
-     *      timed out, was cancelled, or this really is a totally unexpected response.
+     *      timed out, was canceled, or this really is a totally unexpected response.
      * @throws InterruptedException Thrown if the calling thread is interrupted
      *      and we're currently waiting to acquire the internal "windowLock".
      */
     public ResponseFuture addResponse(K key, P response) throws InterruptedException {
+        return addResponse(key, response, null);
+    }
+    
+    private ResponseFuture addResponse(K key, P response, Throwable cause) throws InterruptedException {
         // does this key even exist?
         if (!this.pendingRequests.containsKey(key)) {
             return null;
@@ -299,6 +305,9 @@ public class Window<K,R,P> {
             // this means a reply was specifically received for the original request
             value.setResponse(response);
             value.setResponseTime(responseTime);
+            if (cause != null) {
+                value.setCause(cause);
+            }
             value.finished();
 
             // let all "waiters" know a response was received and processed
@@ -313,8 +322,8 @@ public class Window<K,R,P> {
 
     /**
      * Cancels and removes a request from this window.  If any thread is waiting
-     * on this request, they'll be signalled and see that the response was
-     * cancelled.  This effectively sets the request as finished, but has the
+     * on this request, they'll be signaled and see that the response was
+     * canceled.  This effectively sets the request as finished, but has the
      * response set as a null object.
      * @param key The key for the request (the protocol's sequence number is
      *      a good choice)
@@ -325,7 +334,26 @@ public class Window<K,R,P> {
      */
     public ResponseFuture cancelRequest(K key) throws InterruptedException {
         // cancelling a request is as easy as adding a null response
-        return this.addResponse(key, null);
+        return this.cancelRequest(key, null);
+    }
+    
+    /**
+     * Cancels and removes a request from this window.  If any thread is waiting
+     * on this request, they'll be signaled and see that the response was
+     * canceled.  This effectively sets the request as finished, but has the
+     * response set as a null object.
+     * @param key The key for the request (the protocol's sequence number is
+     *      a good choice)
+     * @param cause If an exception is the reason a request is canceled, the
+     *      underlying cause can be set here.
+     * @return The ResponseFuture object that is a wrapper around the original
+     *      request.  This can be safely discard and ignored if not needed.
+     * @throws InterruptedException Thrown if the calling thread is interrupted
+     *      and we're currently waiting to acquire the internal "windowLock".
+     */
+    public ResponseFuture cancelRequest(K key, Throwable cause) throws InterruptedException {
+        // cancelling a request is as easy as adding a null response
+        return this.addResponse(key, null, cause);
     }
 
     /**

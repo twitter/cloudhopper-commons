@@ -7,13 +7,13 @@
   <groupId>cloudhopper</groupId>
   <artifactId>ch-commons-util</artifactId>
   <packaging>jar</packaging>
-  <version>4.0</version>
+  <version>4.1</version>
   <name>ch-commons-util</name>
 
   <parent>
     <groupId>cloudhopper</groupId>
     <artifactId>ch-maven-parent-public</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
   </parent>
 
   <repositories>
@@ -45,6 +45,7 @@
       <artifactId>ch-sevenzip</artifactId>
       <version>${ch-sevenzip.version}</version>
       <scope>provided</scope>
+      <optional>true</optional>
     </dependency>
     <!-- runtime scope -->
     <!-- testing scope -->

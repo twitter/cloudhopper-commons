@@ -1,7 +1,14 @@
-Cloudhopper, Inc.
+Twitter, Inc. (formerly created by Cloudhopper, Inc.)
+http://twitter.com/
 http://www.cloudhopper.com/
 Commons Util Library
 --------------------------------------------------------------------------------
+4.1 - 2011-04-28
+  * Upgrade joda-time dependency from 1.6 to 1.6.2
+  * Renamed RequestCancelledException to RequestCanceledException
+  * Added support for setting a "cause" when a request is canceled in a Window.
+  * Fixed some missing annotations for @Overrides
+
 4.0 - 2011-02-28
   * Migrated build system from Ant to Maven
   * Deleted all legacy Ant build files (build.xml, Dependency.txt)
