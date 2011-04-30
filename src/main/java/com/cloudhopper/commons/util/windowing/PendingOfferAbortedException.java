@@ -15,16 +15,20 @@
 package com.cloudhopper.commons.util.windowing;
 
 /**
- * Thrown when the max pending requests have been reached and no more free
- * slots in the "window" open up while a caller is waiting.
+ * Thrown when a caller/thread is waiting for an offer to be accepted, but
+ * abortPendingOffers() is called by a different thread.  Rather than wait for the
+ * offer to be accepted for the full offerTimeoutMillis, this is an immediate timeout.
  * 
  * @author joelauer
  */
-public class MaxWindowSizeTimeoutException extends Exception {
-    static final long serialVersionUID = 1L;
+public class PendingOfferAbortedException extends OfferTimeoutException {
     
-    public MaxWindowSizeTimeoutException(String msg) {
+    public PendingOfferAbortedException(String msg) {
         super(msg);
+    }
+    
+    public PendingOfferAbortedException(String msg, Throwable t) {
+        super(msg, t);
     }
     
 }

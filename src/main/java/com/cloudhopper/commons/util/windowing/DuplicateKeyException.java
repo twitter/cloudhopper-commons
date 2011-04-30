@@ -15,20 +15,15 @@
 package com.cloudhopper.commons.util.windowing;
 
 /**
- * Thrown when the max pending requests have been reached and no more free
- * slots in the "window" open up while a caller is waiting.
+ * Thrown when the key for a request already exists.
  * 
  * @author joelauer
  */
-public class RequestCanceledException extends Exception {
+public class DuplicateKeyException extends Exception {
     static final long serialVersionUID = 1L;
     
-    public RequestCanceledException(String msg) {
+    public DuplicateKeyException(String msg) {
         super(msg);
-    }
-    
-    public RequestCanceledException(String msg, Throwable t) {
-        super(msg, t);
     }
     
 }

@@ -32,73 +32,84 @@ import org.apache.log4j.Logger;
 /**
  * A utility class to support "windowed" protocols that permit requests to be
  * sent asynchronously and the responses to be processed at a later time.
- * <BR>
+ * <br>
  * Windowed protocols generally provide high throughput over high latency
  * links such as TCP/IP connections since they allow requests one after each
  * other without waiting for a response back right away.
- * <BR>
+ * <br>
  * The "window" is the amount of unacknowledged requests that are permitted to
  * be outstanding/unacknowledged at any given time.  This implementation
- * allows a "windowSize" to be defined during construction.  This represents
+ * allows a max window size to be defined during construction.  This represents
  * the number of open "slots".  When a response is received, it's up to the
  * user of this class to make sure that response is added so that any threads
  * waiting for a response are properly notified.
- * <BR>
+ * <br>
  * This class is also good to use to fetch the original request when a response
  * is asynchronously received in a different thread.
+ * <br>
+ * The life cycle of a request has 3 steps:
+ * <ol>
+ *   <li>Request offered<br>
+ *      <ul>
+ *          <li>If free slot exists then goto 2</li>
+ *          <li>If no free slot exists, offer now "pending" and block for specified time.  May either timeout or if free slot opens, then goto 2</li>
+ *      </ul>
+ *   </li>
+ *   <li>Request accepted (caller may optionally await() on returned future till completion)</li>
+ *   <li>Request completed/done (either success, failure, or cancelled)</li>
+ * </ol>
  * 
  * @author joelauer
  */
 public class Window<K,R,P> {
     private static final Logger logger = Logger.getLogger(Window.class);
 
-    private final ConcurrentHashMap<K,DefaultWindowEntry<K,R,P>> pendingRequests;
-    private final int windowSize;
-    private final ReentrantLock windowLock;
-    private final Condition responseReceivedCondition;
-    // number of threads waiting for a slot
-    private AtomicInteger slotWaitingSize;
-    private AtomicBoolean slotWaitingCanceled;
+    private final int maxSize;
+    private final ConcurrentHashMap<K,DefaultWindowFuture<K,R,P>> futures;
+    private final ReentrantLock lock;
+    private final Condition completedCondition;
+    // number of threads waiting to offer a request to be accepted
+    private AtomicInteger pendingOffers;
+    private AtomicBoolean pendingOffersAborted;
     // for scheduling tasks (such as expiring requests)
     private final ScheduledExecutorService executor;
     private final ScheduledFuture<?> executorHandle;
-    private final WindowMonitor monitor;
+    private final Monitor monitor;
     private final long period;
     private final CopyOnWriteArrayList<WindowListener<K,R,P>> listeners;
 
     /**
      * Creates a new window with the specified max window size.  This
-     * constructor disables any automatic recurring tasks from being executed.
-     * @param windowSize The maximum number of pending requests permitted to
+     * constructor does not enable any automatic recurring tasks from being
+     * executed (such as expiration of requests).
+     * @param size The maximum number of requests permitted to
      *      be outstanding (unacknowledged) at a given time.  Must be > 0.
      */
-    public Window(int windowSize) {
-        this(windowSize, null, 0, null);
+    public Window(int size) {
+        this(size, null, 0, null);
     }
     
     /**
-     * Creates a new window with the specified max window size along with
-     * specifications for an executor to perform periodic maintenance such
-     * as expiring requests.
-     * @param windowSize The maximum number of pending requests permitted to
+     * Creates a new window with the specified max window size.  This
+     * constructor enables automatic recurring tasks to be executed (such as
+     * expiration of requests).
+     * @param size The maximum number of requests permitted to
      *      be outstanding (unacknowledged) at a given time.  Must be > 0.
-     * @param executor The scheduled executor service to use to schedule
-     *      recurring tasks such as checking if requests have expired.
-     * @param period The number of milliseconds between periodic maintenance
-     *      tasks to be executed.
-     * @param listener An listener to send window events to (such as when
-     *      requests expire).
+     * @param executor The scheduled executor service to execute
+     *      recurring tasks (such as expiration of requests).
+     * @param period The number of milliseconds between executions of recurring tasks.
+     * @param listener A listener to send window events to
      */
-    public Window(int windowSize, ScheduledExecutorService executor, long period, WindowListener<K,R,P> listener) {
-        if (windowSize <= 0) {
-            throw new IllegalArgumentException("Window size must be > 0");
+    public Window(int size, ScheduledExecutorService executor, long period, WindowListener<K,R,P> listener) {
+        if (size <= 0) {
+            throw new IllegalArgumentException("size must be > 0");
         }
-        this.pendingRequests = new ConcurrentHashMap<K,DefaultWindowEntry<K,R,P>>(windowSize*2);
-        this.windowSize = windowSize;
-        this.windowLock = new ReentrantLock();
-        this.responseReceivedCondition = this.windowLock.newCondition();
-        this.slotWaitingSize = new AtomicInteger(0);
-        this.slotWaitingCanceled = new AtomicBoolean(false);
+        this.maxSize = size;
+        this.futures = new ConcurrentHashMap<K,DefaultWindowFuture<K,R,P>>(size*2);
+        this.lock = new ReentrantLock();
+        this.completedCondition = this.lock.newCondition();
+        this.pendingOffers = new AtomicInteger(0);
+        this.pendingOffersAborted = new AtomicBoolean(false);
         this.executor = executor;
         this.period = period;
         this.listeners = new CopyOnWriteArrayList<WindowListener<K,R,P>>();
@@ -106,7 +117,7 @@ public class Window<K,R,P> {
             this.listeners.add(listener);
         }
         if (this.executor != null) {
-            this.monitor = new WindowMonitor();
+            this.monitor = new Monitor();
             this.executorHandle = this.executor.scheduleWithFixedDelay(this.monitor, this.period, this.period, TimeUnit.MILLISECONDS);
         } else {
             this.monitor = null;
@@ -114,18 +125,22 @@ public class Window<K,R,P> {
         }
     }
     
-    private class WindowMonitor implements Runnable {
+    /**
+     * Internal utility class to monitor the window and send events upstream
+     * to listeners.
+     */
+    private class Monitor implements Runnable {
         @Override
         public void run() {
-            logger.debug("WindowMonitor running, current pendingSize=" + getPendingSize());
-            List<WindowEntry<K,R,P>> expiredRequests = cancelAllExpiredRequests();
-            if (expiredRequests != null && expiredRequests.size() > 0) {
-                logger.debug("Found " + expiredRequests.size() + " that expired");
+            logger.debug("WindowMonitor running, current size=" + getSize());
+            List<WindowFuture<K,R,P>> expired = cancelAllExpired();
+            if (expired != null && expired.size() > 0) {
+                logger.debug("Found " + expired.size() + " requests that expired");
                 // process each expired request and pass up the chain to handlers
-                for (WindowEntry<K,R,P> entry : expiredRequests) {
+                for (WindowFuture<K,R,P> entry : expired) {
                     for (WindowListener<K,R,P> listener : listeners) {
                         try {
-                            listener.requestExpired(entry);
+                            listener.expired(entry);
                         } catch (Throwable t) {
                             logger.error("Uncaught exception thrown in listener: ", t);
                         }
@@ -136,414 +151,485 @@ public class Window<K,R,P> {
     }
 
     /**
-     * Gets the window size.  The window size is the max number of requests
-     * that can be pending (unacknowledged/do not have responses yet).
-     * @return The window size
+     * Gets the max size of the window.  This is the max number of requests that
+     * can be outstanding (unresponded to) in this window.
+     * @return The max size of the window
      */
-    public int getWindowSize() {
-        return this.windowSize;
+    public int getMaxSize() {
+        return this.maxSize;
     }
 
     /**
-     * Gets the current number of requests that do not yet have a response.
+     * Gets the current number of requests in the window.
      * @return The current number of pending requests
      */
-    public int getPendingSize() {
-        return this.pendingRequests.size();
+    public int getSize() {
+        return this.futures.size();
     }
     
     /**
-     * Gets the current number of callers/threads that are waiting for a slot
-     * to free up in the window.
+     * Gets the current number of request that would be accepted by this
+     * window without blocking.  In order words, the number of free slots.
+     * @return The free size of this window
      */
-    public int getSlotWaitingSize() {
-        return this.slotWaitingSize.get();
-    }
-    
-    private void beginSlotWaiting() {
-        this.slotWaitingSize.incrementAndGet();
+    public int getFreeSize() {
+        return this.maxSize - this.futures.size();
     }
     
     /**
-     * Indicates slot waiting is finished. If "slotWaitingCanceled" was set to
-     * true, this method takes care of resetting that flag back to false once
-     * all waiters have called this method.
-     * @return True if waiting should be terminated early or false if it is ok
-     *      to continue waiting.
+     * Returns true if and only if a future with this key exists in this window.
+     * @param key The key for the future
+     * @return True if the request exists, otherwise false.
      */
-    private boolean endSlotWaiting() {
-        int newValue = this.slotWaitingSize.decrementAndGet();
-        // if newValue reaches zero, make sure to always reset "slotWaitersCanceled"
-        if (newValue == 0) {
-            // if slotWaitingCanceled was true, then reset it back to false, and
-            // return true to make sure the caller knows to cancel waiting
-            return this.slotWaitingCanceled.compareAndSet(true, false);
-        } else {
-            // if slotWaitingCanceled is true, then return true
-            return this.slotWaitingCanceled.get();
-        }
+    public boolean containsKey(K key) {
+        return this.futures.containsKey(key);
+    }
+    
+    /**
+     * Gets the a future by its key.
+     * @param key The key for the request
+     * @return The future or null if it doesn't exist.
+     */
+    public WindowFuture<K,R,P> get(K key) {
+        return this.futures.get(key);
     }
 
     /**
-     * Checks if a pending request exists by its key.
-     * @param key The key for the request (such as a sequence number)
-     * @return True if the pending request exists or false if it doesn't
+     * Creates an ordered snapshot of the requests in this window.  The entries
+     * will be sorted by the natural ascending order of the key.  A new map
+     * is allocated when calling this method, so be careful about calling it
+     * once.
+     * @return A new map instance representing all requests sorted by
+     *      the natural ascending order of its key.
      */
-    public boolean containsRequest(K key) {
-        return this.pendingRequests.containsKey(key);
-    }
-
-    /**
-     * Creates an ordered map view of all pending requests.  The entries will
-     * be sorted by its key in ascending order.  A new underlying map is created
-     * by calling this method, so call it once.
-     * @return A new map instance representing all pending requests sorted by
-     *      the ascending order of its key.
-     */
-    public Map<K,WindowEntry<K,R,P>> getPendingRequests() {
-        Map<K,WindowEntry<K,R,P>> requests = new TreeMap<K,WindowEntry<K,R,P>>();
-        for (DefaultWindowEntry<K,R,P> value : this.pendingRequests.values()) {
-            requests.put(value.getKey(), value);
-        }
-        return requests;
+    public Map<K,WindowFuture<K,R,P>> createSortedSnapshot() {
+        Map<K,WindowFuture<K,R,P>> sortedRequests = new TreeMap<K,WindowFuture<K,R,P>>();
+        sortedRequests.putAll(this.futures);
+        return sortedRequests;
     }
     
     /**
-     * Adds a request to this "window" if a slot exists.  If the current max
-     * window size has already been reached, then this method will wait for
-     * a period of time for a slot to open up.  If a slot is open or opens up
-     * within the specified period of time, then this method will add that
-     * request to the internal pending "map" in an atomic fashion.  A
-     * RequestFuture object will be returned so that the caller can optionally
-     * wait for a response to be received.  Its safe to discard this "Future"
-     * if you don't need to wait for a response.
-     * @param key The key for the request (the protocol's sequence number is
-     *      a good choice)
-     * @param request The request to add to the "window"
-     * @param waitTime The amount of time (in milliseconds) to wait for
-     *      a slot to open up in this "window".
-     * @param expireTime The relative amount of time (in milliseconds) to expire this
-     *      request if a response isn't received.  If &lt; 1 then no expiration
-     *      will be set.
-     * @return An optional "future" object to synchronize against if the caller
-     *      wants to "wait" for a response to be received.
-     * @throws RequestAlreadyExistsException Thrown as a very serious error if
-     *      the key already exists in our "pending" request map.
-     * @throws MaxPendingTimeoutException Thrown if there were no open "slots"
-     *      and a timeout occurred while waiting for a slot to open up.
+     * Offers a request for acceptance, waiting for the specified amount of time
+     * in case it could not immediately accepted. The "caller state hint" of
+     * the returned future will be set to "NOT_WAITING". The expireTimestamp of
+     * the returned future will be set to -1 (infinity/never expires).
+     * @param key The key for the request. A protocol's sequence number is a
+     *      good choice.
+     * @param request The request to offer
+     * @param offerTimeoutMillis The amount of time (in milliseconds) to wait
+     *      for the offer to be accepted.
+     * @param expireTimeoutMillis The amount of time (in milliseconds) that a
+     *      request will be set to expire after acceptance.  A value &lt; 1 is
+     *      assumed to be an infinite expiration (request never expires).
+     *      Requests are not automatically expired unless monitoring was enabled
+     *      during construction of this window.
+     * @return A future representing pending completion of the request 
+     * @throws DuplicateKeyException Thrown if the key already exists
+     * @throws PendingOfferAbortedException Thrown if the offer could not be
+     *      immediately accepted and the caller/thread was waiting, but 
+     *      the abortPendingOffers() method was called in the meantime.
+     * @throws OfferTimeoutException Thrown if the offer could not be accepted
+     *      within the specified amount of time.
      * @throws InterruptedException Thrown if the calling thread is interrupted
-     *      and we're currently waiting to acquire the internal "windowLock".
+     *      while waiting to acquire the internal lock.
      */
-    public RequestFuture addRequest(K key, R request, long waitTime) throws RequestAlreadyExistsException, MaxWindowSizeTimeoutException, InterruptedException {
-        return this.addRequest(key, request, waitTime, false, -1);
+    public WindowFuture offer(K key, R request, long offerTimeoutMillis) throws DuplicateKeyException, OfferTimeoutException, InterruptedException {
+        return this.offer(key, request, offerTimeoutMillis, -1, false);
     }
 
     /**
-     * Adds a request to this "window" if a slot exists.  If the current max
-     * window size has already been reached, then this method will wait for
-     * a period of time for a slot to open up.  If a slot is open or opens up
-     * within the specified period of time, then this method will add that
-     * request to the internal pending "map" in an atomic fashion.  A
-     * RequestFuture object will be returned so that the caller can optionally
-     * wait for a response to be received.  Its safe to discard this "Future"
-     * if you don't need to wait for a response.
-     * @param key The key for the request (the protocol's sequence number is
-     *      a good choice)
-     * @param request The request to add to the "window"
-     * @param waitTime The amount of time (in milliseconds) to wait for
-     *      a slot to open up in this "window".
-     * @param expireTime The relative amount of time (in milliseconds) to expire this
-     *      request if a response isn't received.  If &lt; 1 then no expiration
-     *      will be set.
-     * @return An optional "future" object to synchronize against if the caller
-     *      wants to "wait" for a response to be received.
-     * @throws RequestAlreadyExistsException Thrown as a very serious error if
-     *      the key already exists in our "pending" request map.
-     * @throws MaxPendingTimeoutException Thrown if there were no open "slots"
-     *      and a timeout occurred while waiting for a slot to open up.
+     * Offers a request for acceptance, waiting for the specified amount of time
+     * in case it could not immediately accepted. The "caller state hint" of
+     * the returned future will be set to "NOT_WAITING".
+     * @param key The key for the request. A protocol's sequence number is a
+     *      good choice.
+     * @param request The request to offer
+     * @param offerTimeoutMillis The amount of time (in milliseconds) to wait
+     *      for the offer to be accepted.
+     * @param expireTimeoutMillis The amount of time (in milliseconds) that a
+     *      request will be set to expire after acceptance.  A value &lt; 1 is
+     *      assumed to be an infinite expiration (request never expires).
+     *      Requests are not automatically expired unless monitoring was enabled
+     *      during construction of this window.
+     * @return A future representing pending completion of the request 
+     * @throws DuplicateKeyException Thrown if the key already exists
+     * @throws PendingOfferAbortedException Thrown if the offer could not be
+     *      immediately accepted and the caller/thread was waiting, but 
+     *      the abortPendingOffers() method was called in the meantime.
+     * @throws OfferTimeoutException Thrown if the offer could not be accepted
+     *      within the specified amount of time.
      * @throws InterruptedException Thrown if the calling thread is interrupted
-     *      and we're currently waiting to acquire the internal "windowLock".
+     *      while waiting to acquire the internal lock.
      */
-    public RequestFuture addRequest(K key, R request, long waitTime, long expireTime) throws RequestAlreadyExistsException, MaxWindowSizeTimeoutException, InterruptedException {
-        return this.addRequest(key, request, waitTime, false, expireTime);
+    public WindowFuture offer(K key, R request, long offerTimeoutMillis, long expireTimeoutMillis) throws DuplicateKeyException, OfferTimeoutException, InterruptedException {
+        return this.offer(key, request, offerTimeoutMillis, expireTimeoutMillis, false);
     }
 
     /**
-     * Adds a request to this "window" if a slot exists.  If the current max
-     * window size has already been reached, then this method will wait for
-     * a period of time for a slot to open up.  If a slot is open or opens up
-     * within the specified period of time, then this method will add that
-     * request to the internal pending "map" in an atomic fashion.  A
-     * RequestFuture object will be returned so that the caller can optionally
-     * wait for a response to be received.  Its safe to discard this "Future"
-     * if you don't need to wait for a response.
-     * @param key The key for the request (the protocol's sequence number is
-     *      a good choice)
-     * @param request The request to add to the "window"
-     * @param waitTime The amount of time (in milliseconds) to wait for
-     *      a slot to open up in this "window".
-     * @param callerPlanningOnWaiting If true, the "callerStatus" flag of the entry
-     *      will be set to "CALLER_WAITING".  If false, the "callerStratus" flag
-     *      will be set to "CALLER_NO_WAIT".  Not internally important, but users
-     *      of this class can use this status flag to determine whether the caller
-     *      is going to wait for a response or if it really is using this more
-     *      asynchronously (not waiting).
-     * @param expireTime The relative amount of time (in milliseconds) to expire this
-     *      request if a response isn't received.  If &lt; 1 then no expiration
-     *      will be set.
-     * @return An optional "future" object to synchronize against if the caller
-     *      wants to "wait" for a response to be received.
-     * @throws RequestAlreadyExistsException Thrown as a very serious error if
-     *      the key already exists in our "pending" request map.
-     * @throws MaxPendingTimeoutException Thrown if there were no open "slots"
-     *      and a timeout occurred while waiting for a slot to open up.
+     * Offers a request for acceptance, waiting for the specified amount of time
+     * in case it could not immediately accepted.
+     * @param key The key for the request. A protocol's sequence number is a
+     *      good choice.
+     * @param request The request to offer
+     * @param offerTimeoutMillis The amount of time (in milliseconds) to wait
+     *      for the offer to be accepted.
+     * @param expireTimeoutMillis The amount of time (in milliseconds) that a
+     *      request will be set to expire after acceptance.  A value &lt; 1 is
+     *      assumed to be an infinite expiration (request never expires).
+     *      Requests are not automatically expired unless monitoring was enabled
+     *      during construction of this window.
+     * @param callerWaitingHint If true the "caller state hint" of the
+     *      future will be set to "WAITING" during construction.  This generally
+     *      does not affect any internal processing by this window, but allows
+     *      callers to hint they plan on calling "await()" on the future.
+     * @return A future representing pending completion of the request 
+     * @throws DuplicateKeyException Thrown if the key already exists
+     * @throws PendingOfferAbortedException Thrown if the offer could not be
+     *      immediately accepted and the caller/thread was waiting, but 
+     *      the abortPendingOffers() method was called in the meantime.
+     * @throws OfferTimeoutException Thrown if the offer could not be accepted
+     *      within the specified amount of time.
      * @throws InterruptedException Thrown if the calling thread is interrupted
-     *      and we're currently waiting to acquire the internal "windowLock".
+     *      while waiting to acquire the internal lock.
      */
-    public RequestFuture addRequest(K key, R request, long waitTime, boolean callerPlanningOnWaiting, long expireTime) throws RequestAlreadyExistsException, MaxWindowSizeTimeoutException, InterruptedException {
-        // does this key already exist (MAJOR error)
-        if (this.pendingRequests.containsKey(key)) {
-            throw new RequestAlreadyExistsException("The key [" + key + "] already exists in our internal map of pending requests");
+    public WindowFuture offer(K key, R request, long offerTimeoutMillis, long expireTimeoutMillis, boolean callerWaitingHint) throws DuplicateKeyException, OfferTimeoutException, PendingOfferAbortedException, InterruptedException {
+        // does this key already exist?
+        if (this.futures.containsKey(key)) {
+            throw new DuplicateKeyException("The key [" + key + "] already exists in the window");
         }
+
+        long offerTimestamp = System.currentTimeMillis();
         
-        // is all slot waiting currently canceled? (if so, immediately terminate)
-        if (this.slotWaitingCanceled.get()) {
-            throw new WaitingTerminatedEarlyException("Slot waiting is currently canceled until all original waiters are terminated");
-        }
-
-        // create a timestamp of when this request was "added"
-        long requestTime = System.currentTimeMillis();
-        long expiryTime = (expireTime > 0 ? (requestTime + expireTime) : -1);
-
-        this.windowLock.lockInterruptibly();
+        this.lock.lockInterruptibly();
         try {
             // does enough room exist in the "window" for another pending request?
             // NOTE: wait for room up to the waitTime
             // NOTE: multiple signals may be received that need to be ignored
-            while (this.pendingRequests.size() >= this.windowSize) {
+            while (getFreeSize() <= 0) {
                 // check if there time remaining to wait
-                long currentWaitTime = System.currentTimeMillis() - requestTime;
-                if (currentWaitTime >= waitTime) {
-                    throw new MaxWindowSizeTimeoutException("Max of [" + this.windowSize + "] pending requests reached and unable acquire a free slot within [" + waitTime + "] ms");
+                long currentOfferTime = System.currentTimeMillis() - offerTimestamp;
+                if (currentOfferTime >= offerTimeoutMillis) {
+                    throw new OfferTimeoutException("Unable to accept offer within [" + offerTimeoutMillis + " ms] (window full)");
                 }
+                
                 // check if slow waiting was canceled (terminate early)
-                if (this.slotWaitingCanceled.get()) {
-                    throw new WaitingTerminatedEarlyException("Slot waiting was canceled");
+                if (this.pendingOffersAborted.get()) {
+                    throw new PendingOfferAbortedException("Pending offer aborted (by an explicit call to abortPendingOffers())");
                 }
+                
                 // calculate the amount of timeout remaining
-                long remainingWaitTime = waitTime - currentWaitTime;
+                long remainingOfferTime = offerTimeoutMillis - currentOfferTime;
                 try {
                     // await for a new signal for this max amount of time
-                    this.beginSlotWaiting();
-                    this.responseReceivedCondition.await(remainingWaitTime, TimeUnit.MILLISECONDS);
+                    this.beginPendingOffer();
+                    this.completedCondition.await(remainingOfferTime, TimeUnit.MILLISECONDS);
                 } finally {
-                    boolean terminateEarly = this.endSlotWaiting();
-                    if (terminateEarly) {
-                        throw new WaitingTerminatedEarlyException("Slot waiting was canceled (terminated early)");
+                    boolean abortPendingOffer = this.endPendingOffer();
+                    if (abortPendingOffer) {
+                        throw new PendingOfferAbortedException("Pending offer aborted (by an explicit call to abortPendingOffers())");
                     }
                 }
             }
-
-            // if we got here, then there is a slot for our request
-            DefaultWindowEntry<K,R,P> value = new DefaultWindowEntry<K,R,P>(key, request, requestTime, (callerPlanningOnWaiting ? WindowEntry.CALLER_WAITING : WindowEntry.CALLER_NO_WAIT), expiryTime);
-            this.pendingRequests.put(key, value);
-            return new RequestFuture<K,R,P>(value, waitTime, this.windowLock, this.responseReceivedCondition);
+            
+            long acceptTimestamp = System.currentTimeMillis();
+            long expireTimestamp = (expireTimeoutMillis > 0 ? (acceptTimestamp + expireTimeoutMillis) : -1);
+            int callerStateHint = (callerWaitingHint ? WindowFuture.CALLER_WAITING : WindowFuture.CALLER_NOT_WAITING);
+            DefaultWindowFuture<K,R,P> future = new DefaultWindowFuture<K,R,P>(this, lock, completedCondition, key, request, callerStateHint, offerTimestamp, acceptTimestamp, expireTimestamp);
+            this.futures.put(key, future);
+            return future;
         } finally {
-            this.windowLock.unlock();
+            this.lock.unlock();
         }
     }
     
+    /**
+     * Gets the current number of callers/threads that are waiting for a pending
+     * offer to be accepted.
+     */
+    public int getPendingOfferCount() {
+        return this.pendingOffers.get();
+    }
+    
+    /*
+     * Begin waiting for a pending offer to be accepted.  Increments pendingOffers by 1.
+     */
+    private void beginPendingOffer() {
+        this.pendingOffers.incrementAndGet();
+    }
     
     /**
-     * Terminates all current callers/threads waiting for a slot in the window.
-     * @return True if there were currently callers/waiters, otherwise false.
+     * End waiting for a pending offer to be accepted.  Decrements pendingOffers by 1.
+     * If "pendingOffersAborted" is true and pendingOffers reaches 0 then
+     * pendingOffersAborted will be reset to false.
+     * @return True if a pending offer should be aborted. False if a pending
+     *      offer can continue waiting if needed.
+     */
+    private boolean endPendingOffer() {
+        int newValue = this.pendingOffers.decrementAndGet();
+        // if newValue reaches zero, make sure to always reset "offeringAborted"
+        if (newValue == 0) {
+            // if slotWaitingCanceled was true, then reset it back to false, and
+            // return true to make sure the caller knows to cancel waiting
+            return this.pendingOffersAborted.compareAndSet(true, false);
+        } else {
+            // if slotWaitingCanceled is true, then return true
+            return this.pendingOffersAborted.get();
+        }
+    }
+    
+    /**
+     * Aborts all current callers/threads waiting for a pending offer to be
+     * accepted by the window.
+     * @return True if there were threads/callers that have a pending offer.
      * @throws InterruptedException Thrown if the calling thread was interrupted
      *      while waiting to obtain the window lock.
      */
-    public boolean terminateSlotWaiters() throws InterruptedException {
-        this.windowLock.lockInterruptibly();
+    public boolean abortPendingOffers() throws InterruptedException {
+        this.lock.lockInterruptibly();
         try {
-            if (this.slotWaitingSize.get() > 0) {
-                this.slotWaitingCanceled.set(true);
-                this.responseReceivedCondition.signalAll();
+            if (this.pendingOffers.get() > 0) {
+                this.pendingOffersAborted.set(true);
+                this.completedCondition.signalAll();
                 return true;
             } else {
                 return false;
             }
         } finally {
-            this.windowLock.unlock();
+            this.lock.unlock();
         }
     }
     
-
     /**
-     * Adds a response to this "window" if a corresponding request exists.
-     * If no request matches this response (by its key), then this method will
-     * return null.  If a request is matched, it is returned wrapped inside
-     * a ResponseFuture object to be used by the caller to help finish processing.
-     * <BR>
-     * If a request is matched, any threads waiting for a response are signaled
-     * so that they can continue processing.
-     * @param key The key for the response which should match its originating
-     *      request (the protocol's sequence number is a good choice)
-     * @param response The response to set and match to the original request.
-     *      Using null as a response has the effect of "canceling" the request.
-     * @return An optional "future" object which includes the original request
-     *      that this response matches.  If no request is matched, this method
-     *      will return null.  In that case, either the original request either
-     *      timed out, was canceled, or this really is a totally unexpected response.
+     * Successfully completes a request by setting the response on the associated future.
+     * Any callers/threads waiting for completion will be signaled. Also, since
+     * this frees up a slot in the window, one caller/thread blocked with a
+     * pending offer will be signaled to continue.
+     * @param key The key for the original request
+     * @param response The response to set on the associated future. Null
+     *      responses are not accepted (use cancel()) instead.
+     * @return A future representing the entire operation. Since a response is
+     *      set, the future.isSuccess() method will be true.
      * @throws InterruptedException Thrown if the calling thread is interrupted
      *      and we're currently waiting to acquire the internal "windowLock".
      */
-    public ResponseFuture addResponse(K key, P response) throws InterruptedException {
-        return addResponse(key, response, null);
-    }
-    
-    private ResponseFuture addResponse(K key, P response, Throwable cause) throws InterruptedException {
-        // does this key even exist?
-        if (!this.pendingRequests.containsKey(key)) {
+    public WindowFuture<K,R,P> complete(K key, P response) throws InterruptedException {
+        if (response == null) {
+            throw new IllegalArgumentException("Null responses are illegal. Use cancel() instead.");
+        }
+        
+        if (!this.futures.containsKey(key)) {
             return null;
         }
 
-        // create a timestamp of when this response was "added"
-        long responseTime = System.currentTimeMillis();
-
-        this.windowLock.lockInterruptibly();
+        this.lock.lockInterruptibly();
         try {
-            // remove the request from our "pending" map
-            DefaultWindowEntry<K,R,P> value = this.pendingRequests.remove(key);
-
-            // if the entry was null, then somehow it got removed between our
-            // initial check at the start of this method and acquiring the lock
-            if (value == null) {
+            // try to remove future from window
+            DefaultWindowFuture<K,R,P> future = this.futures.remove(key);
+            if (future == null) {
                 return null;
             }
+            
+            // set success using helper method (bypasses signalAll and requests.remove(key))
+            future.completeHelper(response, System.currentTimeMillis());
 
-            // this means a reply was specifically received for the original request
-            value.setResponse(response);
-            value.setResponseTime(responseTime);
-            if (cause != null) {
-                value.setCause(cause);
-            }
-            value.finished();
+            // signal that a future is completed
+            this.completedCondition.signalAll();
 
-            // let all "waiters" know a response was received and processed
-            this.responseReceivedCondition.signalAll();
-
-            // return the answer
-            return new ResponseFuture<K,R,P>(value);
+            return future;
         } finally {
-            this.windowLock.unlock();
+            this.lock.unlock();
         }
-    }
-
-    /**
-     * Cancels and removes a request from this window.  If any thread is waiting
-     * on this request, they'll be signaled and see that the response was
-     * canceled.  This effectively sets the request as finished, but has the
-     * response set as a null object.
-     * @param key The key for the request (the protocol's sequence number is
-     *      a good choice)
-     * @return The ResponseFuture object that is a wrapper around the original
-     *      request.  This can be safely discard and ignored if not needed.
-     * @throws InterruptedException Thrown if the calling thread is interrupted
-     *      and we're currently waiting to acquire the internal "windowLock".
-     */
-    public ResponseFuture cancelRequest(K key) throws InterruptedException {
-        // cancelling a request is as easy as adding a null response
-        return this.cancelRequest(key, null);
     }
     
     /**
-     * Cancels and removes a request from this window.  If any thread is waiting
-     * on this request, they'll be signaled and see that the response was
-     * canceled.  This effectively sets the request as finished, but has the
-     * response set as a null object.
-     * @param key The key for the request (the protocol's sequence number is
-     *      a good choice)
-     * @param cause If an exception is the reason a request is canceled, the
-     *      underlying cause can be set here.
-     * @return The ResponseFuture object that is a wrapper around the original
-     *      request.  This can be safely discard and ignored if not needed.
+     * Fails (completes) a request by setting the cause of the failure on the associated future.
+     * Any callers/threads waiting for completion will be signaled. Also, since
+     * this frees up a slot in the window, one caller/thread blocked with a
+     * pending offer will be signaled to continue.
+     * @param key The key for the original request
+     * @param t The throwable to set as the failure cause on the associated future.
+     *      Null values are not accepted (use cancel()) instead.
+     * @return A future representing the entire operation. Since a cause is
+     *      set, the future.isSuccess() method will be false.
      * @throws InterruptedException Thrown if the calling thread is interrupted
      *      and we're currently waiting to acquire the internal "windowLock".
      */
-    public ResponseFuture cancelRequest(K key, Throwable cause) throws InterruptedException {
-        // cancelling a request is as easy as adding a null response
-        return this.addResponse(key, null, cause);
-    }
-
-    /**
-     * Cancels all pending requests, removes
-     * @return
-     */
-    public List<WindowEntry<K,R,P>> cancelAllRequests() {
-        // we'll create an array list of requests we cancelled
-        List<WindowEntry<K,R,P>> cancelledRequests = new ArrayList<WindowEntry<K,R,P>>(this.pendingRequests.size());
-
-        // create a timestamp of when this response was "added"
-        long responseTime = System.currentTimeMillis();
-
-        this.windowLock.lock();
-        try {
-            // update every pending request and "cancel" it
-            for (DefaultWindowEntry<K,R,P> value : this.pendingRequests.values()) {
-                // this means a reply was specifically received for the original request
-                value.setResponse(null);
-                value.setResponseTime(responseTime);
-                value.finished();
-                // add this value to our list of cancelled requests
-                cancelledRequests.add(value);
-            }
-
-            // clear everything
-            this.pendingRequests.clear();
-
-            // let all "waiters" know that requests were cancelled
-            this.responseReceivedCondition.signalAll();
-        } finally {
-            this.windowLock.unlock();
+    public WindowFuture<K,R,P> fail(K key, Throwable t) throws InterruptedException {
+        if (t == null) {
+            throw new IllegalArgumentException("Null throwables are illegal. Use cancel() instead.");
         }
         
-        return cancelledRequests;
+        if (!this.futures.containsKey(key)) {
+            return null;
+        }
+
+        this.lock.lockInterruptibly();
+        try {
+            // try to remove future from window
+            DefaultWindowFuture<K,R,P> future = this.futures.remove(key);
+            if (future == null) {
+                return null;
+            }
+            
+            // set failed using helper method (bypasses signalAll and requests.remove(key))
+            future.failedHelper(t, System.currentTimeMillis());
+
+            // signal that a future is completed
+            this.completedCondition.signalAll();
+
+            return future;
+        } finally {
+            this.lock.unlock();
+        }
     }
     
-    
-    public List<WindowEntry<K,R,P>> cancelAllExpiredRequests() {
-        // if there aren't any pending requests, nothing to expire
-        if (this.pendingRequests.size() <= 0) {
+    /**
+     * Fails (completes) all requests by setting the same cause of the failure
+     * on all associated futures. Any callers/threads waiting for completion
+     * will be signaled. Also, since this frees up all slots in the window, all
+     * callers/threads blocked with pending offers will be signaled to continue.
+     * @param t The throwable to set as the failure cause on all associated futures.
+     *      Null values are not accepted (use cancelAll()) instead.
+     * @return A list of all futures that were failed.
+     * @throws InterruptedException Thrown if the calling thread is interrupted
+     *      and we're currently waiting to acquire the internal "windowLock".
+     */
+    public List<WindowFuture<K,R,P>> failAll(Throwable t) throws InterruptedException {
+        if (this.futures.size() <= 0) {
             return null;
         }
         
-        logger.debug("cancelAllExpiredRequests called...");
-        
-        List<WindowEntry<K,R,P>> expiredRequests = new ArrayList<WindowEntry<K,R,P>>();
+        List<WindowFuture<K,R,P>> failed = new ArrayList<WindowFuture<K,R,P>>();
         long now = System.currentTimeMillis();
-        this.windowLock.lock();
+        this.lock.lock();
         try {
             // check every request this window contains and see if it's expired
-            for (DefaultWindowEntry<K,R,P> value : this.pendingRequests.values()) {
-                if (value.hasExpiryTime() && now >= value.getExpiryTime()) {
-                    expiredRequests.add(value);
-                    // expire it
-                    value.setResponse(null);
-                    value.setResponseTime(now);
-                    value.finished();
+            for (DefaultWindowFuture<K,R,P> future : this.futures.values()) {
+                failed.add(future);
+                future.failedHelper(t, now);
+            }
+            
+            if (failed.size() > 0) {
+                this.futures.clear();
+                // signal that a future is completed
+                this.completedCondition.signalAll();
+            }
+        } finally {
+            this.lock.unlock();
+        }
+        return failed;
+    }
+    
+    /**
+     * Cancels (completes) a request. Any callers/threads waiting for completion
+     * will be signaled. Also, since this frees up a slot in the window, one
+     * caller/thread blocked with a pending offer will be signaled to continue.
+     * @param key The key for the original request
+     * @return A future representing the entire operation.
+     * @throws InterruptedException Thrown if the calling thread is interrupted
+     *      and we're currently waiting to acquire the internal "windowLock".
+     */
+    public WindowFuture<K,R,P> cancel(K key) throws InterruptedException {
+        if (!this.futures.containsKey(key)) {
+            return null;
+        }
+
+        this.lock.lockInterruptibly();
+        try {
+            // try to remove future from window
+            DefaultWindowFuture<K,R,P> future = this.futures.remove(key);
+            if (future == null) {
+                return null;
+            }
+            
+            // set failed using helper method (bypasses signalAll and requests.remove(key))
+            future.cancelHelper(System.currentTimeMillis());
+
+            // signal that a future is completed
+            this.completedCondition.signalAll();
+
+            return future;
+        } finally {
+            this.lock.unlock();
+        }
+    }
+
+    /**
+     * Cancels (completes) all requests. Any callers/threads waiting for completion
+     * will be signaled. Also, since this frees up all slots in the window, all
+     * callers/threads blocked with pending offers will be signaled to continue.
+     * @return A list of all futures that were cancelled.
+     * @throws InterruptedException Thrown if the calling thread is interrupted
+     *      and we're currently waiting to acquire the internal "windowLock".
+     */
+    public List<WindowFuture<K,R,P>> cancelAll() {
+        if (this.futures.size() <= 0) {
+            return null;
+        }
+        
+        List<WindowFuture<K,R,P>> cancelled = new ArrayList<WindowFuture<K,R,P>>();
+        long now = System.currentTimeMillis();
+        this.lock.lock();
+        try {
+            // check every request this window contains and see if it's expired
+            for (DefaultWindowFuture<K,R,P> future : this.futures.values()) {
+                cancelled.add(future);
+                future.cancelHelper(now);
+            }
+            
+            if (cancelled.size() > 0) {
+                this.futures.clear();
+                // signal that a future is completed
+                this.completedCondition.signalAll();
+            }
+        } finally {
+            this.lock.unlock();
+        }
+        return cancelled;
+    }
+    
+    /**
+     * Cancels (completes) all expired requests. A request is considered expired
+     * if it has an expireTimestamp set and the current time is &gt;= the
+     * getExpireTimestamp() value. Any callers/threads waiting for completion
+     * will be signaled. Also, if more than one request was expired then all
+     * callers/threads blocked with pending offers will be signaled to continue.
+     * @return A list of all expired futures that were cancelled.
+     * @throws InterruptedException Thrown if the calling thread is interrupted
+     *      and we're currently waiting to acquire the internal "windowLock".
+     */
+    public List<WindowFuture<K,R,P>> cancelAllExpired() {
+        if (this.futures.size() <= 0) {
+            return null;
+        }
+        
+        List<WindowFuture<K,R,P>> expired = new ArrayList<WindowFuture<K,R,P>>();
+        long now = System.currentTimeMillis();
+        this.lock.lock();
+        try {
+            // check every request this window contains and see if it's expired
+            for (DefaultWindowFuture<K,R,P> future : this.futures.values()) {
+                if (future.hasExpireTimestamp() && now >= future.getExpireTimestamp()) {
+                    expired.add(future);
+                    future.cancelHelper(now);
                 }
             }
             
-            // do any requests need expired?
-            if (expiredRequests.size() > 0) {
+            if (expired.size() > 0) {
                 // take all expired requests and remove them from the pendingRequests
-                for (WindowEntry<K,R,P> entry : expiredRequests) {
-                    this.pendingRequests.remove(entry.getKey());
+                for (WindowFuture<K,R,P> future : expired) {
+                    this.futures.remove(future.getKey());
                 }
-                // let all "waiters" know that their request may have been expired
-                this.responseReceivedCondition.signalAll();
+                // signal that a future is completed
+                this.completedCondition.signalAll();
             }
         } finally {
-            this.windowLock.unlock();
+            this.lock.unlock();
         }
-        return expiredRequests;
+        return expired;
+    }
+    
+    void removeHelper(K key) {
+        this.futures.remove(key);
     }
 }

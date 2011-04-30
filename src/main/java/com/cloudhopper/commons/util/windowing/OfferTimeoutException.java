@@ -15,17 +15,19 @@
 package com.cloudhopper.commons.util.windowing;
 
 /**
- * Thrown when all waiting callers/threads were canceled and they were signaled
- * to timeout early.  A subclass of MaxWindowSizeTimeoutException since it
- * more or less indicates a timeout occurred, just a little earlier than the 
- * caller may have expected.
+ * Thrown if an offer() cannot be accepted within a specified amount of time.
  * 
  * @author joelauer
  */
-public class WaitingTerminatedEarlyException extends MaxWindowSizeTimeoutException {
+public class OfferTimeoutException extends Exception {
+    static final long serialVersionUID = 1L;
     
-    public WaitingTerminatedEarlyException(String msg) {
+    public OfferTimeoutException(String msg) {
         super(msg);
+    }
+    
+    public OfferTimeoutException(String msg, Throwable t) {
+        super(msg, t);
     }
     
 }

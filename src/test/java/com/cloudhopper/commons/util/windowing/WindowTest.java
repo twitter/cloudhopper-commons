@@ -33,215 +33,300 @@ public class WindowTest {
     private static final Logger logger = Logger.getLogger(WindowTest.class);
 
     @Test
-    public void sizes() throws Exception {
-        Window<Integer,String,String> requestWindow = new Window<Integer,String,String>(1);
-        Assert.assertEquals(1, requestWindow.getWindowSize());
-        Assert.assertEquals(0, requestWindow.getPendingSize());
+    public void usage() throws Exception {
+        Window<Integer,String,String> window = new Window<Integer,String,String>(1);
+        Assert.assertEquals(1, window.getMaxSize());
+        Assert.assertEquals(0, window.getSize());
 
-        RequestFuture<Integer,String,String> requestFuture0 = requestWindow.addRequest(0, "Request0", 100);
+        WindowFuture<Integer,String,String> future0 = window.offer(0, "Request0", 100);
 
-        Assert.assertEquals(1, requestWindow.getWindowSize());
-        Assert.assertEquals(1, requestWindow.getPendingSize());
+        Assert.assertEquals(1, window.getMaxSize());
+        Assert.assertEquals(1, window.getSize());
+        Assert.assertEquals(0, window.getFreeSize());
 
-        requestWindow.cancelRequest(0);
+        window.cancel(0);
 
-        Assert.assertEquals(1, requestWindow.getWindowSize());
-        Assert.assertEquals(0, requestWindow.getPendingSize());
+        Assert.assertEquals(1, window.getMaxSize());
+        Assert.assertEquals(0, window.getSize());
+        Assert.assertEquals(1, window.getFreeSize());
 
-        RequestFuture<Integer,String,String> requestFuture1 = requestWindow.addRequest(1, "Request1", 100);
+        WindowFuture<Integer,String,String> future1 = window.offer(1, "Request1", 100);
 
-        Assert.assertEquals(1, requestWindow.getWindowSize());
-        Assert.assertEquals(1, requestWindow.getPendingSize());
+        Assert.assertEquals(1, window.getMaxSize());
+        Assert.assertEquals(1, window.getSize());
+        Assert.assertEquals(0, window.getFreeSize());
 
-        requestWindow.addResponse(1, "Response1");
+        window.complete(1, "Response1");
 
-        Assert.assertEquals(1, requestWindow.getWindowSize());
-        Assert.assertEquals(0, requestWindow.getPendingSize());
+        Assert.assertEquals(1, window.getMaxSize());
+        Assert.assertEquals(0, window.getSize());
+        Assert.assertEquals(1, window.getFreeSize());
+        
+        WindowFuture<Integer,String,String> future2 = window.offer(2, "Request2", 100);
+        
+        Assert.assertEquals(1, window.getMaxSize());
+        Assert.assertEquals(1, window.getSize());
+        Assert.assertEquals(0, window.getFreeSize());
+        Assert.assertFalse(future2.isDone());
+        Assert.assertFalse(future2.isCancelled());
+        Assert.assertFalse(future2.isSuccess());
+        Assert.assertNull(future2.getCause());
+        
+        // trigger this from the future now
+        future2.fail(new Exception("Test Cause"));
+
+        Assert.assertEquals(1, window.getMaxSize());
+        Assert.assertEquals(0, window.getSize());
+        Assert.assertEquals(1, window.getFreeSize());
+        Assert.assertTrue(future2.isDone());
+        Assert.assertFalse(future2.isCancelled());
+        Assert.assertFalse(future2.isSuccess());
+        Assert.assertNotNull(future2.getCause());
+        
+        WindowFuture<Integer,String,String> future3 = window.offer(3, "Request3", 100);
+        
+        Assert.assertEquals(1, window.getMaxSize());
+        Assert.assertEquals(1, window.getSize());
+        Assert.assertEquals(0, window.getFreeSize());
+        Assert.assertFalse(future3.isDone());
+        Assert.assertFalse(future3.isCancelled());
+        Assert.assertFalse(future3.isSuccess());
+        Assert.assertNull(future3.getCause());
+        
+        // trigger this from the future now
+        long now = System.currentTimeMillis();
+        future3.complete("Response3", now);
+
+        Assert.assertEquals(1, window.getMaxSize());
+        Assert.assertEquals(0, window.getSize());
+        Assert.assertEquals(1, window.getFreeSize());
+        Assert.assertTrue(future3.isDone());
+        Assert.assertFalse(future3.isCancelled());
+        Assert.assertTrue(future3.isSuccess());
+        Assert.assertNull(future3.getCause());
+        Assert.assertEquals(now, future3.getDoneTimestamp());
+        
+        
+        WindowFuture<Integer,String,String> future4 = window.offer(4, "Request4", 100);
+        
+        Assert.assertEquals(1, window.getMaxSize());
+        Assert.assertEquals(1, window.getSize());
+        Assert.assertEquals(0, window.getFreeSize());
+        Assert.assertFalse(future4.isDone());
+        Assert.assertFalse(future4.isCancelled());
+        Assert.assertFalse(future4.isSuccess());
+        Assert.assertNull(future4.getCause());
+        
+        // trigger this from the future now
+        future4.cancel(now);
+
+        Assert.assertEquals(1, window.getMaxSize());
+        Assert.assertEquals(0, window.getSize());
+        Assert.assertEquals(1, window.getFreeSize());
+        Assert.assertTrue(future4.isDone());
+        Assert.assertTrue(future4.isCancelled());
+        Assert.assertFalse(future4.isSuccess());
+        Assert.assertNull(future4.getCause());
+        Assert.assertEquals(now, future4.getDoneTimestamp());
     }
 
+    
     @Test
-    public void requestFutureAndResponseFuture() throws Exception {
-        Window<Integer,String,String> requestWindow = new Window<Integer,String,String>(1);
+    public void requestFutureAndWindowFuture() throws Exception {
+        Window<Integer,String,String> window = new Window<Integer,String,String>(1);
         Integer i = new Integer(1);
         String request = "Request"+i;
 
-        RequestFuture<Integer,String,String> requestFuture = requestWindow.addRequest(i, request, 100);
+        WindowFuture<Integer,String,String> requestFuture = window.offer(i, request, 100);
         Assert.assertEquals(new Integer(i), requestFuture.getKey());
         Assert.assertEquals(request, requestFuture.getRequest());
-        Assert.assertEquals(true, requestFuture.getRequestTime() > 0);
+        Assert.assertEquals(true, requestFuture.getAcceptTimestamp() > 0);
         Assert.assertEquals(null, requestFuture.getResponse());
-        Assert.assertEquals(0, requestFuture.getResponseTime());
+        Assert.assertFalse(requestFuture.hasDoneTimestamp());
+        Assert.assertEquals(0, requestFuture.getDoneTimestamp());
         Assert.assertEquals(false, requestFuture.isCancelled());
-        Assert.assertEquals(false, requestFuture.isFinished());
+        Assert.assertEquals(false, requestFuture.isDone());
         Assert.assertEquals(false, requestFuture.isSuccess());
-        Assert.assertEquals(0, requestFuture.getProcessingTime());
+        Assert.assertEquals(-1, requestFuture.getAcceptToDoneTime());
 
-        try {
-            // this should timeout waiting for a response
-            requestFuture.await();
-            Assert.fail();
-        } catch (ResponseTimeoutException e) {
-            // correct behavior
-        }
+        // this should timeout waiting for a response
+        Assert.assertFalse(requestFuture.await(100));
 
         // mimic a response is received
         String response = "Response"+i;
-        ResponseFuture<Integer,String,String> responseFuture = requestWindow.addResponse(i, response);
+        WindowFuture<Integer,String,String> responseFuture = window.complete(i, response);
         Assert.assertEquals(new Integer(i), responseFuture.getKey());
         Assert.assertEquals(request, responseFuture.getRequest());
-        Assert.assertEquals(true, responseFuture.getRequestTime() > 0);
+        Assert.assertEquals(true, responseFuture.getAcceptTimestamp() > 0);
         Assert.assertEquals(response, responseFuture.getResponse());
-        Assert.assertEquals(true, responseFuture.getResponseTime() > 0);
+        Assert.assertEquals(true, responseFuture.getDoneTimestamp() > 0);
         Assert.assertEquals(false, requestFuture.isCancelled());
-        Assert.assertEquals(true, requestFuture.isFinished());
+        Assert.assertEquals(true, requestFuture.isDone());
         Assert.assertEquals(true, requestFuture.isSuccess());
-        Assert.assertEquals(true, requestFuture.getProcessingTime() > 0);
+        Assert.assertEquals(true, requestFuture.getAcceptToDoneTime() > 0);
 
         // this should succeed now since a response was received
-        String response0 = requestFuture.await();
+        Assert.assertTrue(requestFuture.await(100));
+        String response0 = requestFuture.getResponse();
         Assert.assertEquals(response, response0);
         Assert.assertEquals(request, requestFuture.getRequest());
-        Assert.assertEquals(true, requestFuture.getRequestTime() > 0);
+        Assert.assertEquals(true, requestFuture.getAcceptTimestamp() > 0);
         Assert.assertEquals(response, requestFuture.getResponse());
-        Assert.assertEquals(true, requestFuture.getResponseTime() > 0);
+        Assert.assertEquals(true, requestFuture.getDoneTimestamp() > 0);
         Assert.assertEquals(false, requestFuture.isCancelled());
-        Assert.assertEquals(true, requestFuture.isFinished());
+        Assert.assertEquals(true, requestFuture.isDone());
         Assert.assertEquals(true, requestFuture.isSuccess());
-        Assert.assertEquals(true, requestFuture.getProcessingTime() > 0);
+        Assert.assertEquals(true, requestFuture.getAcceptToDoneTime() > 0);
     }
 
     @Test
-    public void maxWindowSizeTimeoutException() throws Exception {
-        Window<Integer,String,String> requestWindow = new Window<Integer,String,String>(1);
-        RequestFuture<Integer,String,String> requestFuture0 = requestWindow.addRequest(0, "Request0", 100);
+    public void filledWindowThrowsOfferTimeoutException() throws Exception {
+        Window<Integer,String,String> window = new Window<Integer,String,String>(1);
+        WindowFuture<Integer,String,String> requestFuture0 = window.offer(0, "Request0", 100);
         try {
             // this should timeout waiting for a slot
-            RequestFuture<Integer,String,String> requestFuture1 = requestWindow.addRequest(1, "Request1", 100);
+            WindowFuture<Integer,String,String> requestFuture1 = window.offer(1, "Request1", 100);
             Assert.fail();
-        } catch (MaxWindowSizeTimeoutException e) {
+        } catch (OfferTimeoutException e) {
             // correct behavior
         }
     }
 
     @Test
-    public void responseTimeoutException() throws Exception {
-        Window<Integer,String,String> requestWindow = new Window<Integer,String,String>(1);
-        RequestFuture<Integer,String,String> requestFuture0 = requestWindow.addRequest(0, "Request0", 100);
-        try {
-            // this should timeout waiting for a response
-            requestFuture0.await();
-            Assert.fail();
-        } catch (ResponseTimeoutException e) {
-            // correct behavior
-        }
+    public void awaitTimesout() throws Exception {
+        Window<Integer,String,String> window = new Window<Integer,String,String>(1);
+        WindowFuture<Integer,String,String> requestFuture0 = window.offer(0, "Request0", 100);
+        // this should timeout waiting for a response
+        Assert.assertFalse(requestFuture0.await(100));
     }
 
     @Test
-    public void requestAlreadyExistsException() throws Exception {
-        Window<Integer,String,String> requestWindow = new Window<Integer,String,String>(1);
-        RequestFuture<Integer,String,String> requestFuture0 = requestWindow.addRequest(0, "Request0", 100);
+    public void duplicateKeyThrowsDuplicateKeyException() throws Exception {
+        Window<Integer,String,String> window = new Window<Integer,String,String>(1);
+        WindowFuture<Integer,String,String> requestFuture0 = window.offer(0, "Request0", 100);
         try {
-            RequestFuture<Integer,String,String> requestFuture1 = requestWindow.addRequest(0, "Request0", 100);;
+            WindowFuture<Integer,String,String> requestFuture1 = window.offer(0, "Request0", 100);;
             Assert.fail();
-        } catch (RequestAlreadyExistsException e) {
+        } catch (DuplicateKeyException e) {
             // correct behavior
         }
     }
-
 
     @Test
     public void waitingFlagNotOriginallySetButAddedOnAwait() throws Exception {
-        Window<Integer,String,String> requestWindow = new Window<Integer,String,String>(1);
-        RequestFuture<Integer,String,String> requestFuture0 = requestWindow.addRequest(0, "Request0", 100);
-        Assert.assertEquals(WindowEntry.CALLER_NO_WAIT, requestFuture0.getCallerStatus());
+        Window<Integer,String,String> window = new Window<Integer,String,String>(1);
+        WindowFuture<Integer,String,String> requestFuture0 = window.offer(0, "Request0", 100);
+        Assert.assertEquals(WindowFuture.CALLER_NOT_WAITING, requestFuture0.getCallerStateHint());
+        Assert.assertFalse(requestFuture0.isCallerWaiting());
 
         // now the caller was mistaken that they weren't waiting, when they actually
         // start to wait, we'll set the waiting flag to true
-        try {
-            requestFuture0.await();
-            Assert.fail();
-        } catch (Exception e) {
-            // correct behavior
-        }
+        Assert.assertFalse(requestFuture0.await(30));
+        
+        Assert.assertEquals(WindowFuture.CALLER_WAITING_TIMEOUT, requestFuture0.getCallerStateHint());
+    }
+    
+    @Test
+    public void callerStateHintResetBackToNotWaitingAtCompletion() throws Exception {
+        Window<Integer,String,String> window = new Window<Integer,String,String>(1);
+        final WindowFuture<Integer,String,String> future0 = window.offer(0, "Request0", 100, 100, true);
+        Assert.assertEquals(WindowFuture.CALLER_WAITING, future0.getCallerStateHint());
+        Assert.assertTrue(future0.isCallerWaiting());
 
-        Assert.assertEquals(WindowEntry.CALLER_WAITING_TIMEOUT, requestFuture0.getCallerStatus());
+        // start up a new thread to mark the future as completed in near future
+        Thread completer = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(100);
+                } catch (Exception e) { }
+                future0.cancel();
+            }
+        };
+        completer.start();
+        
+        // now wait for the future up to 3 times the other thread's sleep
+        Assert.assertTrue(future0.await(300));
+        
+        // after await finishes, check hints
+        Assert.assertEquals(WindowFuture.CALLER_NOT_WAITING, future0.getCallerStateHint());
+        Assert.assertFalse(future0.isCallerWaiting());
+        
+        // call await again -- it should immediately succeed
+        // this is to check that the callerStateHint isn't reset to a new value
+        Assert.assertTrue(future0.await(300));
+        Assert.assertEquals(WindowFuture.CALLER_NOT_WAITING, future0.getCallerStateHint());
+        Assert.assertFalse(future0.isCallerWaiting());
     }
 
-
-
     @Test
-    public void cancelRequest() throws Exception {
-        Window<Integer,String,String> requestWindow = new Window<Integer,String,String>(1);
+    public void cancel() throws Exception {
+        Window<Integer,String,String> window = new Window<Integer,String,String>(1);
         Integer i = new Integer(1);
         String request = "Request"+i;
 
-        RequestFuture<Integer,String,String> requestFuture = requestWindow.addRequest(i, request, 100);
+        WindowFuture<Integer,String,String> requestFuture = window.offer(i, request, 100);
         
         // cancel it
-        ResponseFuture<Integer,String,String> responseFuture = requestWindow.cancelRequest(i);
+        WindowFuture<Integer,String,String> responseFuture = window.cancel(i);
         Assert.assertEquals(new Integer(i), responseFuture.getKey());
         Assert.assertEquals(request, responseFuture.getRequest());
-        Assert.assertEquals(true, responseFuture.getRequestTime() > 0);
+        Assert.assertEquals(true, responseFuture.getAcceptTimestamp() > 0);
         Assert.assertEquals(null, responseFuture.getResponse());
-        Assert.assertEquals(true, responseFuture.getResponseTime() > 0);
+        Assert.assertEquals(true, responseFuture.getDoneTimestamp() > 0);
         Assert.assertEquals(true, requestFuture.isCancelled());
-        Assert.assertEquals(true, requestFuture.isFinished());
+        Assert.assertEquals(true, requestFuture.isDone());
         Assert.assertEquals(false, requestFuture.isSuccess());
-        Assert.assertEquals(0, requestFuture.getProcessingTime());
+        Assert.assertTrue(requestFuture.getAcceptToDoneTime() >= 0);
 
-        try {
-            // this should timeout waiting for a response
-            requestFuture.await();
-            Assert.fail();
-        } catch (RequestCanceledException e) {
-            // correct behavior
-        }
+        // this should not timeout waiting for a response
+        Assert.assertTrue(requestFuture.await(50));
     }
 
 
     @Test
-    public void cancelAllRequests() throws Exception {
+    public void cancelAll() throws Exception {
         int count = 5;
-        Window<Integer,String,String> requestWindow = new Window<Integer,String,String>(count);
+        Window<Integer,String,String> window = new Window<Integer,String,String>(count);
         String[] requests = new String[count];
         for (int i = 0; i < count; i++) {
             requests[i] = "Request" + i;
         }
 
         for (int i = 0; i < 3; i++) {
-            requestWindow.addRequest(i, requests[i], 100);
+            window.offer(i, requests[i], 100);
         }
 
-        Assert.assertEquals(3, requestWindow.getPendingSize());
+        Assert.assertEquals(3, window.getSize());
 
         // are there requests pending?
-        List<WindowEntry<Integer,String,String>> cancelledRequests = requestWindow.cancelAllRequests();
+        List<WindowFuture<Integer,String,String>> cancelled = window.cancelAll();
 
-        Assert.assertEquals(0, requestWindow.getPendingSize());
-        Assert.assertEquals(3, cancelledRequests.size());
+        Assert.assertEquals(0, window.getSize());
+        Assert.assertEquals(3, cancelled.size());
 
         for (int i = 0; i < 3; i++) {
-            WindowEntry<Integer,String,String> value = cancelledRequests.get(i);
+            WindowFuture<Integer,String,String> value = cancelled.get(i);
             Assert.assertEquals("Request"+value.getKey(), value.getRequest());
-            Assert.assertEquals(true, value.getRequestTime() > 0);
+            Assert.assertEquals(true, value.getAcceptTimestamp() > 0);
             Assert.assertEquals(null, value.getResponse());
-            Assert.assertEquals(true, value.getResponseTime() > 0);
+            Assert.assertEquals(true, value.getDoneTimestamp() > 0);
             Assert.assertEquals(true, value.isCancelled());
-            Assert.assertEquals(true, value.isFinished());
+            Assert.assertEquals(true, value.isDone());
             Assert.assertEquals(false, value.isSuccess());
         }
     }
 
     public static class RequestThread extends Thread {
 
-        private Window<Integer,String,String> requestWindow;
+        private Window<Integer,String,String> window;
         private BlockingQueue<Integer> requestQueue;
         public int id;
         public int requestsPerThread;
         public Throwable throwable;
 
-        public RequestThread(Window<Integer,String,String> requestWindow, BlockingQueue<Integer> requestQueue, int id, int requestsPerThread) {
-            this.requestWindow = requestWindow;
+        public RequestThread(Window<Integer,String,String> window, BlockingQueue<Integer> requestQueue, int id, int requestsPerThread) {
+            this.window = window;
             this.requestQueue = requestQueue;
             this.id = id;
             this.requestsPerThread = requestsPerThread;
@@ -254,27 +339,27 @@ public class WindowTest {
                     Integer i = Integer.valueOf(""+id+""+x);
                     String request = "Request"+i;
  //                   logger.debug("adding request " + i);
-                    RequestFuture<Integer,String,String> requestFuture = requestWindow.addRequest(i, request, 100);
+                    WindowFuture<Integer,String,String> requestFuture = window.offer(i, request, 100);
                     Assert.assertEquals(i, requestFuture.getKey());
                     Assert.assertEquals(request, requestFuture.getRequest());
-                    Assert.assertEquals(true, requestFuture.getRequestTime() > 0);
+                    Assert.assertEquals(true, requestFuture.getAcceptTimestamp() > 0);
                     Assert.assertEquals(null, requestFuture.getResponse());
-                    Assert.assertEquals(0, requestFuture.getResponseTime());
+                    Assert.assertEquals(0, requestFuture.getDoneTimestamp());
                     Assert.assertEquals(false, requestFuture.isCancelled());
-                    Assert.assertEquals(false, requestFuture.isFinished());
+                    Assert.assertEquals(false, requestFuture.isDone());
                     Assert.assertEquals(false, requestFuture.isSuccess());
-                    Assert.assertEquals(0, requestFuture.getProcessingTime());
+                    Assert.assertEquals(-1, requestFuture.getAcceptToDoneTime());
 
                     requestQueue.add(i);
-                    requestFuture.await();
+                    requestFuture.await(100);
 
                     Assert.assertEquals(request, requestFuture.getRequest());
-                    Assert.assertEquals(true, requestFuture.getRequestTime() > 0);
+                    Assert.assertEquals(true, requestFuture.getAcceptTimestamp() > 0);
                     Assert.assertEquals("Response"+i, requestFuture.getResponse());
                     //Assert.assertEquals(null, requestFuture.getResponse());
-                    Assert.assertEquals(true, requestFuture.getResponseTime() > 0);
+                    Assert.assertEquals(true, requestFuture.getDoneTimestamp() > 0);
                     Assert.assertEquals(false, requestFuture.isCancelled());
-                    Assert.assertEquals(true, requestFuture.isFinished());
+                    Assert.assertEquals(true, requestFuture.isDone());
                 }
             } catch (Throwable t) {
                 logger.error("", t);
@@ -286,13 +371,13 @@ public class WindowTest {
     
     public static class ResponseThread extends Thread {
 
-        private Window<Integer,String,String> requestWindow;
+        private Window<Integer,String,String> window;
         private BlockingQueue<Integer> requestQueue;
         public int total;
         public Throwable throwable;
 
-        public ResponseThread(Window<Integer,String,String> requestWindow, BlockingQueue<Integer> requestQueue, int total) {
-            this.requestWindow = requestWindow;
+        public ResponseThread(Window<Integer,String,String> window, BlockingQueue<Integer> requestQueue, int total) {
+            this.window = window;
             this.requestQueue = requestQueue;
             this.total = total;
         }
@@ -308,14 +393,14 @@ public class WindowTest {
                     }
                     String response = "Response"+i;
  //                   logger.debug("adding response " + i);
-                    ResponseFuture<Integer,String,String> responseFuture = requestWindow.addResponse(i, response);
+                    WindowFuture<Integer,String,String> responseFuture = window.complete(i, response);
                     Assert.assertEquals(new Integer(i), responseFuture.getKey());
                     Assert.assertEquals("Request"+i, responseFuture.getRequest());
-                    Assert.assertEquals(true, responseFuture.getRequestTime() > 0);
+                    Assert.assertEquals(true, responseFuture.getAcceptTimestamp() > 0);
                     Assert.assertEquals(response, responseFuture.getResponse());
-                    Assert.assertEquals(true, responseFuture.getResponseTime() > 0);
+                    Assert.assertEquals(true, responseFuture.getDoneTimestamp() > 0);
                     Assert.assertEquals(false, responseFuture.isCancelled());
-                    Assert.assertEquals(true, responseFuture.isFinished());
+                    Assert.assertEquals(true, responseFuture.isDone());
                     Assert.assertEquals(true, responseFuture.isSuccess());
                 }
             } catch (Throwable t) {
@@ -329,7 +414,7 @@ public class WindowTest {
 
     @Test
     public void simulatedMultithreadedProcessing() throws Exception {
-        final Window<Integer,String,String> requestWindow = new Window<Integer,String,String>(5);
+        final Window<Integer,String,String> window = new Window<Integer,String,String>(5);
 
         final int requestThreadCount = 8;
         final int requestsPerThread = 10000;
@@ -337,10 +422,10 @@ public class WindowTest {
 
         RequestThread[] requestThreads = new RequestThread[requestThreadCount];
         for (int i = 0; i < requestThreadCount; i++) {
-            requestThreads[i] = new RequestThread(requestWindow, requestQueue, i, requestsPerThread);
+            requestThreads[i] = new RequestThread(window, requestQueue, i, requestsPerThread);
         }
 
-        ResponseThread responseThread = new ResponseThread(requestWindow, requestQueue, requestThreadCount*requestsPerThread);
+        ResponseThread responseThread = new ResponseThread(window, requestQueue, requestThreadCount*requestsPerThread);
 
         // start 'em
         for (RequestThread requestThread : requestThreads) {
@@ -368,26 +453,26 @@ public class WindowTest {
         }
         Assert.assertNull("ResponseThread throwable wasn't null", responseThread.throwable);
 
-        Assert.assertEquals(0, requestWindow.getPendingSize());
+        Assert.assertEquals(0, window.getSize());
     }
     
     @Test
-    public void terminateSlotWaiters() throws Exception {
+    public void abortOffering() throws Exception {
         // test that terminating slot waiters early works as expected
         final Window<Integer,String,String> window = new Window<Integer,String,String>(2);
         
         // first two items should work
-        Assert.assertFalse(window.terminateSlotWaiters());
-        window.addRequest(1, "Request1", 100);
-        Assert.assertFalse(window.terminateSlotWaiters());
-        window.addRequest(2, "Request2", 100);
-        Assert.assertFalse(window.terminateSlotWaiters());
+        Assert.assertFalse(window.abortPendingOffers());
+        window.offer(1, "Request1", 100);
+        Assert.assertFalse(window.abortPendingOffers());
+        window.offer(2, "Request2", 100);
+        Assert.assertFalse(window.abortPendingOffers());
         
         // third item should fail
         try {
-            window.addRequest(3, "Request3", 20);
+            window.offer(3, "Request3", 20);
             Assert.fail();
-        } catch (MaxWindowSizeTimeoutException e) {
+        } catch (OfferTimeoutException e) {
             // correct behavior
         }
         
@@ -399,9 +484,9 @@ public class WindowTest {
                 @Override
                 public void run() {
                     try {
-                        window.addRequest(4+x, "Request" + (4+x), 5000);
+                        window.offer(4+x, "Request" + (4+x), 5000);
                         Assert.fail();
-                    } catch (WaitingTerminatedEarlyException e) {
+                    } catch (PendingOfferAbortedException e) {
                         // correct behavior
                     } catch (Exception e) {
                         logger.error(e);
@@ -420,8 +505,8 @@ public class WindowTest {
                     Thread.sleep(300);
                 } catch (Exception e) { }
                 try {
-                    Assert.assertEquals(4, window.getSlotWaitingSize());
-                    boolean hadWaiters = window.terminateSlotWaiters();
+                    Assert.assertEquals(4, window.getPendingOfferCount());
+                    boolean hadWaiters = window.abortPendingOffers();
                     logger.debug("hadWaiters: " + hadWaiters);
                     Assert.assertTrue(hadWaiters);
                 } catch (Exception e) {
@@ -435,9 +520,9 @@ public class WindowTest {
         // now wait for a slot up to 5 seconds (the thread we spawned earlier
         // should definitely cause it to terminate early)
         try {
-            window.addRequest(3, "Request3", 5000);
+            window.offer(3, "Request3", 5000);
             Assert.fail();
-        } catch (WaitingTerminatedEarlyException e) {
+        } catch (PendingOfferAbortedException e) {
             // correct behavior
         }
         
@@ -448,12 +533,23 @@ public class WindowTest {
         }
         
         // next call to terminate slot waiters shouldn't do anything
-        Assert.assertEquals(0, window.getSlotWaitingSize());
-        Assert.assertFalse(window.terminateSlotWaiters());
+        Assert.assertEquals(0, window.getPendingOfferCount());
+        Assert.assertFalse(window.abortPendingOffers());
         
-        window.addResponse(1, "Response1");
-        Assert.assertFalse(window.terminateSlotWaiters());
-        window.addRequest(4, "Request4", 100);
-        Assert.assertFalse(window.terminateSlotWaiters());
+        window.complete(1, "Response1");
+        Assert.assertFalse(window.abortPendingOffers());
+        window.offer(4, "Request4", 100);
+        Assert.assertFalse(window.abortPendingOffers());
+    }
+    
+    @Test
+    public void abortOfferingCalledWithNoWaitingOfferers() throws Exception {
+        final Window<Integer,String,String> window = new Window<Integer,String,String>(2);
+        
+        window.offer(0, "Request0", 100);
+        
+        window.abortPendingOffers();
+        
+        window.offer(1, "Request1", 100);
     }
 }
