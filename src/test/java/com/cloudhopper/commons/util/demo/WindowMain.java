@@ -20,7 +20,8 @@ import com.cloudhopper.commons.util.windowing.Window;
 import org.apache.log4j.Logger;
 
 /**
- *
+ * Simple demo of window utility class.
+ * 
  * @author joelauer
  */
 public class WindowMain {

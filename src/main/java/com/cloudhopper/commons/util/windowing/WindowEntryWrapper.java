@@ -50,6 +50,16 @@ public class WindowEntryWrapper<K,R,P> implements WindowEntry<K,R,P> {
     public long getRequestTime() {
         return this.entry.getRequestTime();
     }
+    
+    @Override
+    public long getExpiryTime() {
+        return this.entry.getExpiryTime();
+    }
+    
+    @Override
+    public boolean hasExpiryTime() {
+        return this.entry.hasExpiryTime();
+    }
 
     @Override
     public long getResponseTime() {

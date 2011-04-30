@@ -3,6 +3,11 @@ http://twitter.com/
 http://www.cloudhopper.com/
 Commons Util Library
 --------------------------------------------------------------------------------
+4.2 - 2011-04-29
+  * Added support in window for terminating threads that were blocked waiting
+    for a slot to open.
+  * 
+
 4.1 - 2011-04-28
   * Upgrade joda-time dependency from 1.6 to 1.6.2
   * Renamed RequestCancelledException to RequestCanceledException

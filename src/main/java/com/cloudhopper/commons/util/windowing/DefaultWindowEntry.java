@@ -29,16 +29,28 @@ public class DefaultWindowEntry<K,R,P> implements WindowEntry<K,R,P> {
     private final K key;
     private final R request;
     private final long requestTime;
+    private final long expiryTime;
     private final AtomicReference<P> response;
     private final AtomicReference<Throwable> cause;
     private final AtomicLong responseTime;
     private final AtomicBoolean finished;
     private final AtomicInteger callerStatus;
 
-    protected DefaultWindowEntry(K key, R request, long requestTime, int callerStatus) {
+    /**
+     * Creates a new WindowEntry.
+     * @param key The key of this entry
+     * @param request The request this entry contains
+     * @param requestTime The Java datetime of the request in milliseconds 
+     * @param callerStatus The status of the caller such as whether they plan
+     *      on waiting for a response.
+     * @param expiryTime The Java datetime of the time the request expires in
+     *      milliseconds.  If &lt; 0, then expiration not set.
+     */
+    protected DefaultWindowEntry(K key, R request, long requestTime, int callerStatus, long expiryTime) {
         this.key = key;
         this.request = request;
         this.requestTime = requestTime;
+        this.expiryTime = expiryTime;
         this.response = new AtomicReference<P>();
         this.cause = new AtomicReference<Throwable>();
         this.responseTime = new AtomicLong(0);
@@ -64,12 +76,7 @@ public class DefaultWindowEntry<K,R,P> implements WindowEntry<K,R,P> {
     public R getRequest() {
         return this.request;
     }
-
-    @Override
-    public long getRequestTime() {
-        return this.requestTime;
-    }
-
+    
     public void setResponse(P response) {
         this.response.set(response);
     }
@@ -77,6 +84,23 @@ public class DefaultWindowEntry<K,R,P> implements WindowEntry<K,R,P> {
     @Override
     public P getResponse() {
         return this.response.get();
+    }
+    
+    
+
+    @Override
+    public long getRequestTime() {
+        return this.requestTime;
+    }
+    
+    @Override
+    public long getExpiryTime() {
+        return this.expiryTime;
+    }
+    
+    @Override
+    public boolean hasExpiryTime() {
+        return (this.expiryTime > 0);
     }
 
     public void setResponseTime(long responseTime) {

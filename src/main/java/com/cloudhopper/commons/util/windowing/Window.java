@@ -15,17 +15,16 @@
 package com.cloudhopper.commons.util.windowing;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import org.apache.log4j.Logger;
@@ -57,20 +56,40 @@ public class Window<K,R,P> {
     private final int windowSize;
     private final ReentrantLock windowLock;
     private final Condition responseReceivedCondition;
-    // for checking if requests expire (without a response) in window
-    private long requestExpiryTime;
-    private ExpiredRequestListener<K,R,P> expiredRequestListener;
-    // static instance of a shared/cached pool of threads to handle request expiry
-    private ScheduledExecutorService expiredRequestScheduler;
-    private ScheduledFuture<?> expiredRequestReaperHandle;
-
+    // number of threads waiting for a slot
+    private AtomicInteger slotWaitingSize;
+    private AtomicBoolean slotWaitingCanceled;
+    // for scheduling tasks (such as expiring requests)
+    private final ScheduledExecutorService executor;
+    private final ScheduledFuture<?> executorHandle;
+    private final WindowMonitor monitor;
+    private final long period;
+    private final CopyOnWriteArrayList<WindowListener<K,R,P>> listeners;
 
     /**
-     * Creates a new window with the specified max window size.  The
+     * Creates a new window with the specified max window size.  This
+     * constructor disables any automatic recurring tasks from being executed.
      * @param windowSize The maximum number of pending requests permitted to
      *      be outstanding (unacknowledged) at a given time.  Must be > 0.
      */
     public Window(int windowSize) {
+        this(windowSize, null, 0, null);
+    }
+    
+    /**
+     * Creates a new window with the specified max window size along with
+     * specifications for an executor to perform periodic maintenance such
+     * as expiring requests.
+     * @param windowSize The maximum number of pending requests permitted to
+     *      be outstanding (unacknowledged) at a given time.  Must be > 0.
+     * @param executor The scheduled executor service to use to schedule
+     *      recurring tasks such as checking if requests have expired.
+     * @param period The number of milliseconds between periodic maintenance
+     *      tasks to be executed.
+     * @param listener An listener to send window events to (such as when
+     *      requests expire).
+     */
+    public Window(int windowSize, ScheduledExecutorService executor, long period, WindowListener<K,R,P> listener) {
         if (windowSize <= 0) {
             throw new IllegalArgumentException("Window size must be > 0");
         }
@@ -78,54 +97,43 @@ public class Window<K,R,P> {
         this.windowSize = windowSize;
         this.windowLock = new ReentrantLock();
         this.responseReceivedCondition = this.windowLock.newCondition();
+        this.slotWaitingSize = new AtomicInteger(0);
+        this.slotWaitingCanceled = new AtomicBoolean(false);
+        this.executor = executor;
+        this.period = period;
+        this.listeners = new CopyOnWriteArrayList<WindowListener<K,R,P>>();
+        if (listener != null) {
+            this.listeners.add(listener);
+        }
+        if (this.executor != null) {
+            this.monitor = new WindowMonitor();
+            this.executorHandle = this.executor.scheduleWithFixedDelay(this.monitor, this.period, this.period, TimeUnit.MILLISECONDS);
+        } else {
+            this.monitor = null;
+            this.executorHandle = null;
+        }
     }
-
-
-    public void enableExpiredRequestReaper(final ExpiredRequestListener<K,R,P> expiredRequestListener, final long requestExpiryTime) {
-        this.expiredRequestListener = expiredRequestListener;
-        this.requestExpiryTime = requestExpiryTime;
-        this.expiredRequestScheduler = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
-            @Override
-            public Thread newThread(Runnable r) {
-                Thread t = new Thread(r);
-                t.setDaemon(true);
-                return t;
-            }
-        });
-        // create the actual reaper
-        final Runnable expiredRequestReaper = new Runnable() {
-            @Override
-            public void run() {
-//                logger.debug("expiredRequestReaper running");
-                // grab current time that we'll compare all requests against
-                long currentTime = System.currentTimeMillis();
-                // search every request to see if any expired
-                ArrayList<DefaultWindowEntry<K,R,P>> expiredRequests = new ArrayList<DefaultWindowEntry<K,R,P>>();
-                Collection<DefaultWindowEntry<K,R,P>> requests = pendingRequests.values();
-                Iterator<DefaultWindowEntry<K,R,P>> requestIterator = requests.iterator();
-                while (requestIterator.hasNext()) {
-                    DefaultWindowEntry<K,R,P> entry = requestIterator.next();
-                    // is this request expired?
-                    if (currentTime >= (entry.getRequestTime() + requestExpiryTime)) {
-                        requestIterator.remove();
-                        expiredRequests.add(entry);
-                    }
-                }
-                // now notify listener that we just expired requests
-                for (DefaultWindowEntry<K,R,P> entry : expiredRequests) {
-                    // hedge against uncaught exceptions
-                    try {
-                        expiredRequestListener.requestExpired(entry);
-                    } catch (Throwable t) {
-                        logger.error("Uncaught exception thrown in listener: ", t);
+    
+    private class WindowMonitor implements Runnable {
+        @Override
+        public void run() {
+            logger.debug("WindowMonitor running, current pendingSize=" + getPendingSize());
+            List<WindowEntry<K,R,P>> expiredRequests = cancelAllExpiredRequests();
+            if (expiredRequests != null && expiredRequests.size() > 0) {
+                logger.debug("Found " + expiredRequests.size() + " that expired");
+                // process each expired request and pass up the chain to handlers
+                for (WindowEntry<K,R,P> entry : expiredRequests) {
+                    for (WindowListener<K,R,P> listener : listeners) {
+                        try {
+                            listener.requestExpired(entry);
+                        } catch (Throwable t) {
+                            logger.error("Uncaught exception thrown in listener: ", t);
+                        }
                     }
                 }
             }
-        };
-        // schedule the reaper to run every second
-        this.expiredRequestReaperHandle = expiredRequestScheduler.scheduleWithFixedDelay(expiredRequestReaper, 1, 1, TimeUnit.SECONDS);
+        }
     }
-
 
     /**
      * Gets the window size.  The window size is the max number of requests
@@ -142,6 +150,38 @@ public class Window<K,R,P> {
      */
     public int getPendingSize() {
         return this.pendingRequests.size();
+    }
+    
+    /**
+     * Gets the current number of callers/threads that are waiting for a slot
+     * to free up in the window.
+     */
+    public int getSlotWaitingSize() {
+        return this.slotWaitingSize.get();
+    }
+    
+    private void beginSlotWaiting() {
+        this.slotWaitingSize.incrementAndGet();
+    }
+    
+    /**
+     * Indicates slot waiting is finished. If "slotWaitingCanceled" was set to
+     * true, this method takes care of resetting that flag back to false once
+     * all waiters have called this method.
+     * @return True if waiting should be terminated early or false if it is ok
+     *      to continue waiting.
+     */
+    private boolean endSlotWaiting() {
+        int newValue = this.slotWaitingSize.decrementAndGet();
+        // if newValue reaches zero, make sure to always reset "slotWaitersCanceled"
+        if (newValue == 0) {
+            // if slotWaitingCanceled was true, then reset it back to false, and
+            // return true to make sure the caller knows to cancel waiting
+            return this.slotWaitingCanceled.compareAndSet(true, false);
+        } else {
+            // if slotWaitingCanceled is true, then return true
+            return this.slotWaitingCanceled.get();
+        }
     }
 
     /**
@@ -167,6 +207,36 @@ public class Window<K,R,P> {
         }
         return requests;
     }
+    
+    /**
+     * Adds a request to this "window" if a slot exists.  If the current max
+     * window size has already been reached, then this method will wait for
+     * a period of time for a slot to open up.  If a slot is open or opens up
+     * within the specified period of time, then this method will add that
+     * request to the internal pending "map" in an atomic fashion.  A
+     * RequestFuture object will be returned so that the caller can optionally
+     * wait for a response to be received.  Its safe to discard this "Future"
+     * if you don't need to wait for a response.
+     * @param key The key for the request (the protocol's sequence number is
+     *      a good choice)
+     * @param request The request to add to the "window"
+     * @param waitTime The amount of time (in milliseconds) to wait for
+     *      a slot to open up in this "window".
+     * @param expireTime The relative amount of time (in milliseconds) to expire this
+     *      request if a response isn't received.  If &lt; 1 then no expiration
+     *      will be set.
+     * @return An optional "future" object to synchronize against if the caller
+     *      wants to "wait" for a response to be received.
+     * @throws RequestAlreadyExistsException Thrown as a very serious error if
+     *      the key already exists in our "pending" request map.
+     * @throws MaxPendingTimeoutException Thrown if there were no open "slots"
+     *      and a timeout occurred while waiting for a slot to open up.
+     * @throws InterruptedException Thrown if the calling thread is interrupted
+     *      and we're currently waiting to acquire the internal "windowLock".
+     */
+    public RequestFuture addRequest(K key, R request, long waitTime) throws RequestAlreadyExistsException, MaxWindowSizeTimeoutException, InterruptedException {
+        return this.addRequest(key, request, waitTime, false, -1);
+    }
 
     /**
      * Adds a request to this "window" if a slot exists.  If the current max
@@ -182,6 +252,9 @@ public class Window<K,R,P> {
      * @param request The request to add to the "window"
      * @param waitTime The amount of time (in milliseconds) to wait for
      *      a slot to open up in this "window".
+     * @param expireTime The relative amount of time (in milliseconds) to expire this
+     *      request if a response isn't received.  If &lt; 1 then no expiration
+     *      will be set.
      * @return An optional "future" object to synchronize against if the caller
      *      wants to "wait" for a response to be received.
      * @throws RequestAlreadyExistsException Thrown as a very serious error if
@@ -191,8 +264,8 @@ public class Window<K,R,P> {
      * @throws InterruptedException Thrown if the calling thread is interrupted
      *      and we're currently waiting to acquire the internal "windowLock".
      */
-    public RequestFuture addRequest(K key, R request, long waitTime) throws RequestAlreadyExistsException, MaxWindowSizeTimeoutException, InterruptedException {
-        return this.addRequest(key, request, waitTime, false);
+    public RequestFuture addRequest(K key, R request, long waitTime, long expireTime) throws RequestAlreadyExistsException, MaxWindowSizeTimeoutException, InterruptedException {
+        return this.addRequest(key, request, waitTime, false, expireTime);
     }
 
     /**
@@ -215,6 +288,9 @@ public class Window<K,R,P> {
      *      of this class can use this status flag to determine whether the caller
      *      is going to wait for a response or if it really is using this more
      *      asynchronously (not waiting).
+     * @param expireTime The relative amount of time (in milliseconds) to expire this
+     *      request if a response isn't received.  If &lt; 1 then no expiration
+     *      will be set.
      * @return An optional "future" object to synchronize against if the caller
      *      wants to "wait" for a response to be received.
      * @throws RequestAlreadyExistsException Thrown as a very serious error if
@@ -224,14 +300,20 @@ public class Window<K,R,P> {
      * @throws InterruptedException Thrown if the calling thread is interrupted
      *      and we're currently waiting to acquire the internal "windowLock".
      */
-    public RequestFuture addRequest(K key, R request, long waitTime, boolean callerPlanningOnWaiting) throws RequestAlreadyExistsException, MaxWindowSizeTimeoutException, InterruptedException {
+    public RequestFuture addRequest(K key, R request, long waitTime, boolean callerPlanningOnWaiting, long expireTime) throws RequestAlreadyExistsException, MaxWindowSizeTimeoutException, InterruptedException {
         // does this key already exist (MAJOR error)
         if (this.pendingRequests.containsKey(key)) {
             throw new RequestAlreadyExistsException("The key [" + key + "] already exists in our internal map of pending requests");
         }
+        
+        // is all slot waiting currently canceled? (if so, immediately terminate)
+        if (this.slotWaitingCanceled.get()) {
+            throw new WaitingTerminatedEarlyException("Slot waiting is currently canceled until all original waiters are terminated");
+        }
 
         // create a timestamp of when this request was "added"
         long requestTime = System.currentTimeMillis();
+        long expiryTime = (expireTime > 0 ? (requestTime + expireTime) : -1);
 
         this.windowLock.lockInterruptibly();
         try {
@@ -239,25 +321,60 @@ public class Window<K,R,P> {
             // NOTE: wait for room up to the waitTime
             // NOTE: multiple signals may be received that need to be ignored
             while (this.pendingRequests.size() >= this.windowSize) {
-                // current "waitTime" is (now-requestTime)
+                // check if there time remaining to wait
                 long currentWaitTime = System.currentTimeMillis() - requestTime;
                 if (currentWaitTime >= waitTime) {
                     throw new MaxWindowSizeTimeoutException("Max of [" + this.windowSize + "] pending requests reached and unable acquire a free slot within [" + waitTime + "] ms");
                 }
+                // check if slow waiting was canceled (terminate early)
+                if (this.slotWaitingCanceled.get()) {
+                    throw new WaitingTerminatedEarlyException("Slot waiting was canceled");
+                }
                 // calculate the amount of timeout remaining
                 long remainingWaitTime = waitTime - currentWaitTime;
-                // await for a new signal for this max amount
-                this.responseReceivedCondition.await(remainingWaitTime, TimeUnit.MILLISECONDS);
+                try {
+                    // await for a new signal for this max amount of time
+                    this.beginSlotWaiting();
+                    this.responseReceivedCondition.await(remainingWaitTime, TimeUnit.MILLISECONDS);
+                } finally {
+                    boolean terminateEarly = this.endSlotWaiting();
+                    if (terminateEarly) {
+                        throw new WaitingTerminatedEarlyException("Slot waiting was canceled (terminated early)");
+                    }
+                }
             }
 
             // if we got here, then there is a slot for our request
-            DefaultWindowEntry<K,R,P> value = new DefaultWindowEntry<K,R,P>(key, request, requestTime, (callerPlanningOnWaiting ? WindowEntry.CALLER_WAITING : WindowEntry.CALLER_NO_WAIT));
+            DefaultWindowEntry<K,R,P> value = new DefaultWindowEntry<K,R,P>(key, request, requestTime, (callerPlanningOnWaiting ? WindowEntry.CALLER_WAITING : WindowEntry.CALLER_NO_WAIT), expiryTime);
             this.pendingRequests.put(key, value);
             return new RequestFuture<K,R,P>(value, waitTime, this.windowLock, this.responseReceivedCondition);
         } finally {
             this.windowLock.unlock();
         }
     }
+    
+    
+    /**
+     * Terminates all current callers/threads waiting for a slot in the window.
+     * @return True if there were currently callers/waiters, otherwise false.
+     * @throws InterruptedException Thrown if the calling thread was interrupted
+     *      while waiting to obtain the window lock.
+     */
+    public boolean terminateSlotWaiters() throws InterruptedException {
+        this.windowLock.lockInterruptibly();
+        try {
+            if (this.slotWaitingSize.get() > 0) {
+                this.slotWaitingCanceled.set(true);
+                this.responseReceivedCondition.signalAll();
+                return true;
+            } else {
+                return false;
+            }
+        } finally {
+            this.windowLock.unlock();
+        }
+    }
+    
 
     /**
      * Adds a response to this "window" if a corresponding request exists.
@@ -382,7 +499,7 @@ public class Window<K,R,P> {
             // clear everything
             this.pendingRequests.clear();
 
-            // let all "waiters" know that all requests were cancelled
+            // let all "waiters" know that requests were cancelled
             this.responseReceivedCondition.signalAll();
         } finally {
             this.windowLock.unlock();
@@ -390,5 +507,43 @@ public class Window<K,R,P> {
         
         return cancelledRequests;
     }
-
+    
+    
+    public List<WindowEntry<K,R,P>> cancelAllExpiredRequests() {
+        // if there aren't any pending requests, nothing to expire
+        if (this.pendingRequests.size() <= 0) {
+            return null;
+        }
+        
+        logger.debug("cancelAllExpiredRequests called...");
+        
+        List<WindowEntry<K,R,P>> expiredRequests = new ArrayList<WindowEntry<K,R,P>>();
+        long now = System.currentTimeMillis();
+        this.windowLock.lock();
+        try {
+            // check every request this window contains and see if it's expired
+            for (DefaultWindowEntry<K,R,P> value : this.pendingRequests.values()) {
+                if (value.hasExpiryTime() && now >= value.getExpiryTime()) {
+                    expiredRequests.add(value);
+                    // expire it
+                    value.setResponse(null);
+                    value.setResponseTime(now);
+                    value.finished();
+                }
+            }
+            
+            // do any requests need expired?
+            if (expiredRequests.size() > 0) {
+                // take all expired requests and remove them from the pendingRequests
+                for (WindowEntry<K,R,P> entry : expiredRequests) {
+                    this.pendingRequests.remove(entry.getKey());
+                }
+                // let all "waiters" know that their request may have been expired
+                this.responseReceivedCondition.signalAll();
+            }
+        } finally {
+            this.windowLock.unlock();
+        }
+        return expiredRequests;
+    }
 }

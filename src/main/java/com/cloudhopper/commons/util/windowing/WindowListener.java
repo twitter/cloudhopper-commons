@@ -18,7 +18,7 @@ package com.cloudhopper.commons.util.windowing;
  *
  * @author joelauer
  */
-public interface ExpiredRequestListener<K,R,P> {
+public interface WindowListener<K,R,P> {
 
     public void requestExpired(WindowEntry<K,R,P> entry);
 

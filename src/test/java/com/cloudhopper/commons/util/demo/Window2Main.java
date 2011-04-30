@@ -14,11 +14,13 @@
 
 package com.cloudhopper.commons.util.demo;
 
-import com.cloudhopper.commons.util.windowing.ExpiredRequestListener;
+import com.cloudhopper.commons.util.windowing.WindowListener;
 import com.cloudhopper.commons.util.windowing.RequestFuture;
 import com.cloudhopper.commons.util.windowing.ResponseFuture;
 import com.cloudhopper.commons.util.windowing.Window;
 import com.cloudhopper.commons.util.windowing.WindowEntry;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import org.apache.log4j.Logger;
 
 /**
@@ -29,25 +31,26 @@ public class Window2Main {
     private static final Logger logger = Logger.getLogger(Window2Main.class);
 
     static public void main(String[] args) throws Exception {
-        Window<Integer,String,String> requestWindow = new Window<Integer,String,String>(2);
-
-        // try out the expired request reaper...
-        requestWindow.enableExpiredRequestReaper(new ExpiredRequestListener<Integer,String,String>() {
+        
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        WindowListener listener = new WindowListener<Integer,String,String>() {
             @Override
             public void requestExpired(WindowEntry<Integer, String, String> entry) {
                 logger.debug("The key=" + entry.getKey() + ", request=" + entry.getRequest() + " expired");
             }
-        }, 5000);
-
-        RequestFuture<Integer,String,String> requestFuture0 = requestWindow.addRequest(0, "Request0", 1000);
-        logger.info("Request0 added");
+        };
+        
+        Window<Integer,String,String> requestWindow = new Window<Integer,String,String>(2, executor, 5000, listener);
+        
+        RequestFuture<Integer,String,String> requestFuture0 = requestWindow.addRequest(0, "Request0", 1000, 4000);
+        logger.info("Request0 added at " + requestFuture0.getRequestTime() + " and expires at " + requestFuture0.getExpiryTime() + " and hasExpiryTime " + requestFuture0.hasExpiryTime());
         //requestFuture.await();
 
         System.out.println("Press any key to add another request...");
         System.in.read();
 
-        RequestFuture<Integer,String,String> requestFuture1 = requestWindow.addRequest(1, "Request1", 1000);
-        logger.info("Request1 added");
+        RequestFuture<Integer,String,String> requestFuture1 = requestWindow.addRequest(1, "Request1", 1000, 4000);
+        logger.info("Request1 added at " + requestFuture1.getRequestTime() + " and expires at " + requestFuture1.getExpiryTime());
 
         System.out.println("Press any key to add response...");
         System.in.read();

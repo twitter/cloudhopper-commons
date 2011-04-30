@@ -370,4 +370,90 @@ public class WindowTest {
 
         Assert.assertEquals(0, requestWindow.getPendingSize());
     }
+    
+    @Test
+    public void terminateSlotWaiters() throws Exception {
+        // test that terminating slot waiters early works as expected
+        final Window<Integer,String,String> window = new Window<Integer,String,String>(2);
+        
+        // first two items should work
+        Assert.assertFalse(window.terminateSlotWaiters());
+        window.addRequest(1, "Request1", 100);
+        Assert.assertFalse(window.terminateSlotWaiters());
+        window.addRequest(2, "Request2", 100);
+        Assert.assertFalse(window.terminateSlotWaiters());
+        
+        // third item should fail
+        try {
+            window.addRequest(3, "Request3", 20);
+            Assert.fail();
+        } catch (MaxWindowSizeTimeoutException e) {
+            // correct behavior
+        }
+        
+        // start up 3 other threads that will all be waiting too
+        Thread[] waiters = new Thread[3];
+        for (int i = 0; i < waiters.length; i++) {
+            final int x = i;
+            waiters[i] = new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        window.addRequest(4+x, "Request" + (4+x), 5000);
+                        Assert.fail();
+                    } catch (WaitingTerminatedEarlyException e) {
+                        // correct behavior
+                    } catch (Exception e) {
+                        logger.error(e);
+                        Assert.fail();
+                    }
+                }
+            };
+            waiters[i].start();
+        }
+        
+        // start up a thread that will call "terminateSlotWaiters" in 300 ms
+        Thread terminator = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(300);
+                } catch (Exception e) { }
+                try {
+                    Assert.assertEquals(4, window.getSlotWaitingSize());
+                    boolean hadWaiters = window.terminateSlotWaiters();
+                    logger.debug("hadWaiters: " + hadWaiters);
+                    Assert.assertTrue(hadWaiters);
+                } catch (Exception e) {
+                    logger.error(e);
+                    Assert.fail();
+                }
+            }
+        };
+        terminator.start();
+        
+        // now wait for a slot up to 5 seconds (the thread we spawned earlier
+        // should definitely cause it to terminate early)
+        try {
+            window.addRequest(3, "Request3", 5000);
+            Assert.fail();
+        } catch (WaitingTerminatedEarlyException e) {
+            // correct behavior
+        }
+        
+        // make sure everything is finished
+        terminator.join();
+        for (Thread t : waiters) {
+            t.join();
+        }
+        
+        // next call to terminate slot waiters shouldn't do anything
+        Assert.assertEquals(0, window.getSlotWaitingSize());
+        Assert.assertFalse(window.terminateSlotWaiters());
+        
+        window.addResponse(1, "Response1");
+        Assert.assertFalse(window.terminateSlotWaiters());
+        window.addRequest(4, "Request4", 100);
+        Assert.assertFalse(window.terminateSlotWaiters());
+    }
 }
