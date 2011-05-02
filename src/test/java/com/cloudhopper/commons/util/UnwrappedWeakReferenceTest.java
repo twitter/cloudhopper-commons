@@ -56,4 +56,19 @@ public class UnwrappedWeakReferenceTest {
         Assert.assertEquals(0, cowal.size());
     }
     
+    @Test
+    @SuppressWarnings("IncompatibleEquals")
+    public void equals() throws Exception {
+        String o = new String();
+        
+        // verify WeakReference does not work correctly with CopyOnWriteArrayList
+        WeakReference ref0 = new UnwrappedWeakReference(o);
+        WeakReference ref1 = new UnwrappedWeakReference(o);
+        
+        Assert.assertTrue(ref0.equals(ref1));
+        // also test non-unwrapping
+        Assert.assertTrue(ref0.equals(o));
+        Assert.assertTrue(ref1.equals(o));
+    }
+    
 }

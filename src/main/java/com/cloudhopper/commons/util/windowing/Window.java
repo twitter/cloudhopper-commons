@@ -14,7 +14,7 @@
 
 package com.cloudhopper.commons.util.windowing;
 
-import java.lang.ref.WeakReference;
+import com.cloudhopper.commons.util.UnwrappedWeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -77,7 +77,7 @@ public class Window<K,R,P> {
     private final ScheduledFuture<?> monitorHandle;
     private final Monitor monitor;
     private final long monitorInterval;
-    private final CopyOnWriteArrayList<WeakReference<WindowListener<K,R,P>>> listeners;
+    private final CopyOnWriteArrayList<UnwrappedWeakReference<WindowListener<K,R,P>>> listeners;
 
     /**
      * Creates a new window with the specified max window size.  This
@@ -114,9 +114,9 @@ public class Window<K,R,P> {
         this.pendingOffersAborted = new AtomicBoolean(false);
         this.executor = executor;
         this.monitorInterval = monitorInterval;
-        this.listeners = new CopyOnWriteArrayList<WeakReference<WindowListener<K,R,P>>>();
+        this.listeners = new CopyOnWriteArrayList<UnwrappedWeakReference<WindowListener<K,R,P>>>();
         if (listener != null) {
-            this.listeners.add(new WeakReference<WindowListener<K,R,P>>(listener));
+            this.listeners.add(new UnwrappedWeakReference<WindowListener<K,R,P>>(listener));
         }
         if (this.executor != null) {
             this.monitor = new Monitor();
@@ -140,10 +140,11 @@ public class Window<K,R,P> {
                 //logger.debug("Found " + expired.size() + " requests that expired");
                 // process each expired request and pass up the chain to handlers
                 for (WindowFuture<K,R,P> entry : expired) {
-                    for (WeakReference<WindowListener<K,R,P>> listenerRef : listeners) {
+                    for (UnwrappedWeakReference<WindowListener<K,R,P>> listenerRef : listeners) {
                         WindowListener<K,R,P> listener = listenerRef.get();
                         if (listener == null) {
                             // remove this reference from our array (no good anymore)
+                            listeners.remove(listenerRef);
                         } else {
                             try {
                                 listener.expired(entry);
@@ -201,8 +202,20 @@ public class Window<K,R,P> {
         return this.futures.get(key);
     }
     
+    /**
+     * Adds a new WindowListener if and only if it isn't already present.
+     * @param listener The listener to add
+     */
     public void addListener(WindowListener<K,R,P> listener) {
-        //this.listeners.
+        this.listeners.addIfAbsent(new UnwrappedWeakReference<WindowListener<K,R,P>>(listener));
+    }
+    
+    /**
+     * Removes a WindowListener if it is present.
+     * @param listener The listener to remove
+     */
+    public void removeListener(WindowListener<K,R,P> listener) {
+        this.listeners.remove(new UnwrappedWeakReference<WindowListener<K,R,P>>(listener));
     }
 
     /**
