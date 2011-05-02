@@ -222,6 +222,19 @@ public interface WindowFuture<K,R,P> {
     public void cancel(long doneTimestamp);
     
     /**
+     * Waits for this future to be completed within the amount of time remaining
+     * from the original offerTimeoutMillis minus the amount of time it took
+     * for the Window to accept the offer. For example, if Window.offer was
+     * called with an offerTimeoutMillis of 5000 milliseconds and it took 
+     * 1000 milliseconds for the Window to accept the offer, then this method
+     * would wait for 4000 milliseconds.
+     * @return True if and only if the future was completed within the specified
+     *      time limit 
+     * @throws InterruptedException Thrown if the current thread was interrupted
+     */
+    public boolean await() throws InterruptedException;
+    
+    /**
      * Waits for this future to be completed within the specified time limit.
      * @param timeoutMillis The amount of milliseconds to wait
      * @return True if and only if the future was completed within the specified

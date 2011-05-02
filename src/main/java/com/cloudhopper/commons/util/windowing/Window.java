@@ -32,22 +32,22 @@ import org.apache.log4j.Logger;
 /**
  * A utility class to support "windowed" protocols that permit requests to be
  * sent asynchronously and the responses to be processed at a later time.
- * <br>
+ * Responses may be returned in a different order than requests were sent.
+ * <br><br>
  * Windowed protocols generally provide high throughput over high latency
- * links such as TCP/IP connections since they allow requests one after each
- * other without waiting for a response back right away.
- * <br>
+ * links such as TCP/IP connections since they allow requests one after the
+ * other without waiting for a response before sending the next request. This
+ * allows the underlying TCP/IP socket to potentially buffer multiple requests
+ * in one packet.
+ * <br><br>
  * The "window" is the amount of unacknowledged requests that are permitted to
  * be outstanding/unacknowledged at any given time.  This implementation
  * allows a max window size to be defined during construction.  This represents
  * the number of open "slots".  When a response is received, it's up to the
  * user of this class to make sure that response is added so that any threads
- * waiting for a response are properly notified.
- * <br>
- * This class is also good to use to fetch the original request when a response
- * is asynchronously received in a different thread.
- * <br>
- * The life cycle of a request has 3 steps:
+ * waiting for a response are properly signaled.
+ * <br><br>
+ * The life cycle of a request in a Window has 3 steps:
  * <ol>
  *   <li>Request offered<br>
  *      <ul>
@@ -73,9 +73,9 @@ public class Window<K,R,P> {
     private AtomicBoolean pendingOffersAborted;
     // for scheduling tasks (such as expiring requests)
     private final ScheduledExecutorService executor;
-    private final ScheduledFuture<?> executorHandle;
+    private final ScheduledFuture<?> monitorHandle;
     private final Monitor monitor;
-    private final long period;
+    private final long monitorInterval;
     private final CopyOnWriteArrayList<WindowListener<K,R,P>> listeners;
 
     /**
@@ -97,10 +97,11 @@ public class Window<K,R,P> {
      *      be outstanding (unacknowledged) at a given time.  Must be > 0.
      * @param executor The scheduled executor service to execute
      *      recurring tasks (such as expiration of requests).
-     * @param period The number of milliseconds between executions of recurring tasks.
+     * @param monitorInterval The number of milliseconds between executions of
+     *      monitoring tasks.
      * @param listener A listener to send window events to
      */
-    public Window(int size, ScheduledExecutorService executor, long period, WindowListener<K,R,P> listener) {
+    public Window(int size, ScheduledExecutorService executor, long monitorInterval, WindowListener<K,R,P> listener) {
         if (size <= 0) {
             throw new IllegalArgumentException("size must be > 0");
         }
@@ -111,17 +112,17 @@ public class Window<K,R,P> {
         this.pendingOffers = new AtomicInteger(0);
         this.pendingOffersAborted = new AtomicBoolean(false);
         this.executor = executor;
-        this.period = period;
+        this.monitorInterval = monitorInterval;
         this.listeners = new CopyOnWriteArrayList<WindowListener<K,R,P>>();
         if (listener != null) {
             this.listeners.add(listener);
         }
         if (this.executor != null) {
             this.monitor = new Monitor();
-            this.executorHandle = this.executor.scheduleWithFixedDelay(this.monitor, this.period, this.period, TimeUnit.MILLISECONDS);
+            this.monitorHandle = this.executor.scheduleWithFixedDelay(this.monitor, this.monitorInterval, this.monitorInterval, TimeUnit.MILLISECONDS);
         } else {
             this.monitor = null;
-            this.executorHandle = null;
+            this.monitorHandle = null;
         }
     }
     
@@ -132,17 +133,17 @@ public class Window<K,R,P> {
     private class Monitor implements Runnable {
         @Override
         public void run() {
-            logger.debug("WindowMonitor running, current size=" + getSize());
+            //logger.debug("WindowMonitor running, current size=" + getSize());
             List<WindowFuture<K,R,P>> expired = cancelAllExpired();
             if (expired != null && expired.size() > 0) {
-                logger.debug("Found " + expired.size() + " requests that expired");
+                //logger.debug("Found " + expired.size() + " requests that expired");
                 // process each expired request and pass up the chain to handlers
                 for (WindowFuture<K,R,P> entry : expired) {
                     for (WindowListener<K,R,P> listener : listeners) {
                         try {
                             listener.expired(entry);
                         } catch (Throwable t) {
-                            logger.error("Uncaught exception thrown in listener: ", t);
+                            logger.error("Ignoring uncaught exception thrown in listener: ", t);
                         }
                     }
                 }
@@ -293,6 +294,10 @@ public class Window<K,R,P> {
      *      while waiting to acquire the internal lock.
      */
     public WindowFuture offer(K key, R request, long offerTimeoutMillis, long expireTimeoutMillis, boolean callerWaitingHint) throws DuplicateKeyException, OfferTimeoutException, PendingOfferAbortedException, InterruptedException {
+        if (offerTimeoutMillis < 0) {
+            throw new IllegalArgumentException("offerTimeoutMillis must be >= 0 [actual=" + offerTimeoutMillis + "]");
+        }
+        
         // does this key already exist?
         if (this.futures.containsKey(key)) {
             throw new DuplicateKeyException("The key [" + key + "] already exists in the window");
@@ -303,8 +308,8 @@ public class Window<K,R,P> {
         this.lock.lockInterruptibly();
         try {
             // does enough room exist in the "window" for another pending request?
-            // NOTE: wait for room up to the waitTime
-            // NOTE: multiple signals may be received that need to be ignored
+            // NOTE: wait for room up to the offerTimeoutMillis
+            // NOTE: multiple signals may be received that will need to be ignored
             while (getFreeSize() <= 0) {
                 // check if there time remaining to wait
                 long currentOfferTime = System.currentTimeMillis() - offerTimestamp;
@@ -334,7 +339,7 @@ public class Window<K,R,P> {
             long acceptTimestamp = System.currentTimeMillis();
             long expireTimestamp = (expireTimeoutMillis > 0 ? (acceptTimestamp + expireTimeoutMillis) : -1);
             int callerStateHint = (callerWaitingHint ? WindowFuture.CALLER_WAITING : WindowFuture.CALLER_NOT_WAITING);
-            DefaultWindowFuture<K,R,P> future = new DefaultWindowFuture<K,R,P>(this, lock, completedCondition, key, request, callerStateHint, offerTimestamp, acceptTimestamp, expireTimestamp);
+            DefaultWindowFuture<K,R,P> future = new DefaultWindowFuture<K,R,P>(this, lock, completedCondition, key, request, callerStateHint, offerTimeoutMillis, offerTimestamp, acceptTimestamp, expireTimestamp);
             this.futures.put(key, future);
             return future;
         } finally {

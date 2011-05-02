@@ -552,4 +552,16 @@ public class WindowTest {
         
         window.offer(1, "Request1", 100);
     }
+    
+    @Test
+    public void invalidArguments() throws Exception {
+        final Window<Integer,String,String> window = new Window<Integer,String,String>(1);
+        
+        try {
+            window.offer(1, "test1", -1);
+            Assert.fail();
+        } catch (IllegalArgumentException e) {
+            // correct behavior
+        }
+    }
 }

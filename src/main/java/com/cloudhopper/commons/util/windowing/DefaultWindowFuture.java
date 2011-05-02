@@ -39,6 +39,7 @@ public class DefaultWindowFuture<K,R,P> implements WindowFuture<K,R,P> {
     private final AtomicReference<Throwable> cause;
     private final AtomicInteger callerStateHint;
     private final AtomicBoolean done;
+    private final long originalOfferTimeoutMillis;
     private final long offerTimestamp;
     private final long acceptTimestamp;
     private final long expireTimestamp;
@@ -58,7 +59,7 @@ public class DefaultWindowFuture<K,R,P> implements WindowFuture<K,R,P> {
      * @param expireTimestamp The timestamp when the request will expire or -1
      *      if no expiration is set
      */
-    protected DefaultWindowFuture(Window window, ReentrantLock windowLock, Condition completedCondition, K key, R request, int callerStateHint, long offerTimestamp, long acceptTimestamp, long expireTimestamp) {
+    protected DefaultWindowFuture(Window window, ReentrantLock windowLock, Condition completedCondition, K key, R request, int callerStateHint, long originalOfferTimeoutMillis, long offerTimestamp, long acceptTimestamp, long expireTimestamp) {
         this.window = new WeakReference<Window>(window);
         this.windowLock = windowLock;
         this.completedCondition = completedCondition;
@@ -68,6 +69,7 @@ public class DefaultWindowFuture<K,R,P> implements WindowFuture<K,R,P> {
         this.cause = new AtomicReference<Throwable>();
         this.callerStateHint = new AtomicInteger(callerStateHint);
         this.done = new AtomicBoolean(false);
+        this.originalOfferTimeoutMillis = originalOfferTimeoutMillis;
         this.offerTimestamp = offerTimestamp;
         this.acceptTimestamp = acceptTimestamp;
         this.expireTimestamp = expireTimestamp;
@@ -267,6 +269,14 @@ public class DefaultWindowFuture<K,R,P> implements WindowFuture<K,R,P> {
         if (this.done.compareAndSet(false, true)) {
             this.doneTimestamp.set(doneTimestamp);
         }
+    }
+    
+    @Override
+    public boolean await() throws InterruptedException {
+        // wait for only offerTimeoutMillis - offerToAcceptTime
+        long remainingTimeoutMillis = this.originalOfferTimeoutMillis - this.getOfferToAcceptTime();
+        return this.await(remainingTimeoutMillis);
+        
     }
     
     @Override
