@@ -14,9 +14,12 @@
 
 package com.cloudhopper.commons.util.demo;
 
+import com.cloudhopper.commons.util.UnwrappedWeakReference;
 import com.cloudhopper.commons.util.windowing.WindowListener;
 import com.cloudhopper.commons.util.windowing.Window;
 import com.cloudhopper.commons.util.windowing.WindowFuture;
+import java.lang.ref.WeakReference;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import org.apache.log4j.Logger;

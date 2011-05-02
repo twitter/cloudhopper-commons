@@ -7,6 +7,10 @@ Commons Util Library
   * WARN: Windowing package has been refactored. Source changes were significant
     enough (and unavoidable) to create a major backwards incompatability with
     <= version 4.1.
+  * Added UnwrappedWeakReference utility class for using the referenced object's
+    equals() and hashCode() values rather than WeakReference's impl which uses
+    the impl of Object.  Methods that rely on equals() such as CopyOnWriteArrayList
+    and the addIfAbsent method work correctly with UnwrappedWeakReference.
   * Added support in Window for triggering an early timeout for threads blocked
     with a pending offer to be accepted (see Window.abortPendingOffers())
   * Removed old experimental support for expiring requests in a Window and
