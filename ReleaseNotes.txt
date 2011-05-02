@@ -3,7 +3,7 @@ http://twitter.com/
 http://www.cloudhopper.com/
 Commons Util Library
 --------------------------------------------------------------------------------
-4.2 - 2011-05-01
+4.2 - 2011-05-02
   * WARN: Windowing package has been refactored. Source changes were significant
     enough (and unavoidable) to create a major backwards incompatability with
     <= version 4.1.
