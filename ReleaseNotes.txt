@@ -3,10 +3,18 @@ http://twitter.com/
 http://www.cloudhopper.com/
 Commons Util Library
 --------------------------------------------------------------------------------
-4.2 - 2011-04-29
-  * Added support in window for terminating threads that were blocked waiting
-    for a slot to open.
-  * 
+4.2 - 2011-05-01
+  * WARN: Windowing package has been refactored. Source changes were significant
+    enough (and unavoidable) to create a major backwards incompatability with
+    <= version 4.1.
+  * Added support in Window for triggering an early timeout for threads blocked
+    with a pending offer to be accepted (see Window.abortPendingOffers())
+  * Removed old experimental support for expiring requests in a Window and
+    replaced with a much more efficient and atomic process for expiring requests.
+    See new alternative constructor for Window that accepts a ScheduledExecutorService.
+  * Added support in Window for externally cancelling only expired requests.
+  * Added support for setting an expiration time as well as new offer, accept,
+    and done timestamps on all Window requests.
 
 4.1 - 2011-04-28
   * Upgrade joda-time dependency from 1.6 to 1.6.2

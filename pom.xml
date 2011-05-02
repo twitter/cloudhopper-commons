@@ -7,7 +7,7 @@
   <groupId>cloudhopper</groupId>
   <artifactId>ch-commons-util</artifactId>
   <packaging>jar</packaging>
-  <version>4.1</version>
+  <version>4.2-SNAPSHOT</version>
   <name>ch-commons-util</name>
 
   <parent>
