@@ -117,35 +117,108 @@ public interface WindowFuture<K,R,P> {
      */
     public boolean isCallerWaiting();
     
-    
+    /**
+     * Returns true if an expire timestamp value exists (&gt; 0).
+     * @return True if an expire timestamp exists
+     */
     public boolean hasExpireTimestamp();
     
+    /**
+     * Gets the expire timestamp in milliseconds.  The expire timestamp is when
+     * the request expires unless this optional field was not set.
+     * @return The expire timestamp or &lt;= 0 if it doesn't exist.
+     * @see #hasExpireTimestamp() 
+     */
     public long getExpireTimestamp();
     
+    /**
+     * Gets the offer timestamp in milliseconds.  The offer timestamp is when
+     * the request was offered for acceptance to the window.
+     * @return The offer timestamp
+     */
     public long getOfferTimestamp();
     
+    /**
+     * Gets the accept timestamp in milliseconds. The accept timestamp is when
+     * the request was accepted by the window.
+     * @return The accept timestamp
+     */
     public long getAcceptTimestamp();
     
+    /**
+     * Gets the amount of time (in ms) from offer to accept.
+     * @return The amount of time from offer to accept
+     */
     public long getOfferToAcceptTime();
     
+    /**
+     * Returns true if a done timestamp value exists (&gt; 0).
+     * @return True if a done timestamp exists
+     */
     public boolean hasDoneTimestamp();
     
+    /**
+     * Gets the done timestamp in milliseconds. The done timestamp is when
+     * the request has been completed.
+     * @return The done timestamp
+     */
     public long getDoneTimestamp();
     
+    /**
+     * Gets the amount of time (in ms) from offer to done or -1 if a done
+     * timestamp does not yet exist.
+     * @return The amount of time from offer to done
+     */
     public long getOfferToDoneTime();
     
+    /**
+     * Gets the amount of time (in ms) from accept to done or -1 if a done
+     * timestamp does not yet exist.
+     * @return The amount of time from accept to done
+     */
     public long getAcceptToDoneTime();
     
+    /**
+     * Completes (as a success) a request by setting the response. This method
+     * will set the done timestamp to System.currentTimeMillis().
+     * @param response The response for the associated request
+     */
     public void complete(P response);
     
+    /**
+     * Completes (as a success) a request by setting the response.
+     * @param response The response for the associated request
+     * @param doneTimestamp The timestamp when the request completed
+     */
     public void complete(P response, long doneTimestamp);
     
+    /**
+     * Completes (as a failure) a request by setting a throwable as the cause
+     * of failure. This method will set the done timestamp to System.currentTimeMillis()
+     * @param t The throwable as the cause of failure
+     * @param doneTimestamp The timestamp when the request failed
+     */
     public void fail(Throwable t);
     
+    /**
+     * Completes (as a failure) a request by setting a throwable as the cause
+     * of failure.
+     * @param t The throwable as the cause of failure
+     * @param doneTimestamp The timestamp when the request failed
+     */
     public void fail(Throwable t, long doneTimestamp);
     
+    /**
+     * Completes (as a cancel) a request. This method will set the done timestamp
+     * to System.currentTimeMillis().
+     * @param doneTimestamp The timestamp when the request was cancelled
+     */
     public void cancel();
     
+    /**
+     * Completes (as a cancel) a request.
+     * @param doneTimestamp The timestamp when the request was cancelled
+     */
     public void cancel(long doneTimestamp);
     
     /**

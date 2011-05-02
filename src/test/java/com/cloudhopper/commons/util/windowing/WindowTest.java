@@ -339,7 +339,7 @@ public class WindowTest {
                     Integer i = Integer.valueOf(""+id+""+x);
                     String request = "Request"+i;
  //                   logger.debug("adding request " + i);
-                    WindowFuture<Integer,String,String> requestFuture = window.offer(i, request, 100);
+                    WindowFuture<Integer,String,String> requestFuture = window.offer(i, request, 1000);
                     Assert.assertEquals(i, requestFuture.getKey());
                     Assert.assertEquals(request, requestFuture.getRequest());
                     Assert.assertEquals(true, requestFuture.getAcceptTimestamp() > 0);
@@ -445,7 +445,7 @@ public class WindowTest {
             if (requestThreads[i].throwable != null) {
                 logger.error("", requestThreads[i].throwable);
             }
-            Assert.assertNull("RequestThread " + i + " throwable wasn't null", requestThreads[i].throwable);
+            Assert.assertNull("RequestThread " + i + " throwable wasn't null: " + requestThreads[i].throwable, requestThreads[i].throwable);
         }
 
         if (responseThread.throwable != null) {

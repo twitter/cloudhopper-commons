@@ -15,7 +15,7 @@
 package com.cloudhopper.commons.util.windowing;
 
 /**
- * Thrown if an offer() cannot be accepted within a specified amount of time.
+ * Thrown if an offer cannot be accepted within a specified amount of time.
  * 
  * @author joelauer
  */
