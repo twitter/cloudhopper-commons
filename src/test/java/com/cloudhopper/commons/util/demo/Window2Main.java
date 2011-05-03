@@ -39,7 +39,7 @@ public class Window2Main {
         };
         
         Window<Integer,String,String> window = new Window<Integer,String,String>(2, executor, 5000, listener);
-        Window<Integer,String,String> window2 = new Window<Integer,String,String>(2, executor, 5000, listener);
+        Window<Integer,String,String> window2 = new Window<Integer,String,String>(2, executor, 5000, listener, "window2monitor");
         
         WindowFuture<Integer,String,String> future0 = window.offer(0, "Request0", 1000, 4000);
         logger.info("Request0 offered at " + future0.getOfferTimestamp() + " and expires at " + future0.getExpireTimestamp());
@@ -83,15 +83,16 @@ public class Window2Main {
         System.out.println("Press any key to get rid of our reference to Window");
         System.in.read();
         
+        window.freeExternalResources();
+        window2.freeExternalResources();
         window = null;
         window2 = null;
         System.gc();
         
-        logger.info("Both windows set to null, should be GC'ed soon -- what happens to monitoring???");
-        
-
         System.out.println("Press any key to exit...");
         System.in.read();
+        
+        executor.shutdown();
     }
     
 }

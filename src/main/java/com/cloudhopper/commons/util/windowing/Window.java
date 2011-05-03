@@ -15,9 +15,7 @@
 package com.cloudhopper.commons.util.windowing;
 
 import com.cloudhopper.commons.util.UnwrappedWeakReference;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -61,6 +59,9 @@ import org.apache.log4j.Logger;
  *   <li>Request accepted (caller may optionally await() on returned future till completion)</li>
  *   <li>Request completed/done (either success, failure, or cancelled)</li>
  * </ol>
+ * <br><br>
+ * If monitoring is enabled, it's very important to call "freeExternalResources()" if a 
+ * Window will no longer be used.
  * 
  * @author joelauer
  */
@@ -89,7 +90,7 @@ public class Window<K,R,P> {
      *      be outstanding (unacknowledged) at a given time.  Must be > 0.
      */
     public Window(int size) {
-        this(size, null, 0, null);
+        this(size, null, 0, null, null);
     }
     
     /**
@@ -105,6 +106,24 @@ public class Window<K,R,P> {
      * @param listener A listener to send window events to
      */
     public Window(int size, ScheduledExecutorService executor, long monitorInterval, WindowListener<K,R,P> listener) {
+        this(size, executor, monitorInterval, listener, null);
+    }
+    
+    /**
+     * Creates a new window with the specified max window size.  This
+     * constructor enables automatic recurring tasks to be executed (such as
+     * expiration of requests).
+     * @param size The maximum number of requests permitted to
+     *      be outstanding (unacknowledged) at a given time.  Must be > 0.
+     * @param executor The scheduled executor service to execute
+     *      recurring tasks (such as expiration of requests).
+     * @param monitorInterval The number of milliseconds between executions of
+     *      monitoring tasks.
+     * @param listener A listener to send window events to
+     * @param monitorThreadName The thread name we'll change to when a monitor
+     *      run is executed.  Null if no name change is required.
+     */
+    public Window(int size, ScheduledExecutorService executor, long monitorInterval, WindowListener<K,R,P> listener, String monitorThreadName) {
         if (size <= 0) {
             throw new IllegalArgumentException("size must be > 0");
         }
@@ -121,58 +140,13 @@ public class Window<K,R,P> {
             this.listeners.add(new UnwrappedWeakReference<WindowListener<K,R,P>>(listener));
         }
         if (this.executor != null) {
-            this.monitor = new WindowMonitor(this);
+            this.monitor = new WindowMonitor(this, monitorThreadName);
             this.monitorHandle = this.executor.scheduleWithFixedDelay(this.monitor, this.monitorInterval, this.monitorInterval, TimeUnit.MILLISECONDS);
         } else {
             this.monitor = null;
             this.monitorHandle = null;
         }
     }
-    
-    /**
-     * Internal utility class to monitor the window and send events upstream
-     * to listeners.
-     */
-    /**
-    private class Monitor implements Runnable {
-        private final WeakReference<Window> parent;
-        
-        public Monitor(Window parent) {
-            this.parent = new WeakReference<Window>(parent);
-        }
-        
-        @Override
-        public void run() {
-            logger.debug("WindowMonitor running, current size=" + getSize());
-            // check if the window using this monitor was GC'ed
-            if (this.parent.get() == null) {
-                logger.debug("Window was GC'ed, stopping this monitor!");
-                monitorHandle.cancel(false);
-            }
-            
-            List<WindowFuture<K,R,P>> expired = cancelAllExpired();
-            if (expired != null && expired.size() > 0) {
-                logger.debug("Found " + expired.size() + " requests that expired");
-                // process each expired request and pass up the chain to handlers
-                for (WindowFuture<K,R,P> entry : expired) {
-                    for (UnwrappedWeakReference<WindowListener<K,R,P>> listenerRef : listeners) {
-                        WindowListener<K,R,P> listener = listenerRef.get();
-                        if (listener == null) {
-                            // remove this reference from our array (no good anymore)
-                            listeners.remove(listenerRef);
-                        } else {
-                            try {
-                                listener.expired(entry);
-                            } catch (Throwable t) {
-                                logger.error("Ignoring uncaught exception thrown in listener: ", t);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-     */
 
     /**
      * Gets the max size of the window.  This is the max number of requests that
@@ -236,17 +210,51 @@ public class Window<K,R,P> {
     
     /**
      * Gets a list of all listeners.
-     * @return 
+     * @return A list of all listeners
      */
     List<UnwrappedWeakReference<WindowListener<K,R,P>>> getListeners() {
         return this.listeners;
     }
     
     /**
-    public void shutdownMonitoring() {
-        this.monitorHandle.cancel(true);
-    }
+     * Shutdown this window by freeing all resources associated with it.  All
+     * pending offers are cancelled, followed by all outstanding futures, 
+     * then all listeners are removed, and monitoring is cancelled.
      */
+    public synchronized void freeExternalResources() {
+        try {
+            this.abortPendingOffers();
+        } catch (Exception e) { }
+        this.cancelAll();
+        this.listeners.clear();
+        this.stopMonitor();
+    }
+    
+    /**
+     * Starts the monitor if this Window has an executor.  Safe to call multiple
+     * times. 
+     * @return True if the monitor was started (true will be returned if it
+     *      was already previously started).
+     */
+    public synchronized boolean startMonitor() {
+        if (this.executor != null) {
+            if (this.monitorHandle == null) {
+                this.monitorHandle = this.executor.scheduleWithFixedDelay(this.monitor, this.monitorInterval, this.monitorInterval, TimeUnit.MILLISECONDS);
+            }
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Stops the monitor if its running.  Safe to call multiple times.
+     */
+    public synchronized void stopMonitor() {
+        if (this.monitorHandle != null) {
+            this.monitorHandle.cancel(true);
+            this.monitorHandle = null;
+        }
+    }
 
     /**
      * Creates an ordered snapshot of the requests in this window.  The entries
