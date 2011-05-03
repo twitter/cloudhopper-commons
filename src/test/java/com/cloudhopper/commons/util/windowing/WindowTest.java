@@ -225,39 +225,6 @@ public class WindowTest {
         
         Assert.assertEquals(WindowFuture.CALLER_WAITING_TIMEOUT, requestFuture0.getCallerStateHint());
     }
-    
-    @Test
-    public void callerStateHintResetBackToNotWaitingAtCompletion() throws Exception {
-        Window<Integer,String,String> window = new Window<Integer,String,String>(1);
-        final WindowFuture<Integer,String,String> future0 = window.offer(0, "Request0", 100, 100, true);
-        Assert.assertEquals(WindowFuture.CALLER_WAITING, future0.getCallerStateHint());
-        Assert.assertTrue(future0.isCallerWaiting());
-
-        // start up a new thread to mark the future as completed in near future
-        Thread completer = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(100);
-                } catch (Exception e) { }
-                future0.cancel();
-            }
-        };
-        completer.start();
-        
-        // now wait for the future up to 3 times the other thread's sleep
-        Assert.assertTrue(future0.await(300));
-        
-        // after await finishes, check hints
-        Assert.assertEquals(WindowFuture.CALLER_NOT_WAITING, future0.getCallerStateHint());
-        Assert.assertFalse(future0.isCallerWaiting());
-        
-        // call await again -- it should immediately succeed
-        // this is to check that the callerStateHint isn't reset to a new value
-        Assert.assertTrue(future0.await(300));
-        Assert.assertEquals(WindowFuture.CALLER_NOT_WAITING, future0.getCallerStateHint());
-        Assert.assertFalse(future0.isCallerWaiting());
-    }
 
     @Test
     public void cancel() throws Exception {

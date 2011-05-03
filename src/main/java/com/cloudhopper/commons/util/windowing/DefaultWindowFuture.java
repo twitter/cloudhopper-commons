@@ -281,14 +281,14 @@ public class DefaultWindowFuture<K,R,P> implements WindowFuture<K,R,P> {
     
     @Override
     public boolean await(long timeoutMillis) throws InterruptedException {
+        // k, if someone actually calls this method -- make sure to set the flag
+        // this may have already been set earlier, but if not its safe to set here
+        this.setCallerStateHint(CALLER_WAITING);
+        
         // if already done, return immediately
         if (isDone()) {
             return true;
         }
-        
-        // k, if someone actually calls this method -- make sure to set the flag
-        // this may have already been set earlier, but if not its safe to set here
-        this.setCallerStateHint(CALLER_WAITING);
         
         long startTime = System.currentTimeMillis();
         // try to acquire lock within given amount of time
@@ -317,8 +317,6 @@ public class DefaultWindowFuture<K,R,P> implements WindowFuture<K,R,P> {
             windowLock.unlock();
         }
         
-        // if we get here, then this future completed successfully
-        this.setCallerStateHint(CALLER_NOT_WAITING);
         return true;
     }
 }
