@@ -15,7 +15,9 @@
 package com.cloudhopper.commons.util.windowing;
 
 import com.cloudhopper.commons.util.UnwrappedWeakReference;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -74,8 +76,8 @@ public class Window<K,R,P> {
     private AtomicBoolean pendingOffersAborted;
     // for scheduling tasks (such as expiring requests)
     private final ScheduledExecutorService executor;
-    private final ScheduledFuture<?> monitorHandle;
-    private final Monitor monitor;
+    private ScheduledFuture<?> monitorHandle;
+    private final WindowMonitor monitor;
     private final long monitorInterval;
     private final CopyOnWriteArrayList<UnwrappedWeakReference<WindowListener<K,R,P>>> listeners;
 
@@ -119,7 +121,7 @@ public class Window<K,R,P> {
             this.listeners.add(new UnwrappedWeakReference<WindowListener<K,R,P>>(listener));
         }
         if (this.executor != null) {
-            this.monitor = new Monitor();
+            this.monitor = new WindowMonitor(this);
             this.monitorHandle = this.executor.scheduleWithFixedDelay(this.monitor, this.monitorInterval, this.monitorInterval, TimeUnit.MILLISECONDS);
         } else {
             this.monitor = null;
@@ -131,13 +133,26 @@ public class Window<K,R,P> {
      * Internal utility class to monitor the window and send events upstream
      * to listeners.
      */
+    /**
     private class Monitor implements Runnable {
+        private final WeakReference<Window> parent;
+        
+        public Monitor(Window parent) {
+            this.parent = new WeakReference<Window>(parent);
+        }
+        
         @Override
         public void run() {
-            //logger.debug("WindowMonitor running, current size=" + getSize());
+            logger.debug("WindowMonitor running, current size=" + getSize());
+            // check if the window using this monitor was GC'ed
+            if (this.parent.get() == null) {
+                logger.debug("Window was GC'ed, stopping this monitor!");
+                monitorHandle.cancel(false);
+            }
+            
             List<WindowFuture<K,R,P>> expired = cancelAllExpired();
             if (expired != null && expired.size() > 0) {
-                //logger.debug("Found " + expired.size() + " requests that expired");
+                logger.debug("Found " + expired.size() + " requests that expired");
                 // process each expired request and pass up the chain to handlers
                 for (WindowFuture<K,R,P> entry : expired) {
                     for (UnwrappedWeakReference<WindowListener<K,R,P>> listenerRef : listeners) {
@@ -157,6 +172,7 @@ public class Window<K,R,P> {
             }
         }
     }
+     */
 
     /**
      * Gets the max size of the window.  This is the max number of requests that
@@ -217,6 +233,20 @@ public class Window<K,R,P> {
     public void removeListener(WindowListener<K,R,P> listener) {
         this.listeners.remove(new UnwrappedWeakReference<WindowListener<K,R,P>>(listener));
     }
+    
+    /**
+     * Gets a list of all listeners.
+     * @return 
+     */
+    List<UnwrappedWeakReference<WindowListener<K,R,P>>> getListeners() {
+        return this.listeners;
+    }
+    
+    /**
+    public void shutdownMonitoring() {
+        this.monitorHandle.cancel(true);
+    }
+     */
 
     /**
      * Creates an ordered snapshot of the requests in this window.  The entries
