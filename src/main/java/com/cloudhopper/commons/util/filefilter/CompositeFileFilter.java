@@ -20,7 +20,7 @@ import java.io.FileFilter;
 /**
  * Filters a file based on a composition of several other filters.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class CompositeFileFilter implements FileFilter {
 

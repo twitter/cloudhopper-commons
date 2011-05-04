@@ -29,7 +29,7 @@ import com.cloudhopper.commons.util.annotation.MetaField;
 
 /**
  *
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class MetaFieldUtilTest {
     private static final Logger logger = LoggerFactory.getLogger(MetaFieldUtilTest.class);

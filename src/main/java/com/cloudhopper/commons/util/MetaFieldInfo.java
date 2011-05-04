@@ -20,7 +20,7 @@ import com.cloudhopper.commons.util.annotation.Level;
  * Simple class to display a counter's name, value, and description based on
  * current values and annotations.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class MetaFieldInfo {
     public String name;

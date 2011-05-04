@@ -1,6 +1,0 @@
-Cloudhopper, Inc.
-http://www.cloudhopper.com/
-Commons Util Library
---------------------------------------------------------------------------------
-
-  * Remove dependency on log4j and convert library to use SLF4J

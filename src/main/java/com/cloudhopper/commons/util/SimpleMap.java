@@ -18,7 +18,7 @@ package com.cloudhopper.commons.util;
  * A more simplified map interface than a java.util.Map where only a small subset
  * of functionality is supported.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public interface SimpleMap<V> {
 

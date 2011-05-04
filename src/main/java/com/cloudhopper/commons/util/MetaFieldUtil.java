@@ -27,7 +27,7 @@ import com.cloudhopper.commons.util.annotation.MetaField;
  * NOTE: This automatically handles unwrapping certain types such as an AtomicReference
  * where the actual values you'd want to validate is the one contained within.
  * 
- * @author Joe Lauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class MetaFieldUtil {
     private static Logger logger = LoggerFactory.getLogger(MetaFieldUtil.class);

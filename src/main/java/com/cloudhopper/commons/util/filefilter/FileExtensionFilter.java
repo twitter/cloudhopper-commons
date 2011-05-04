@@ -25,7 +25,7 @@ import com.cloudhopper.commons.util.FileUtil;
  * Accepts a file based on its file extension against a list of one or more
  * acceptable file extensions.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class FileExtensionFilter implements FileFilter {
 

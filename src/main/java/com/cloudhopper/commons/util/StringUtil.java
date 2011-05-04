@@ -14,10 +14,6 @@
 
 package com.cloudhopper.commons.util;
 
-/**
- *
- * @author joelauer
- */
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
@@ -25,8 +21,10 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 
 /**
-	A set of public static methods for dealing with Strings
-*/
+ * A set of String utilities.
+ * 
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
+ */
 public class StringUtil {
     
     private static final String PRINTABLE = ": ~`!@#$%^&*()-_+=/\\,.[]{}|?<>\"'";

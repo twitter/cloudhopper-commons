@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * NOTE: This class only works for small lists.  You need to assume every
  * call to get the next selection is O(n).
  *
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class RoundRobinLoadBalancedList<E> implements LoadBalancedList<E> {
     private static final Logger logger = LoggerFactory.getLogger(RoundRobinLoadBalancedList.class);

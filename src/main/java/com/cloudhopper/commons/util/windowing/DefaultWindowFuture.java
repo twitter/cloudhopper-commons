@@ -26,7 +26,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Default implementation of a WindowFuture.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class DefaultWindowFuture<K,R,P> implements WindowFuture<K,R,P> {
 
@@ -55,7 +55,7 @@ public class DefaultWindowFuture<K,R,P> implements WindowFuture<K,R,P> {
      * @param request The request of the future
      * @param callerStateHint The initial state of the caller hint
      * @param offerTimestamp The timestamp when the request was offered
-     * @param acceptTimetamp The timestamp when the request was accepted
+     * @param acceptTimestamp The timestamp when the request was accepted
      * @param expireTimestamp The timestamp when the request will expire or -1
      *      if no expiration is set
      */

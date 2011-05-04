@@ -33,7 +33,7 @@ import java.io.IOException;
  *   p://u:p@h:p
  *   p://h/path/to/something
  *
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class URLParser {
     private static final Logger logger = LoggerFactory.getLogger(URLParser.class);

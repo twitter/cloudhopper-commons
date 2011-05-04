@@ -25,7 +25,7 @@ import com.cloudhopper.commons.util.DateTimeUtil;
 /**
  * Filters a file based on an embedded date within the filename.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class FileNameDateTimeFilter implements FileFilter {
     private static final Logger logger = LoggerFactory.getLogger(FileNameDateTimeFilter.class);

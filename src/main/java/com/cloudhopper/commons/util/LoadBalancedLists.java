@@ -21,7 +21,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Utilities for working with LoadBalancedList objects.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class LoadBalancedLists {
 

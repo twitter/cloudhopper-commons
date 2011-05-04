@@ -23,7 +23,8 @@ import java.lang.annotation.Target;
  * Annotation for including extra meta data about a field inside a class. Useful
  * for tagging fields inside a class with a name and description to display.
  * Use in conjunction with MetaFieldUtil class.
- * @author joelauer
+ * 
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

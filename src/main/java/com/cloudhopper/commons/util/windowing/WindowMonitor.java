@@ -22,7 +22,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Internal utility class to monitor the window and send events upstream
    to listeners.
- * @author joelauer
+ * 
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class WindowMonitor<K,R,P> implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(Window.class);

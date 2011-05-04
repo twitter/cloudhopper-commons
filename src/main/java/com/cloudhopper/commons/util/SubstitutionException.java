@@ -17,7 +17,8 @@ package com.cloudhopper.commons.util;
 /**
  * Root exception for StringUtil where environment variables can be used to
  * replace certain properties.
- * @author joelauer
+ * 
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class SubstitutionException extends Exception {
     private static final long serialVersionUID = 1L;

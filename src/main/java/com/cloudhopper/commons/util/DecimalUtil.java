@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Utility classes for working with decimal values like a float or double.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class DecimalUtil {
     private static Logger logger = LoggerFactory.getLogger(DecimalUtil.class);

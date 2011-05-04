@@ -33,7 +33,7 @@ import java.util.concurrent.locks.*;
  * NOTE: This class internally stores the running total as a long -- avoid
  * using large values, otherwise this class may cause an overflow.
  *
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class RunningTotal {
     

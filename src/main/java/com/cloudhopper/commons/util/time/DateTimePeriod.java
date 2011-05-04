@@ -40,7 +40,7 @@ import org.joda.time.format.DateTimeFormatter;
  * precision.  Also, this representation makes the internal calculations much
  * easier since the end date would always be start.plusMonths(1).
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public abstract class DateTimePeriod {
 

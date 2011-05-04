@@ -23,7 +23,7 @@ import java.io.FileFilter;
 /**
  * Accepts a file based on whether its filename endsWith a specific string.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class FileNameEndsWithFilter implements FileFilter {
 

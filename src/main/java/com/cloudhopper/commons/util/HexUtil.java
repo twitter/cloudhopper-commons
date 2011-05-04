@@ -17,7 +17,7 @@ package com.cloudhopper.commons.util;
 /**
  * Utility class for encoding or decoding objects to a hexidecimal format.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class HexUtil {
 

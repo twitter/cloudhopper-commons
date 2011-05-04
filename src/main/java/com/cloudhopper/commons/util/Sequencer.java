@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  * simple incrementing sequence of Longs. This class safely resets the sequence
  * back to zero to prevent overflow. Internally uses the AtomicLong class.
  *
- * @author Joe Lauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class Sequencer {
     private static Logger logger = LoggerFactory.getLogger(Sequencer.class);

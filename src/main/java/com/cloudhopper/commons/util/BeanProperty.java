@@ -18,10 +18,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-// third party imports
-
-// my imports
-
 /**
  * Represents a "bean" property for a class.  A property in this case follows
  * a coding convention of how the field is named and how it matches getter
@@ -31,6 +27,8 @@ import java.lang.reflect.Method;
  * and provides more useful methods of "get" and "set" which may fall back
  * to direct access of the underlying field if no getter or setter methods
  * exist.
+ * 
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class BeanProperty {
 

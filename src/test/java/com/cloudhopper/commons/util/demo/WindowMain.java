@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Simple demo of window utility class.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class WindowMain {
     private static final Logger logger = LoggerFactory.getLogger(WindowMain.class);

@@ -17,7 +17,7 @@ package com.cloudhopper.commons.util;
 /**
  * Represents a NameValue with generics.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class NameValue<N,V> {
     private N name;

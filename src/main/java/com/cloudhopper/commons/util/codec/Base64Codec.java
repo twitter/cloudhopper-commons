@@ -32,7 +32,7 @@ import java.text.ParseException;
  * sets of three bytes with eight significant bits each to sets of four bytes
  * with six significant bits each.
  *
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class Base64Codec {
 

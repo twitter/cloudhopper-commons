@@ -36,7 +36,7 @@ import java.util.StringTokenizer;
  * StringBuilder class vs. the StringBuffer class and avoid any synchronization
  * overhead.
  *
- * @author Joe Lauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class URL {
 

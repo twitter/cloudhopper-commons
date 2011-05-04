@@ -19,7 +19,7 @@ package com.cloudhopper.commons.util.windowing;
  * abortPendingOffers() is called by a different thread.  Rather than wait for the
  * offer to be accepted for the full offerTimeoutMillis, this is an immediate timeout.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class PendingOfferAbortedException extends OfferTimeoutException {
     

@@ -30,7 +30,7 @@ import org.junit.*;
 /**
  * Tests FileFilter packages.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class FileFilterTest {
     private static final Logger logger = LoggerFactory.getLogger(FileFilterTest.class);

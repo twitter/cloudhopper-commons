@@ -3,6 +3,12 @@ ch-commons-util
 The ch-commons-util package contains common utility classes for Cloudhopper-based
 Java projects.
 
+Contributors
+--------------------------------------------------------------------------------
+
+Joe Lauer (twitter: http://twitter.com/jjlauer) OR
+    Text "FOLLOW jjlauer" to 40404
+
 
 Installation
 ---------------------------------------------------------------------------------
@@ -30,12 +36,6 @@ On Windows, you'd run:
  
    nmake run-uptime
    nmake run-window
-
-
-Contributors
---------------------------------------------------------------------------------
-
-Joe Lauer (follow me on twitter http://twitter.com/jjlauer)
 
 
 License

@@ -21,7 +21,7 @@ import java.util.Random;
  * Utility class for using and generating random object such as strings. Useful
  * for generating things like random passwords, verification codes, etc.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class RandomUtil {
 

@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Tests URL class
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class URLTest {
     private static final Logger logger = LoggerFactory.getLogger(URLTest.class);

@@ -21,7 +21,7 @@ package com.cloudhopper.commons.util;
  * the running total. Also, this provides the precision of the average (Double)
  * to be set in the constructor that will be displayed in the toString() method.
  *
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class RunningAverage extends RunningTotal {
 

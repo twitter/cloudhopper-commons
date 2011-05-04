@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * prefix. The keys are not stored explicitly and nodes are shared between keys
  * with common initial subsequences.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class DigitLookupMap<V> implements SimpleMap<V> {
     private static final Logger logger = LoggerFactory.getLogger(DigitLookupMap.class);

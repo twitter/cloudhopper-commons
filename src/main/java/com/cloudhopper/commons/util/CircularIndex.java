@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
  * for implementing a "queue" using a fixed-length array where the head and tail
  * keep looping around the fixed capacity.
  *
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class CircularIndex {
     private static Logger logger = LoggerFactory.getLogger(CircularIndex.class);

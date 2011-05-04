@@ -21,7 +21,7 @@ import java.util.TreeMap;
  * A more simplified map interface than a java.util.Map where only a small subset
  * of functionality is supported.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class StringLookupMap<V> implements SimpleMap<V> {
 

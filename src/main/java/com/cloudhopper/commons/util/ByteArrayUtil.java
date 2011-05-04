@@ -17,16 +17,18 @@ package com.cloudhopper.commons.util;
 /**
  * Utility class for working with byte arrays such as converting between
  * byte arrays and numbers.
+ * 
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class ByteArrayUtil {
 
-    static protected final void checkBytesNotNull(byte[] bytes) {
+    protected static void checkBytesNotNull(byte[] bytes) {
         if (bytes == null) {
             throw new IllegalArgumentException("Byte array was null");
         }
     }
 
-    static protected final void checkBytes(byte[] bytes, int offset, int length, int expectedLength) {
+    protected static void checkBytes(byte[] bytes, int offset, int length, int expectedLength) {
         checkBytesNotNull(bytes);
         ByteBuffer.checkOffsetLength(bytes.length, offset, length);
         if (length != expectedLength) {
@@ -34,18 +36,18 @@ public class ByteArrayUtil {
         }
     }
 
-    static public final byte[] toByteArray(byte value) {
+    public static byte[] toByteArray(byte value) {
         return new byte[] { value };
     }
 
-    static public final byte[] toByteArray(short value) {
+    public static byte[] toByteArray(short value) {
         byte[] buf = new byte[2];
         buf[1] = (byte)(value & 0xFF);
         buf[0] = (byte)((value >>> 8) & 0xFF);
         return buf;
     }
 
-    static public final byte[] toByteArray(int value) {
+    public static byte[] toByteArray(int value) {
         byte[] buf = new byte[4];
         buf[3] = (byte)(value & 0xFF);
         buf[2] = (byte)((value >>> 8) & 0xFF);
@@ -54,7 +56,7 @@ public class ByteArrayUtil {
         return buf;
     }
 
-    static public final byte[] toByteArray(long value) {
+    public static byte[] toByteArray(long value) {
         byte[] buf = new byte[8];
         buf[7] = (byte)(value & 0xFF);
         buf[6] = (byte)((value >>> 8) & 0xFF);
@@ -67,34 +69,34 @@ public class ByteArrayUtil {
         return buf;
     }
 
-    static public final byte toByte(byte[] bytes) {
+    public static byte toByte(byte[] bytes) {
         checkBytesNotNull(bytes);
         return toByte(bytes, 0, bytes.length);
     }
 
-    static public final byte toByte(byte[] bytes, int offset, int length) {
+    public static byte toByte(byte[] bytes, int offset, int length) {
         checkBytes(bytes, offset, length, 1);
         return bytes[offset];
     }
 
-    static public final short toUnsignedByte(byte[] bytes) {
+    public static short toUnsignedByte(byte[] bytes) {
         checkBytesNotNull(bytes);
         return toUnsignedByte(bytes, 0, bytes.length);
     }
 
-    static public final short toUnsignedByte(byte[] bytes, int offset, int length) {
+    public static short toUnsignedByte(byte[] bytes, int offset, int length) {
         checkBytes(bytes, offset, length, 1);
         short v = 0;
         v |= bytes[offset] & 0xFF;
         return v;
     }
 
-    static public final short toShort(byte[] bytes) {
+    public static short toShort(byte[] bytes) {
         checkBytesNotNull(bytes);
         return toShort(bytes, 0, bytes.length);
     }
 
-    static public final short toShort(byte[] bytes, int offset, int length) {
+    public static short toShort(byte[] bytes, int offset, int length) {
         checkBytes(bytes, offset, length, 2);
         short v = 0;
         v |= bytes[offset] & 0xFF;
@@ -103,12 +105,12 @@ public class ByteArrayUtil {
         return v;
     }
 
-    static public final int toUnsignedShort(byte[] bytes) {
+    public static int toUnsignedShort(byte[] bytes) {
         checkBytesNotNull(bytes);
         return toUnsignedShort(bytes, 0, bytes.length);
     }
 
-    static public final int toUnsignedShort(byte[] bytes, int offset, int length) {
+    public static int toUnsignedShort(byte[] bytes, int offset, int length) {
         checkBytes(bytes, offset, length, 2);
         int v = 0;
         v |= bytes[offset] & 0xFF;
@@ -117,12 +119,12 @@ public class ByteArrayUtil {
         return v;
     }
 
-    static public final int toInt(byte[] bytes) {
+    public static int toInt(byte[] bytes) {
         checkBytesNotNull(bytes);
         return toInt(bytes, 0, bytes.length);
     }
 
-    static public final int toInt(byte[] bytes, int offset, int length) {
+    public static int toInt(byte[] bytes, int offset, int length) {
         checkBytes(bytes, offset, length, 4);
         int v = 0;
         v |= bytes[offset] & 0xFF;
@@ -135,12 +137,12 @@ public class ByteArrayUtil {
         return v;
     }
 
-    static public final long toUnsignedInt(byte[] bytes) {
+    public static long toUnsignedInt(byte[] bytes) {
         checkBytesNotNull(bytes);
         return toUnsignedInt(bytes, 0, bytes.length);
     }
 
-    static public final long toUnsignedInt(byte[] bytes, int offset, int length) {
+    public static long toUnsignedInt(byte[] bytes, int offset, int length) {
         checkBytes(bytes, offset, length, 4);
         long v = 0;
         v |= bytes[offset] & 0xFF;
@@ -153,12 +155,12 @@ public class ByteArrayUtil {
         return v;
     }
 
-    static public final long toLong(byte[] bytes) {
+    public static long toLong(byte[] bytes) {
         checkBytesNotNull(bytes);
         return toLong(bytes, 0, bytes.length);
     }
 
-    static public final long toLong(byte[] bytes, int offset, int length) {
+    public static long toLong(byte[] bytes, int offset, int length) {
         checkBytes(bytes, offset, length, 8);
         long v = 0;
         v |= bytes[offset] & 0xFF;

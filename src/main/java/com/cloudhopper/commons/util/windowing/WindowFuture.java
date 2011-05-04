@@ -42,7 +42,7 @@ package com.cloudhopper.commons.util.windowing;
  *                                      +---------------------------+
  * </pre>
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public interface WindowFuture<K,R,P> {
 
@@ -196,7 +196,6 @@ public interface WindowFuture<K,R,P> {
      * Completes (as a failure) a request by setting a throwable as the cause
      * of failure. This method will set the done timestamp to System.currentTimeMillis()
      * @param t The throwable as the cause of failure
-     * @param doneTimestamp The timestamp when the request failed
      */
     public void fail(Throwable t);
     
@@ -211,7 +210,6 @@ public interface WindowFuture<K,R,P> {
     /**
      * Completes (as a cancel) a request. This method will set the done timestamp
      * to System.currentTimeMillis().
-     * @param doneTimestamp The timestamp when the request was cancelled
      */
     public void cancel();
     

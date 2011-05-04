@@ -31,6 +31,8 @@ import org.joda.time.DateTimeZone;
  * Utility class for handling Files.
  *
  * NOTE: Some code copied from the JXL project.
+ * 
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class FileUtil {
 

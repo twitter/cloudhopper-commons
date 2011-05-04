@@ -20,7 +20,7 @@ package com.cloudhopper.commons.util.time;
  * such as fill() which will populate a dataset to ensure that every period
  * has at least a default value.
  *
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public abstract class DateTimePeriodData {
 

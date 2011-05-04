@@ -20,7 +20,7 @@ import java.util.List;
  * A list that can act like a load balancer by internally tracking
  * which item to return next.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public interface LoadBalancedList<E> {
 

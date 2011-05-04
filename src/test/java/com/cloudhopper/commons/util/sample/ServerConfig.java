@@ -16,7 +16,7 @@ package com.cloudhopper.commons.util.sample;
 
 /**
  * Sample configuration object for a server.
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class ServerConfig {
     

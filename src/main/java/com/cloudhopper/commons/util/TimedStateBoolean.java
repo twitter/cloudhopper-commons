@@ -27,7 +27,7 @@ import org.joda.time.Period;
  * Wrapper around Java AtomicBoolean to include the DateTime of when the state last
  * changed, effectively providing a "time" of the current state.
  *
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class TimedStateBoolean {
 

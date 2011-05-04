@@ -17,7 +17,7 @@ package com.cloudhopper.commons.util.windowing;
 /**
  * Thrown when the key for a request already exists.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class DuplicateKeyException extends Exception {
     static final long serialVersionUID = 1L;

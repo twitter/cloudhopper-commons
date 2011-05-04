@@ -27,7 +27,7 @@ import com.cloudhopper.commons.util.codec.Base64Codec;
  *
  * Originally copied from http://www.informit.com/guides/content.aspx?g=java&seqNum=31
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class EncryptUtil {
 

@@ -21,7 +21,7 @@ package com.cloudhopper.commons.util.time;
 /**
  * Enumeration of a specific duration of time such as a Month, Year, Hour, etc.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public enum DateTimeDuration {
     YEAR,

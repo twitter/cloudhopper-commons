@@ -17,8 +17,9 @@ package com.cloudhopper.commons.util;
 import java.io.*;
 
 /**
-* Simple utilities to return the stack trace of an
-* exception as a String.
+ * Simple utilities to return the stack trace of an exception as a String.
+ * 
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
 */
 public final class StackTraceUtil {
 

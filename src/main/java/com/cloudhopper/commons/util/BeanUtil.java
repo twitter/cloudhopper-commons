@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This class implements utilities for working with classes.
  *
- * @author Joe Lauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class BeanUtil {
     private static Logger logger = LoggerFactory.getLogger(BeanUtil.class);

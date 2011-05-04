@@ -17,7 +17,7 @@ package com.cloudhopper.commons.util;
 /**
  * Thrown when an invalid Address format is used.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class AddressFormatException extends IllegalArgumentException {
     private static final long serialVersionUID = 1L;

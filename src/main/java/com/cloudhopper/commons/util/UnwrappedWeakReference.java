@@ -22,7 +22,7 @@ import java.lang.ref.WeakReference;
  * CopyOnWriteArrayList can be directly used with a UnwrappedWeakReference and
  * have methods like "addIfAbsent" actually work correctly.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class UnwrappedWeakReference<T> extends WeakReference<T> {
     

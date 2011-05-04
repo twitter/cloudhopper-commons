@@ -17,7 +17,7 @@ package com.cloudhopper.commons.util.windowing;
 /**
  * Thrown if an offer cannot be accepted within a specified amount of time.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class OfferTimeoutException extends Exception {
     static final long serialVersionUID = 1L;

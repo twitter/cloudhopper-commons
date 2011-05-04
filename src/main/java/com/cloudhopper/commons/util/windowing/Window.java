@@ -64,7 +64,7 @@ import org.slf4j.LoggerFactory;
  * If monitoring is enabled, it's very important to call "freeExternalResources()" if a 
  * Window will no longer be used.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class Window<K,R,P> {
     private static final Logger logger = LoggerFactory.getLogger(Window.class);
@@ -281,11 +281,6 @@ public class Window<K,R,P> {
      * @param request The request to offer
      * @param offerTimeoutMillis The amount of time (in milliseconds) to wait
      *      for the offer to be accepted.
-     * @param expireTimeoutMillis The amount of time (in milliseconds) that a
-     *      request will be set to expire after acceptance.  A value &lt; 1 is
-     *      assumed to be an infinite expiration (request never expires).
-     *      Requests are not automatically expired unless monitoring was enabled
-     *      during construction of this window.
      * @return A future representing pending completion of the request 
      * @throws DuplicateKeyException Thrown if the key already exists
      * @throws PendingOfferAbortedException Thrown if the offer could not be

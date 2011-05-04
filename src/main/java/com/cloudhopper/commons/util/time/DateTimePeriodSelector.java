@@ -25,7 +25,7 @@ import org.joda.time.DateTimeZone;
  * example, a user might want to select from a period covering the "Last Year"
  * as months.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class DateTimePeriodSelector {
 

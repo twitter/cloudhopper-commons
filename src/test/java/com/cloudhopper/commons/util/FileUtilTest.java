@@ -27,7 +27,7 @@ import org.junit.*;
 /**
  * Tests FileUtil class.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class FileUtilTest {
     private static final Logger logger = LoggerFactory.getLogger(FileUtilTest.class);

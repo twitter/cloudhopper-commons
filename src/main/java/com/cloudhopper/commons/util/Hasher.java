@@ -32,7 +32,8 @@ import com.cloudhopper.commons.util.codec.Base64Codec;
  * </ul>
  * <br>
  * NOTE: These are only 1-way hashes, you won't be able to decrypt the string.
- * @author joelauer
+ * 
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class Hasher {
     private static final String ALGORITHM_MD5 = "MD5"; // Message Digest Algorithm - 128 bit

@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * That class was written by Arnaud Witschger. This class has been heavily
  * modified for a different usage.
  *
- * @author Joe Lauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class ByteBuffer {
     private final static Logger logger = LoggerFactory.getLogger(ByteBuffer.class);
