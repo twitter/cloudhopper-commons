@@ -16,7 +16,8 @@ package com.cloudhopper.commons.util;
 
 // third party imports
 import org.junit.*;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // my imports
 //import net.cloudhopper.commons.util.ByteBuffer;
@@ -27,7 +28,7 @@ import org.apache.log4j.Logger;
  */
 public class DecimalUtilTest {
 
-    private static final Logger logger = Logger.getLogger(DecimalUtilTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(DecimalUtilTest.class);
 
     @Test
     public void toStringWithPrecision() {

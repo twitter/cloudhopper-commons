@@ -16,18 +16,15 @@ package com.cloudhopper.commons.util;
 
 // third party imports
 import org.junit.*;
-import org.apache.log4j.Logger;
-
-// my imports
-//import net.cloudhopper.commons.util.ByteBuffer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author joelauer
  */
 public class HasherTest {
-
-    private static final Logger logger = Logger.getLogger(HasherTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(HasherTest.class);
 
     // md5 samples -- all generated from http://tools.benramsey.com/md5/
     private static final String MD5_SAMPLE1 = "test";

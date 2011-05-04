@@ -14,13 +14,9 @@
 
 package com.cloudhopper.commons.util;
 
-// java imports
 import java.net.MalformedURLException;
-
-// third party imports
-import org.apache.log4j.Logger;
-
-// my imports
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.cloudhopper.commons.util.codec.URLCodec;
 import java.io.IOException;
 
@@ -37,10 +33,10 @@ import java.io.IOException;
  *   p://u:p@h:p
  *   p://h/path/to/something
  *
- * @author Joe Lauer
+ * @author joelauer
  */
 public class URLParser {
-    private static final Logger logger = Logger.getLogger(URLParser.class);
+    private static final Logger logger = LoggerFactory.getLogger(URLParser.class);
 
     private URLParser() {
         // static methods only

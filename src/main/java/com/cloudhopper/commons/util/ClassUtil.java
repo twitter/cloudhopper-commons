@@ -13,15 +13,11 @@
  */
 package com.cloudhopper.commons.util;
 
-// java imports
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayDeque;
-
-// third party imports
-import org.apache.log4j.Logger;
-
-// my imports
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class implements utilities for working with classes.
@@ -29,8 +25,7 @@ import org.apache.log4j.Logger;
  * @author Joe Lauer
  */
 public class ClassUtil {
-    
-    private static Logger logger = Logger.getLogger(ClassUtil.class);
+    private static Logger logger = LoggerFactory.getLogger(ClassUtil.class);
 
 
     /**

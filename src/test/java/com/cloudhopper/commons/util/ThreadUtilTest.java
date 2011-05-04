@@ -16,17 +16,15 @@ package com.cloudhopper.commons.util;
 
 // third party imports
 import org.junit.*;
-import org.apache.log4j.Logger;
-
-// my imports
-//import net.cloudhopper.commons.util.ByteBuffer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author joelauer
  */
 public class ThreadUtilTest {
-    private static final Logger logger = Logger.getLogger(ThreadUtilTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ThreadUtilTest.class);
 
     @Test
     public void getAllThreads() {

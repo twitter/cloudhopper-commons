@@ -18,7 +18,8 @@ import com.cloudhopper.commons.util.filefilter.FileNameDateTimeFilter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.*;
@@ -29,7 +30,7 @@ import org.junit.*;
  * @author joelauer
  */
 public class FileUtilTest {
-    private static final Logger logger = Logger.getLogger(FileUtilTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileUtilTest.class);
 
     @Test
     public void copyAndEquals() throws Exception {

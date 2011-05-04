@@ -13,14 +13,10 @@
  */
 package com.cloudhopper.commons.util;
 
-// java imports
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-
-// third party imports
-import org.apache.log4j.Logger;
-
-// my imports
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class implements utilities for working with classes.
@@ -28,7 +24,7 @@ import org.apache.log4j.Logger;
  * @author Joe Lauer
  */
 public class BeanUtil {
-    private static Logger logger = Logger.getLogger(BeanUtil.class);
+    private static Logger logger = LoggerFactory.getLogger(BeanUtil.class);
 
     /**
      * Finds a BeanProperty for the class type. A BeanProperty may have a getter

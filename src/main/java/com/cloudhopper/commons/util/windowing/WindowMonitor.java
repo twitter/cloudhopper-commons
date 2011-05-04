@@ -16,7 +16,8 @@ package com.cloudhopper.commons.util.windowing;
 import com.cloudhopper.commons.util.UnwrappedWeakReference;
 import java.lang.ref.WeakReference;
 import java.util.List;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Internal utility class to monitor the window and send events upstream
@@ -24,7 +25,7 @@ import org.apache.log4j.Logger;
  * @author joelauer
  */
 public class WindowMonitor<K,R,P> implements Runnable {
-    private static final Logger logger = Logger.getLogger(Window.class);
+    private static final Logger logger = LoggerFactory.getLogger(Window.class);
     
     private final WeakReference<Window<K,R,P>> windowRef;
     private final String monitorThreadName;
@@ -50,11 +51,13 @@ public class WindowMonitor<K,R,P> implements Runnable {
                 throw new IllegalStateException("Parent Window was garbage collected (missing call to Window.reset() somewhere in code)");
             }
 
-            logger.debug("WindowMonitor running, current size=" + window.getSize());
+            if (logger.isTraceEnabled())
+                logger.trace("Monitor running... (current window.size [" + window.getSize() + "])");
 
             List<WindowFuture<K,R,P>> expired = window.cancelAllExpired();
             if (expired != null && expired.size() > 0) {
-                logger.debug("Found " + expired.size() + " requests that expired");
+                if (logger.isTraceEnabled())
+                    logger.trace("Monitor found [" + expired.size() + "] requests expired");
                 // process each expired request and pass up the chain to handlers
                 for (WindowFuture<K,R,P> future : expired) {
                     for (UnwrappedWeakReference<WindowListener<K,R,P>> listenerRef : window.getListeners()) {

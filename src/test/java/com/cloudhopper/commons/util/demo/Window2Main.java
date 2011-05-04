@@ -19,14 +19,15 @@ import com.cloudhopper.commons.util.windowing.Window;
 import com.cloudhopper.commons.util.windowing.WindowFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author joelauer
  */
 public class Window2Main {
-    private static final Logger logger = Logger.getLogger(Window2Main.class);
+    private static final Logger logger = LoggerFactory.getLogger(Window2Main.class);
 
     static public void main(String[] args) throws Exception {
         

@@ -20,7 +20,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import org.junit.*;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // my imports
 //import net.cloudhopper.commons.util.ByteBuffer;
@@ -30,7 +31,7 @@ import org.apache.log4j.Logger;
  * @author joelauer
  */
 public class WindowTest {
-    private static final Logger logger = Logger.getLogger(WindowTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(WindowTest.class);
 
     @Test
     public void usage() throws Exception {
@@ -456,7 +457,7 @@ public class WindowTest {
                     } catch (PendingOfferAbortedException e) {
                         // correct behavior
                     } catch (Exception e) {
-                        logger.error(e);
+                        logger.error("", e);
                         Assert.fail();
                     }
                 }
@@ -477,7 +478,7 @@ public class WindowTest {
                     logger.debug("hadWaiters: " + hadWaiters);
                     Assert.assertTrue(hadWaiters);
                 } catch (Exception e) {
-                    logger.error(e);
+                    logger.error("", e);
                     Assert.fail();
                 }
             }

@@ -16,10 +16,8 @@ package com.cloudhopper.commons.util;
 
 // third party imports
 import org.junit.*;
-import org.apache.log4j.Logger;
-
-// my imports
-//import net.cloudhopper.commons.util.ByteBuffer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -27,7 +25,7 @@ import org.apache.log4j.Logger;
  */
 public class RandomUtilTest {
 
-    private static final Logger logger = Logger.getLogger(RandomUtilTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(RandomUtilTest.class);
 
     @Test
     public void generateString() {

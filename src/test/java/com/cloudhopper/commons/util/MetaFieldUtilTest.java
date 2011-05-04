@@ -21,7 +21,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 // third party imports
 import org.junit.*;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // my imports
 import com.cloudhopper.commons.util.annotation.MetaField;
@@ -31,8 +32,7 @@ import com.cloudhopper.commons.util.annotation.MetaField;
  * @author joelauer
  */
 public class MetaFieldUtilTest {
-
-    private static final Logger logger = Logger.getLogger(MetaFieldUtilTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(MetaFieldUtilTest.class);
 
     @Test
     public void toMetaFieldInfoArray() throws Exception {

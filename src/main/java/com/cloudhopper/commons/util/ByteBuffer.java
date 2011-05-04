@@ -13,13 +13,9 @@
  */
 package com.cloudhopper.commons.util;
 
-// java imports
 import java.io.UnsupportedEncodingException;
-
-// third party imports
-import org.apache.log4j.Logger;
-
-// my imports
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class implements a capacity constrained ByteBuffer using a circular array
@@ -53,7 +49,7 @@ import org.apache.log4j.Logger;
  * @author Joe Lauer
  */
 public class ByteBuffer {
-    private final static Logger logger = Logger.getLogger(ByteBuffer.class);
+    private final static Logger logger = LoggerFactory.getLogger(ByteBuffer.class);
 
     /** Default buffer capacity. */
     private static final int DEFAULT_BUFFER_CAPACITY = 1023;
@@ -82,7 +78,7 @@ public class ByteBuffer {
         try {
             this.circularByteBufferInitializer(DEFAULT_BUFFER_CAPACITY+1, 0, 0, 0);
         } catch (IllegalArgumentException e) {
-            logger.fatal("Impossible case reached constructing ByteBuffer");
+            logger.error("Impossible case reached constructing ByteBuffer");
         }
     }
 
@@ -112,7 +108,7 @@ public class ByteBuffer {
         try {
             this.add(bytes);
         } catch (BufferSizeException e) {
-            logger.fatal("Impossible case reached constructing ByteBuffer");
+            logger.error("Impossible case reached constructing ByteBuffer");
         }
     }
 
@@ -175,7 +171,7 @@ public class ByteBuffer {
         try {
             this.add(bytes, offset, length);
         } catch (BufferSizeException e) {
-            logger.fatal("Impossible case of BufferSizeException in ByteBuffer constructor", e);
+            logger.error("Impossible case of BufferSizeException in ByteBuffer constructor", e);
         }
     }
 
@@ -212,7 +208,7 @@ public class ByteBuffer {
             // convert string to bytes via ISO-8859-1
             bytes = string0.getBytes("ISO-8859-1");
         } catch (UnsupportedEncodingException e) {
-            logger.fatal("Impossible case in BtyeBuffer(String) constructor since ISO-8859-1 should be supported encoding", e);
+            logger.error("Impossible case in BtyeBuffer(String) constructor since ISO-8859-1 should be supported encoding", e);
             throw new IllegalArgumentException("Unsupported encoding exception thrown, should never happen", e);
         }
 
@@ -224,7 +220,7 @@ public class ByteBuffer {
         try {
             this.add(bytes);
         } catch (BufferSizeException e) {
-            logger.fatal("Impossible case in BtyeBuffer(String) constructor since capacity should have been ensured", e);
+            logger.error("Impossible case in BtyeBuffer(String) constructor since capacity should have been ensured", e);
             throw new IllegalArgumentException("BufferSizeException exception thrown, should never happen", e);
         }
     }
@@ -439,7 +435,7 @@ public class ByteBuffer {
                 this.add(bytes[i+offset]);
             } catch (BufferIsFullException e) {
                 // this should be an impossible case since we checked the size() above
-                logger.fatal("Buffer is full even though this method checked its size() ahead of time", e);
+                logger.error("Buffer is full even though this method checked its size() ahead of time", e);
                 throw new BufferSizeException(e.getMessage());
             }
         }
@@ -511,7 +507,7 @@ public class ByteBuffer {
                 removedBuffer[currentPos] = this.remove();
             } catch (BufferIsEmptyException e) {
                 // this should be an impossible case since we checked the size() above
-                logger.fatal("Buffer is empty even though this method checked its size() ahead of time", e);
+                logger.error("Buffer is empty even though this method checked its size() ahead of time", e);
                 throw new BufferSizeException(e.getMessage());
             }
         }
@@ -606,9 +602,7 @@ public class ByteBuffer {
         }
 
         // validate offset, length ok
-        this.checkOffsetLength(size(), offset, length);
-
-        
+        ByteBuffer.checkOffsetLength(size(), offset, length);
 
         // is the capacity large enough?
         if (capacity < length) {
@@ -773,7 +767,7 @@ public class ByteBuffer {
      */
     public byte[] toArray(int offset, int length, int capacity) {
         // validate the offset, length are ok
-        this.checkOffsetLength(size(), offset, length);
+        ByteBuffer.checkOffsetLength(size(), offset, length);
         
         // will we have a large enough byte[] allocated?
         if (capacity < length) {
@@ -803,10 +797,10 @@ public class ByteBuffer {
     public void toArray(int offset, int length, byte[] targetBuffer, int targetOffset) {
 
         // validate the offset, length are ok
-        this.checkOffsetLength(size(), offset, length);
+        ByteBuffer.checkOffsetLength(size(), offset, length);
 
         // validate the offset, length are ok
-        this.checkOffsetLength(targetBuffer.length, targetOffset, length);
+        ByteBuffer.checkOffsetLength(targetBuffer.length, targetOffset, length);
 
         // will we have a large enough byte[] allocated?
         if (targetBuffer.length < length) {
@@ -1001,7 +995,7 @@ public class ByteBuffer {
                     return false;
                 }
             } catch (Exception e) {
-                logger.fatal("Impossible case should never happen", e);
+                logger.error("Impossible case should never happen", e);
                 return false;
             }
         }
@@ -1061,7 +1055,7 @@ public class ByteBuffer {
      */
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < size(); i++) {
             sb.append((char)getUnchecked(i));
         }

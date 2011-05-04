@@ -21,7 +21,8 @@ import com.cloudhopper.commons.util.filefilter.FileNameEndsWithFilter;
 import com.cloudhopper.commons.util.filefilter.FileNameStartsWithFilter;
 import java.io.File;
 import java.io.FileFilter;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.*;
@@ -32,7 +33,7 @@ import org.junit.*;
  * @author joelauer
  */
 public class FileFilterTest {
-    private static final Logger logger = Logger.getLogger(FileFilterTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileFilterTest.class);
 
     @Test
     public void fileNameDateFilter() throws Exception {

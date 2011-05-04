@@ -17,18 +17,15 @@ package com.cloudhopper.commons.util;
 // third party imports
 import java.util.Properties;
 import org.junit.*;
-import org.apache.log4j.Logger;
-
-// my imports
-//import net.cloudhopper.commons.util.ByteBuffer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author joelauer
  */
 public class StringUtilTest {
-
-    private static final Logger logger = Logger.getLogger(StringUtilTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(StringUtilTest.class);
 
     private static final byte[] TEST_BYTES1 = {'H','E','L','L','O',' ','W','O','R','L','D'};
     private static final byte[] TEST_HELLO = {'H','E','L','L','O'};

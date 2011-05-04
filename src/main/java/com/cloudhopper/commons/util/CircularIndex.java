@@ -13,7 +13,8 @@
  */
 package com.cloudhopper.commons.util;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class for maintaining a circular index of a fixed capacity.  Useful
@@ -23,7 +24,7 @@ import org.apache.log4j.Logger;
  * @author joelauer
  */
 public class CircularIndex {
-    private static Logger logger = Logger.getLogger(CircularIndex.class);
+    private static Logger logger = LoggerFactory.getLogger(CircularIndex.class);
 
     // should we reset the sequence if size = 0 (automatically resetting)
     private boolean resetOnZero;

@@ -13,11 +13,12 @@
  */
 package com.cloudhopper.commons.util;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.junit.*;
 
 public class LoadBalancedListsTest {
-    private static final Logger logger = Logger.getLogger(LoadBalancedListsTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(LoadBalancedListsTest.class);
 
     @Test
     public void getNext() throws Exception {

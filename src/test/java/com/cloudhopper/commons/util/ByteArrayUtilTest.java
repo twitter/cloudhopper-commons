@@ -16,18 +16,15 @@ package com.cloudhopper.commons.util;
 
 // third party imports
 import org.junit.*;
-import org.apache.log4j.Logger;
-
-// my imports
-//import net.cloudhopper.commons.util.ByteBuffer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author joelauer
  */
 public class ByteArrayUtilTest {
-
-    private static final Logger logger = Logger.getLogger(ByteArrayUtilTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ByteArrayUtilTest.class);
 
     @Test
     public void toByte() throws Exception {

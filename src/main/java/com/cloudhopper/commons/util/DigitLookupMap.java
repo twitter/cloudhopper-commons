@@ -13,7 +13,8 @@
  */
 package com.cloudhopper.commons.util;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A Trie based implementation of the SimpleMap interface used to map String keys
@@ -38,7 +39,7 @@ import org.apache.log4j.Logger;
  * @author joelauer
  */
 public class DigitLookupMap<V> implements SimpleMap<V> {
-    private static final Logger logger = Logger.getLogger(DigitLookupMap.class);
+    private static final Logger logger = LoggerFactory.getLogger(DigitLookupMap.class);
 
     // number of key-value mappings (both specific and prefix)
     private int size;

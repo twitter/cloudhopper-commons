@@ -19,7 +19,8 @@ import java.lang.reflect.Method;
 
 // third party imports
 import org.junit.*;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // my imports
 import com.cloudhopper.commons.util.sample.Person;
@@ -30,8 +31,7 @@ import com.cloudhopper.commons.util.sample.InternetPerson;
  * @author joelauer
  */
 public class ClassUtilTest {
-
-    private static final Logger logger = Logger.getLogger(ClassUtilTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClassUtilTest.class);
 
 
     @Test

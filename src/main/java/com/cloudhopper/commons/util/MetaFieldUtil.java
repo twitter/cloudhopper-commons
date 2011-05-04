@@ -13,15 +13,11 @@
  */
 package com.cloudhopper.commons.util;
 
-// java imports
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
-
-// third party imports
-import org.apache.log4j.Logger;
-
-// my imports
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.cloudhopper.commons.util.annotation.MetaField;
 
 /**
@@ -34,8 +30,7 @@ import com.cloudhopper.commons.util.annotation.MetaField;
  * @author Joe Lauer
  */
 public class MetaFieldUtil {
-    
-    private static Logger logger = Logger.getLogger(MetaFieldUtil.class);
+    private static Logger logger = LoggerFactory.getLogger(MetaFieldUtil.class);
 
     /**
      * Creates a string for an object based on the MetaField annotations.

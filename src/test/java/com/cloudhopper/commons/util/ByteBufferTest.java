@@ -16,7 +16,8 @@ package com.cloudhopper.commons.util;
 
 // third party imports
 import org.junit.*;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // my imports
 //import net.cloudhopper.commons.util.ByteBuffer;
@@ -26,8 +27,7 @@ import org.apache.log4j.Logger;
  * @author joelauer
  */
 public class ByteBufferTest {
-
-    private static final Logger logger = Logger.getLogger(ByteBufferTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ByteBufferTest.class);
 
     private static final byte[] TEST_BYTES1 = {'H','E','L','L','O',' ','W','O','R','L','D'};
     private static final byte[] TEST_HELLO = {'H','E','L','L','O'};
@@ -67,7 +67,7 @@ public class ByteBufferTest {
             }
         } catch (BufferException e) {
             // should not happen
-            logger.fatal("Impossible case should not happen", e);
+            logger.error("Impossible case should not happen", e);
         }
         return buf;
     }
@@ -76,7 +76,7 @@ public class ByteBufferTest {
         try {
             return new String(bytes, "ISO-8859-1");
         } catch (Exception e) {
-            logger.fatal("Impossible case should not happen", e);
+            logger.error("Impossible case should not happen", e);
             throw new IllegalArgumentException("Impossible case should not happen");
         }
     }

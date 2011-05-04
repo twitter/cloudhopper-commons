@@ -18,14 +18,15 @@ package com.cloudhopper.commons.util.demo;
 import com.cloudhopper.commons.util.CompressionUtil;
 import com.cloudhopper.commons.util.FileUtil;
 import java.io.File;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author joelauer
  */
 public class CompressionUtilMain {
-    private static final Logger logger = Logger.getLogger(CompressionUtilMain.class);
+    private static final Logger logger = LoggerFactory.getLogger(CompressionUtilMain.class);
     
     public static void main(String[] args) throws Exception {
 

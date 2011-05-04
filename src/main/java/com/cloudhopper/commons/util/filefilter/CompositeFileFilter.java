@@ -14,12 +14,8 @@
 
 package com.cloudhopper.commons.util.filefilter;
 
-// java imports
 import java.io.File;
 import java.io.FileFilter;
-
-// third party imports
-import org.apache.log4j.Logger;
 
 /**
  * Filters a file based on a composition of several other filters.
@@ -27,7 +23,6 @@ import org.apache.log4j.Logger;
  * @author joelauer
  */
 public class CompositeFileFilter implements FileFilter {
-    private static final Logger logger = Logger.getLogger(CompositeFileFilter.class);
 
     private FileFilter[] filters;
 
@@ -35,6 +30,7 @@ public class CompositeFileFilter implements FileFilter {
         this.filters = filters;
     }
     
+    @Override
     public boolean accept(File file) {
         // loop thru every filter
         for (FileFilter filter : filters) {

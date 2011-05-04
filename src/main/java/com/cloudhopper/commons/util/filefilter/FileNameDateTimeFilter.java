@@ -14,26 +14,21 @@
 
 package com.cloudhopper.commons.util.filefilter;
 
-// java imports
 import java.io.File;
 import java.io.FileFilter;
-
-// third party imports
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-
-// my imports
 import com.cloudhopper.commons.util.DateTimeUtil;
 
 /**
- * Filters a file its embedded date within the filename come before or equal
- * to the cutoff date provided in this class's constructor.
+ * Filters a file based on an embedded date within the filename.
  * 
  * @author joelauer
  */
 public class FileNameDateTimeFilter implements FileFilter {
-    private static final Logger logger = Logger.getLogger(FileNameDateTimeFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileNameDateTimeFilter.class);
 
     private String pattern;
     private DateTime cutoffDate;
@@ -65,6 +60,7 @@ public class FileNameDateTimeFilter implements FileFilter {
         }
     }
 
+    @Override
     public boolean accept(File file) {
         // parse out the date contained within the filename
         DateTime d = null;

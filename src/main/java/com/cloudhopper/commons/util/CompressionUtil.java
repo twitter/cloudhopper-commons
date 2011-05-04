@@ -14,13 +14,9 @@
 
 package com.cloudhopper.commons.util;
 
-// my imports
 import SevenZip.LzmaAlone;
 import java.io.File;
 import java.io.FileInputStream;
-
-// third party imports
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +26,8 @@ import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility methods for compressing and uncompressing a file.
@@ -38,8 +35,7 @@ import org.apache.log4j.Logger;
  * @author joelauer
  */
 public class CompressionUtil {
-    
-    private static final Logger logger = Logger.getLogger(CompressionUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(CompressionUtil.class);
 
     /**
      * Enumeration of all supported compression algorithms by this utility.
@@ -352,6 +348,7 @@ public class CompressionUtil {
      */
     private static class GzipCompressor implements Compressor {
 
+        @Override
         public void compress(File srcFile, File destFile) throws IOException {
             FileInputStream in = null;
             GZIPOutputStream out = null;
@@ -389,16 +386,19 @@ public class CompressionUtil {
             }
         }
 
+        @Override
         public void compress(InputStream srcIn, OutputStream destOut) throws IOException {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
+        @Override
         public void uncompress(File srcFile, File destFile) throws IOException {
             InputStream in = new FileInputStream(srcFile);
             OutputStream out = new FileOutputStream(destFile);
             uncompress(in, out);
         }
 
+        @Override
         public void uncompress(InputStream srcIn, OutputStream destOut) throws IOException {
             GZIPInputStream in = null;
 
@@ -439,6 +439,7 @@ public class CompressionUtil {
      */
     private static class ZipCompressor implements Compressor {
 
+        @Override
         public void compress(File srcFile, File destFile) throws IOException {
             FileInputStream in = null;
             ZipOutputStream out = null;
@@ -482,10 +483,12 @@ public class CompressionUtil {
             }
         }
 
+        @Override
         public void compress(InputStream srcIn, OutputStream destOut) throws IOException {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
+        @Override
         public void uncompress(File srcFile, File destFile) throws IOException {
             InputStream in = new FileInputStream(srcFile);
             OutputStream out = new FileOutputStream(destFile);
@@ -493,6 +496,7 @@ public class CompressionUtil {
         }
 
         // NOTE: only reads the first zip file in the archive
+        @Override
         public void uncompress(InputStream srcIn, OutputStream destOut) throws IOException {
             ZipInputStream in = null;
 
@@ -544,6 +548,7 @@ public class CompressionUtil {
      */
     private static class LzmaCompressor implements Compressor {
 
+        @Override
         public void compress(File srcFile, File destFile) throws IOException {
             // FIXME: VERY SIMPLE IMPL -- LIKELY SHOULD TRY TO EMULATE THIS BETTER
             // by pulling code from its main
@@ -552,19 +557,22 @@ public class CompressionUtil {
                 // compress using LZMA
                 LzmaAlone.main(new String[]{"e", srcFile.getCanonicalPath(), destFile.getCanonicalPath()});
             } catch (Exception ex) {
-                logger.error(ex);
+                logger.error("", ex);
                 throw new IOException("LZMA compression failed: " + ex.getMessage());
             }
         }
 
+        @Override
         public void uncompress(File srcFile, File destFile) throws IOException {
             throw new UnsupportedOperationException("LZMA uncompress not supported yet.");
         }
 
+        @Override
         public void uncompress(InputStream srcIn, OutputStream destOut) throws IOException {
             throw new UnsupportedOperationException("LZMA uncompress not supported yet.");
         }
 
+        @Override
         public void compress(InputStream srcIn, OutputStream destOut) throws IOException {
             throw new UnsupportedOperationException("Not supported yet.");
         }

@@ -13,11 +13,12 @@
  */
 package com.cloudhopper.commons.util;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.junit.*;
 
 public class RoundRobinLoadBalancedListTest {
-    private static final Logger logger = Logger.getLogger(RoundRobinLoadBalancedListTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(RoundRobinLoadBalancedListTest.class);
 
     @Test
     public void getNextOneItem() throws Exception {

@@ -16,7 +16,8 @@ package com.cloudhopper.commons.util.demo;
 
 import com.cloudhopper.commons.util.windowing.Window;
 import com.cloudhopper.commons.util.windowing.WindowFuture;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Simple demo of window utility class.
@@ -24,7 +25,7 @@ import org.apache.log4j.Logger;
  * @author joelauer
  */
 public class WindowMain {
-    private static final Logger logger = Logger.getLogger(WindowMain.class);
+    private static final Logger logger = LoggerFactory.getLogger(WindowMain.class);
 
     static public void main(String[] args) throws Exception {
         Window<Integer,String,String> window = new Window<Integer,String,String>(1);

@@ -16,7 +16,8 @@ package com.cloudhopper.commons.util;
 
 // third party imports
 import org.junit.*;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // my imports
 //import net.cloudhopper.commons.util.ByteBuffer;
@@ -26,7 +27,7 @@ import org.apache.log4j.Logger;
  * @author joelauer
  */
 public class EncryptUtilTest {
-    private static final Logger logger = Logger.getLogger(EncryptUtilTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(EncryptUtilTest.class);
 
     // 8 chars is all it seems to take
     private static final String KEY = "$%!*?t12";

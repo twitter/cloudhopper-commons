@@ -16,15 +16,15 @@ package com.cloudhopper.commons.util.demo;
 
 import com.cloudhopper.commons.util.URL;
 import com.cloudhopper.commons.util.URLParser;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author joelauer
  */
 public class URLParserMain {
-
-    private static final Logger logger = Logger.getLogger(URLParserMain.class);
+    private static final Logger logger = LoggerFactory.getLogger(URLParserMain.class);
 
     public static void main(String[] args) throws Exception {
         URL url0 = URLParser.parse("http://www.google.com/");

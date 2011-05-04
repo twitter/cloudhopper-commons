@@ -19,7 +19,8 @@ import java.lang.reflect.InvocationTargetException;
 
 // third party imports
 import org.junit.*;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // my imports
 import com.cloudhopper.commons.util.sample.Person;
@@ -33,7 +34,7 @@ import com.cloudhopper.commons.util.sample.ServerConfigException;
  */
 public class BeanUtilTest {
 
-    private static final Logger logger = Logger.getLogger(BeanUtilTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(BeanUtilTest.class);
 
     @Test
     public void getBeanProperty() throws Exception {

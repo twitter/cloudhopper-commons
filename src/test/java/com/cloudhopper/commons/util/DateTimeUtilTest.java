@@ -16,7 +16,8 @@ package com.cloudhopper.commons.util;
 
 // third party imports
 import org.junit.*;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -28,7 +29,7 @@ import org.joda.time.DateTimeZone;
  * @author joelauer
  */
 public class DateTimeUtilTest {
-    private static final Logger logger = Logger.getLogger(DateTimeUtilTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(DateTimeUtilTest.class);
 
     @Test
     public void parseEmbedded() throws Exception {

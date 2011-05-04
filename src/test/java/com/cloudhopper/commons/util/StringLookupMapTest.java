@@ -16,16 +16,15 @@ package com.cloudhopper.commons.util;
 
 // third party imports
 import org.junit.*;
-import org.apache.log4j.Logger;
-
-// my imports
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author joelauer
  */
 public class StringLookupMapTest {
-    private static final Logger logger = Logger.getLogger(StringLookupMapTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(StringLookupMapTest.class);
 
     @Test
     public void usage() {

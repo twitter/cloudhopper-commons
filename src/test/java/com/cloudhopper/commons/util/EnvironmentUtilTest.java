@@ -14,7 +14,8 @@
 
 package com.cloudhopper.commons.util;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.junit.*;
 
 /**
@@ -23,7 +24,7 @@ import org.junit.*;
  * @author joelauer
  */
 public class EnvironmentUtilTest {
-    private static final Logger logger = Logger.getLogger(EnvironmentUtilTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(EnvironmentUtilTest.class);
 
     @Test
     public void splitHostFQDN() throws Exception {

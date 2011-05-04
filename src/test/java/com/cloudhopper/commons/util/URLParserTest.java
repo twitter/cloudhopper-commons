@@ -17,18 +17,15 @@ package com.cloudhopper.commons.util;
 // third party imports
 import java.net.MalformedURLException;
 import org.junit.*;
-import org.apache.log4j.Logger;
-
-// my imports
-//import net.cloudhopper.commons.util.ByteBuffer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Tests URLParser class.
  * @author joelauer
  */
 public class URLParserTest {
-
-    private static final Logger logger = Logger.getLogger(URLParserTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(URLParserTest.class);
 
     @Test(expected=MalformedURLException.class)
     public void parseNoProtocol() throws Exception {

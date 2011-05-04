@@ -13,13 +13,9 @@
  */
 package com.cloudhopper.commons.util;
 
-// java imports
 import java.util.concurrent.atomic.AtomicLong;
-
-// third party imports
-import org.apache.log4j.Logger;
-
-// my imports
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class implements an extremely efficient, thread-safe way to generate a
@@ -29,8 +25,7 @@ import org.apache.log4j.Logger;
  * @author Joe Lauer
  */
 public class Sequencer {
-    
-    private static Logger logger = Logger.getLogger(Sequencer.class);
+    private static Logger logger = LoggerFactory.getLogger(Sequencer.class);
 
     private AtomicLong sequenceNumber;
 
