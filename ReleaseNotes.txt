@@ -3,10 +3,10 @@ http://twitter.com/
 http://www.cloudhopper.com/
 Commons Util Library
 --------------------------------------------------------------------------------
-5.0 - 2011-05-03
+5.0 - 2011-05-05
   * Log4j dependency switched for SLF4J
   * WARN: Windowing package has been refactored. Source changes were significant
-    enough (and unavoidable) to create a major backwards incompatability with
+    enough (and unavoidable) to create a major backwards incompatibility with
     <= version 4.1.
   * Added UnwrappedWeakReference utility class for using the referenced object's
     equals() and hashCode() values rather than WeakReference's impl which uses

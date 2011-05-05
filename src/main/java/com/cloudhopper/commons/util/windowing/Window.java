@@ -218,11 +218,11 @@ public class Window<K,R,P> {
     }
     
     /**
-     * Shutdown this window by freeing all resources associated with it.  All
+     * Destroy this window by freeing all resources associated with it.  All
      * pending offers are cancelled, followed by all outstanding futures, 
      * then all listeners are removed, and monitoring is cancelled.
      */
-    public synchronized void freeExternalResources() {
+    public synchronized void destroy() {
         try {
             this.abortPendingOffers();
         } catch (Exception e) { }

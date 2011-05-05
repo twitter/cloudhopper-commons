@@ -84,8 +84,8 @@ public class Window2Main {
         System.out.println("Press any key to get rid of our reference to Window");
         System.in.read();
         
-        window.freeExternalResources();
-        window2.freeExternalResources();
+        window.destroy();
+        window2.destroy();
         window = null;
         window2 = null;
         System.gc();
