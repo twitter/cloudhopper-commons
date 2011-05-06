@@ -23,10 +23,11 @@ Commons Util Library
   * Large amount of cleanup of javadocs and comments.
   * Added NamingThreadFactory utility class for standardizing the two most common
     customizations for Executors: thread names and whether they are daemons.
+  * Added CountingRejectedExecutionHandler utility class for counting the number
+    of times an Executors rejectedExecution() method has been called.
 
 4.1 - 2011-04-28
   * Upgrade joda-time dependency from 1.6 to 1.6.2
-  * Renamed RequestCancelledException to RequestCanceledException
   * Added support for setting a "cause" when a request is canceled in a Window.
   * Fixed some missing annotations for @Overrides
 
