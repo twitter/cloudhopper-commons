@@ -3,7 +3,7 @@ http://twitter.com/
 http://www.cloudhopper.com/
 Commons Util Library
 --------------------------------------------------------------------------------
-5.0 - 2011-05-05
+5.0 - 2011-05-06
   * Log4j dependency switched for SLF4J
   * WARN: Windowing package has been refactored. Source changes were significant
     enough (and unavoidable) to create a major backwards incompatibility with
@@ -21,6 +21,8 @@ Commons Util Library
   * Added support for setting an expiration time as well as new offer, accept,
     and done timestamps on all Window requests.
   * Large amount of cleanup of javadocs and comments.
+  * Added NamingThreadFactory utility class for standardizing the two most common
+    customizations for Executors: thread names and whether they are daemons.
 
 4.1 - 2011-04-28
   * Upgrade joda-time dependency from 1.6 to 1.6.2
