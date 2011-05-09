@@ -1,9 +1,9 @@
 Twitter, Inc. (formerly created by Cloudhopper, Inc.)
 http://twitter.com/
 http://www.cloudhopper.com/
-Commons Util Library
+Commons Utility Library
 --------------------------------------------------------------------------------
-5.0 - 2011-05-06
+5.0 - 2011-05-0wq9
   * Log4j dependency switched for SLF4J
   * WARN: Windowing package has been refactored. Source changes were significant
     enough (and unavoidable) to create a major backwards incompatibility with
