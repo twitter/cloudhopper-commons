@@ -44,6 +44,7 @@ public class WindowTest {
         Assert.assertEquals(1, window.getMaxSize());
         Assert.assertEquals(1, window.getSize());
         Assert.assertEquals(0, window.getFreeSize());
+        Assert.assertEquals(1, future0.getWindowSize());
 
         window.cancel(0);
 
@@ -56,6 +57,7 @@ public class WindowTest {
         Assert.assertEquals(1, window.getMaxSize());
         Assert.assertEquals(1, window.getSize());
         Assert.assertEquals(0, window.getFreeSize());
+        Assert.assertEquals(1, future1.getWindowSize());
 
         window.complete(1, "Response1");
 
@@ -72,6 +74,7 @@ public class WindowTest {
         Assert.assertFalse(future2.isCancelled());
         Assert.assertFalse(future2.isSuccess());
         Assert.assertNull(future2.getCause());
+        Assert.assertEquals(1, future2.getWindowSize());
         
         // trigger this from the future now
         future2.fail(new Exception("Test Cause"));
@@ -93,6 +96,7 @@ public class WindowTest {
         Assert.assertFalse(future3.isCancelled());
         Assert.assertFalse(future3.isSuccess());
         Assert.assertNull(future3.getCause());
+        Assert.assertEquals(1, future3.getWindowSize());
         
         // trigger this from the future now
         long now = System.currentTimeMillis();
@@ -117,6 +121,7 @@ public class WindowTest {
         Assert.assertFalse(future4.isCancelled());
         Assert.assertFalse(future4.isSuccess());
         Assert.assertNull(future4.getCause());
+        Assert.assertEquals(1, future4.getWindowSize());
         
         // trigger this from the future now
         future4.cancel(now);

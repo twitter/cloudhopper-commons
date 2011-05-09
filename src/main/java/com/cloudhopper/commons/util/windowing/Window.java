@@ -396,7 +396,7 @@ public class Window<K,R,P> {
             long acceptTimestamp = System.currentTimeMillis();
             long expireTimestamp = (expireTimeoutMillis > 0 ? (acceptTimestamp + expireTimeoutMillis) : -1);
             int callerStateHint = (callerWaitingHint ? WindowFuture.CALLER_WAITING : WindowFuture.CALLER_NOT_WAITING);
-            DefaultWindowFuture<K,R,P> future = new DefaultWindowFuture<K,R,P>(this, lock, completedCondition, key, request, callerStateHint, offerTimeoutMillis, offerTimestamp, acceptTimestamp, expireTimestamp);
+            DefaultWindowFuture<K,R,P> future = new DefaultWindowFuture<K,R,P>(this, lock, completedCondition, key, request, callerStateHint, offerTimeoutMillis, (futures.size() + 1), offerTimestamp, acceptTimestamp, expireTimestamp);
             this.futures.put(key, future);
             return future;
         } finally {

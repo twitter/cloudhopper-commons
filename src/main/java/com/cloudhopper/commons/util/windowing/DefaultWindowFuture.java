@@ -40,6 +40,7 @@ public class DefaultWindowFuture<K,R,P> implements WindowFuture<K,R,P> {
     private final AtomicInteger callerStateHint;
     private final AtomicBoolean done;
     private final long originalOfferTimeoutMillis;
+    private final int windowSize;
     private final long offerTimestamp;
     private final long acceptTimestamp;
     private final long expireTimestamp;
@@ -54,12 +55,16 @@ public class DefaultWindowFuture<K,R,P> implements WindowFuture<K,R,P> {
      * @param key The key of the future
      * @param request The request of the future
      * @param callerStateHint The initial state of the caller hint
+     * @param originalOfferTimeoutMillis
+     * @param windowSize Size of the window after this request was added. Useful
+     *      for calculating an estimated response time for this request rather
+     *      than all requests ahead of it in the window.
      * @param offerTimestamp The timestamp when the request was offered
      * @param acceptTimestamp The timestamp when the request was accepted
      * @param expireTimestamp The timestamp when the request will expire or -1
      *      if no expiration is set
      */
-    protected DefaultWindowFuture(Window window, ReentrantLock windowLock, Condition completedCondition, K key, R request, int callerStateHint, long originalOfferTimeoutMillis, long offerTimestamp, long acceptTimestamp, long expireTimestamp) {
+    protected DefaultWindowFuture(Window window, ReentrantLock windowLock, Condition completedCondition, K key, R request, int callerStateHint, long originalOfferTimeoutMillis, int windowSize, long offerTimestamp, long acceptTimestamp, long expireTimestamp) {
         this.window = new WeakReference<Window>(window);
         this.windowLock = windowLock;
         this.completedCondition = completedCondition;
@@ -70,6 +75,7 @@ public class DefaultWindowFuture<K,R,P> implements WindowFuture<K,R,P> {
         this.callerStateHint = new AtomicInteger(callerStateHint);
         this.done = new AtomicBoolean(false);
         this.originalOfferTimeoutMillis = originalOfferTimeoutMillis;
+        this.windowSize = windowSize;
         this.offerTimestamp = offerTimestamp;
         this.acceptTimestamp = acceptTimestamp;
         this.expireTimestamp = expireTimestamp;
@@ -108,6 +114,11 @@ public class DefaultWindowFuture<K,R,P> implements WindowFuture<K,R,P> {
     @Override
     public boolean isCallerWaiting() {
         return (this.callerStateHint.get() == CALLER_WAITING);
+    }
+    
+    @Override
+    public int getWindowSize() {
+        return this.windowSize;
     }
 
     @Override

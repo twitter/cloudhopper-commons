@@ -118,6 +118,14 @@ public interface WindowFuture<K,R,P> {
     public boolean isCallerWaiting();
     
     /**
+     * Returns the size of the window (number of requests in it) after this
+     * request was added.  Useful for calculating an estimated response time
+     * just for this request.
+     * @return The size of the window after this request was added.
+     */
+    public int getWindowSize();
+    
+    /**
      * Returns true if an expire timestamp value exists (&gt; 0).
      * @return True if an expire timestamp exists
      */
