@@ -3,7 +3,7 @@ http://twitter.com/
 http://www.cloudhopper.com/
 Commons Utility Library
 --------------------------------------------------------------------------------
-5.0 - 2011-05-0wq9
+5.0 - 2011-05-09
   * Log4j dependency switched for SLF4J
   * WARN: Windowing package has been refactored. Source changes were significant
     enough (and unavoidable) to create a major backwards incompatibility with
