@@ -33,14 +33,18 @@ public class MobileTextUtil {
         { '\u2018', '\'' },
         { '\u2019', '\'' },
         { '\u201A', '\'' },
+        { '\u201B', '\'' }, // U+201B ‛​ single high-reversed-9 quotation mark (HTML: &#8219; ), also called single reversed comma, quotation mark 
         { '\u201C', '"' },
         { '\u201D', '"' },
         { '\u201E', '"' },
+        { '\u201F', '"' }, // U+201F ‟​ double high-reversed-9 quotation mark (HTML: &#8223; ), also called double reversed comma, quotation mark
         { '\u2020', '+' },
         { '\u2022', '.' },
-        { '\u2026', '.' }, // actually ...
+        { '\u2026', '.' }, // actually "...", but just replacing with "."
         { '\u2039', '<' },
-        { '\u203A', '>' }
+        { '\u203A', '>' },
+        { '\u0131', '1' }, // U+0131 is a lower case letter dotless i (ı)
+        { '\u0130', 'i' }, // U+0130 (İ) is capital i with dot
     };
 
 

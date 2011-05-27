@@ -2,6 +2,13 @@ Cloudhopper, Inc.
 http://www.cloudhopper.com/
 Commons Charset Library
 --------------------------------------------------------------------------------
+2.1 - 2011-05-27
+  * Dotless i (used mainly in Turkic language) is now replaced with the char "1"
+    (digit one) in MobileTextUtil. Please see wiki page for common SMS usage:
+      http://en.wikipedia.org/wiki/Dotted_and_dotless_I
+  * U+201B and U+201F unicode chars are now replaced with ascii equivalents of
+    ' and "" respectively.
+
 2.0 - 2011-03-14
   * Migrated build system from Ant to Maven
   * Deleted all legacy Ant build files (build.xml, Dependency.txt)
