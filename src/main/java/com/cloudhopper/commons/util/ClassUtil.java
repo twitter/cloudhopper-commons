@@ -16,17 +16,14 @@ package com.cloudhopper.commons.util;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayDeque;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class implements utilities for working with classes.
  *
  * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
+ * @author john woolf (twitter: @jwoolf330 or <a href="http://twitter.com/jwoolf330" target=window>http://twitter.com/jwoolf330</a>)
  */
 public class ClassUtil {
-    private static Logger logger = LoggerFactory.getLogger(ClassUtil.class);
-
 
     /**
      * Finds an instance of an Enum constant on a class. Useful for safely
@@ -34,7 +31,7 @@ public class ClassUtil {
      * like the Enum.valueOf() method causes. Searches for enum constant
      * where case is sensitive.
      */
-    public static Object findEnumConstant(Class type, String constantName) {
+    public static Object findEnumConstant(Class<?> type, String constantName) {
         return findEnumConstant(type, constantName, true);
     }
 
@@ -45,7 +42,7 @@ public class ClassUtil {
      * like the Enum.valueOf() method causes. Also, this method optionally allows
      * the caller to choose whether case matters during the search.
      */
-    public static Object findEnumConstant(Class type, String constantName, boolean caseSensitive) {
+    public static Object findEnumConstant(Class<?> type, String constantName, boolean caseSensitive) {
         if (!type.isEnum()) {
             return null;
         }
@@ -67,10 +64,10 @@ public class ClassUtil {
      * Object type in its list. If this class represents the Object type, this
      * method will return a zero-size array.
      */
-    public static Class[] getClassHierarchy(Class type) {
-        ArrayDeque<Class> classes = new ArrayDeque<Class>();
+    public static Class<?>[] getClassHierarchy(Class<?> type) {
+        ArrayDeque<Class<?>> classes = new ArrayDeque<Class<?>>();
         // class to start our search from, we'll loop thru the entire class hierarchy
-        Class classType = type;
+        Class<?> classType = type;
         // keep searching up until we reach an Object class type
         while (classType != null && !classType.equals(Object.class)) {
             // keep adding onto front
@@ -95,7 +92,7 @@ public class ClassUtil {
      * @param caseSensitive If the search is case sensitive or not
      * @return True if the "bean" methods are correct, otherwise false.
      */
-    public static boolean hasBeanMethods(Class type, String propertyName, Class propertyType, boolean caseSensitive) {
+    public static boolean hasBeanMethods(Class<?> type, String propertyName, Class<?> propertyType, boolean caseSensitive) {
         try {
             // if this succeeds without an exception, then the properties exist!
             Method[] methods = getBeanMethods(type, propertyName, propertyType, caseSensitive);
@@ -123,7 +120,7 @@ public class ClassUtil {
      * @throws java.lang.IllegalAccessException If the method was found, but is not public.
      * @throws java.lang.NoSuchMethodException If the method was not found
      */
-    public static Method[] getBeanMethods(Class type, String propertyName, Class propertyType, boolean caseSensitive)
+    public static Method[] getBeanMethods(Class<?> type, String propertyName, Class<?> propertyType, boolean caseSensitive)
         throws IllegalAccessException, NoSuchMethodException {
         Method methods[] = new Method[2];
         // search for the "get"
@@ -149,14 +146,14 @@ public class ClassUtil {
      * @throws java.lang.IllegalAccessException If the method was found, but is not public.
      * @throws java.lang.NoSuchMethodException If the method was not found
      */
-    public static Method getMethod(Class type, String name, Class returnType, Class paramType, boolean caseSensitive)
+    public static Method getMethod(Class type, String name, Class<?> returnType, Class<?> paramType, boolean caseSensitive)
         throws IllegalAccessException, NoSuchMethodException {
         
         // flag to help modify the exception to make it a little easier for debugging
         boolean methodNameFound = false;
 
         // start our search
-        Class classType = type;
+        Class<?> classType = type;
 
         while (classType != null && !classType.equals(Object.class)) {
 
@@ -186,7 +183,7 @@ public class ClassUtil {
                     }
 
                     // return type was okay, check the parameters
-                    Class[] paramTypes = m.getParameterTypes();
+                    Class<?>[] paramTypes = m.getParameterTypes();
 
                     // should we check the parameter type?
                     if (paramType != null) {
