@@ -95,6 +95,7 @@ public class ClassUtil {
     public static boolean hasBeanMethods(Class<?> type, String propertyName, Class<?> propertyType, boolean caseSensitive) {
         try {
             // if this succeeds without an exception, then the properties exist!
+            @SuppressWarnings("unused")
             Method[] methods = getBeanMethods(type, propertyName, propertyType, caseSensitive);
             return true;
         } catch (Exception e) {
@@ -146,7 +147,7 @@ public class ClassUtil {
      * @throws java.lang.IllegalAccessException If the method was found, but is not public.
      * @throws java.lang.NoSuchMethodException If the method was not found
      */
-    public static Method getMethod(Class type, String name, Class<?> returnType, Class<?> paramType, boolean caseSensitive)
+    public static Method getMethod(Class<?> type, String name, Class<?> returnType, Class<?> paramType, boolean caseSensitive)
         throws IllegalAccessException, NoSuchMethodException {
         
         // flag to help modify the exception to make it a little easier for debugging
