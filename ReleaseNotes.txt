@@ -1,6 +1,10 @@
-
-Cloudhopper Commons IO Library
+Cloudhopper
+Commons IO Library
 --------------------------------------------------------------------------------
+2.0 - 2011-06-09
+  * New build process (from ant to maven)
+  * Moved src/demo/java into src/test/java directory (for maven)
+  * Many new classes to primarily support ch-flamingo.
 
 1.0 - 2009-04-01
-   * Initial release extracted from ch-commons-util
+  * Initial release extracted from ch-commons-util

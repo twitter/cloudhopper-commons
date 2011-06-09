@@ -6,14 +6,10 @@ import static org.jboss.netty.handler.codec.http.HttpMethod.*;
 import static org.jboss.netty.handler.codec.http.HttpResponseStatus.*;
 import static org.jboss.netty.handler.codec.http.HttpVersion.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.channels.FileChannel;
 
-import org.apache.log4j.Logger;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFuture;
@@ -30,24 +26,22 @@ import org.jboss.netty.handler.codec.http.DefaultHttpResponse;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpResponse;
 import org.jboss.netty.handler.codec.http.HttpResponseStatus;
-import org.jboss.netty.handler.ssl.SslHandler;
-import org.jboss.netty.handler.stream.ChunkedFile;
 import org.jboss.netty.util.CharsetUtil;
 
 import com.cloudhopper.commons.io.FileStore;
 import com.cloudhopper.commons.io.Id;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  */
-public class HttpStaticFileServerHandler
-    extends SimpleChannelUpstreamHandler
-{
-    private static final Logger logger = Logger.getLogger(HttpStaticFileServerHandler.class);
+public class HttpStaticFileServerHandler extends SimpleChannelUpstreamHandler {
+    private static final Logger logger = LoggerFactory.getLogger(HttpStaticFileServerHandler.class);
 
     public HttpStaticFileServerHandler(FileStore store) {
-	this.store = store;
+        this.store = store;
     }
-
+    
     private FileStore store;
 
     @Override
@@ -58,15 +52,15 @@ public class HttpStaticFileServerHandler
             return;
         }
 
-	String uid = sanitizeUri(request.getUri());
-	System.out.println("Got id: "+uid);
+        String uid = sanitizeUri(request.getUri());
+        System.out.println("Got id: " + uid);
         final Id id = new Id(null, uid);
         if (id == null) {
             sendError(ctx, FORBIDDEN);
             return;
         }
 
-	FileChannel fileChannel = store.getFileChannel(id);
+        FileChannel fileChannel = store.getFileChannel(id);
         long fileLength = fileChannel.size();
 
         HttpResponse response = new DefaultHttpResponse(HTTP_1_1, OK);
@@ -80,21 +74,22 @@ public class HttpStaticFileServerHandler
         // Write the content.
         ChannelFuture writeFuture;
 
-	// No encryption - use zero-copy.
-	final FileRegion region =
-	    new DefaultFileRegion(fileChannel, 0, fileLength);
-	writeFuture = ch.write(region);
-	writeFuture.addListener(new ChannelFutureProgressListener() {
-                @Override
-		    public void operationComplete(ChannelFuture future) {
-                    region.releaseExternalResources();
-                }
-		
-                @Override
-		    public void operationProgressed(ChannelFuture future, long amount, long current, long total) {
-                    System.out.printf("%s: %d / %d (+%d)%n", id, current, total, amount);
-                }
-            });
+        // No encryption - use zero-copy.
+        final FileRegion region =
+                new DefaultFileRegion(fileChannel, 0, fileLength);
+        writeFuture = ch.write(region);
+        writeFuture.addListener(new ChannelFutureProgressListener() {
+
+            @Override
+            public void operationComplete(ChannelFuture future) {
+                region.releaseExternalResources();
+            }
+
+            @Override
+            public void operationProgressed(ChannelFuture future, long amount, long current, long total) {
+                System.out.printf("%s: %d / %d (+%d)%n", id, current, total, amount);
+            }
+        });
 
         // Decide whether to close the connection or not.
         if (!isKeepAlive(request)) {
@@ -113,7 +108,8 @@ public class HttpStaticFileServerHandler
             return;
         }
 
-        cause.printStackTrace();
+        logger.error("", cause);
+        
         if (ch.isConnected()) {
             sendError(ctx, INTERNAL_SERVER_ERROR);
         }
@@ -130,8 +126,8 @@ public class HttpStaticFileServerHandler
                 throw new Error();
             }
         }
-	uri = uri.substring(uri.lastIndexOf('/')+1);
-	return uri;
+        uri = uri.substring(uri.lastIndexOf('/') + 1);
+        return uri;
     }
 
     private void sendError(ChannelHandlerContext ctx, HttpResponseStatus status) {

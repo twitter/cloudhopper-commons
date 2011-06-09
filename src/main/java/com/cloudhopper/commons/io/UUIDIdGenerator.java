@@ -21,6 +21,7 @@ public class UUIDIdGenerator
 
     private String hostname;
 
+    @Override
     public Id newId() { return new Id(hostname, UUID.randomUUID().toString()); }
 
 }

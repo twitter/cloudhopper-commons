@@ -36,11 +36,13 @@ public class SimpleNIOFileStore
     private IdGenerator idGen;
     private File baseDir;
 
+    @Override
     public Id write(InputStream is) throws FileStoreException
     {
 	return write(Channels.newChannel(is));
     }
 
+    @Override
     public Id write(ReadableByteChannel channel) throws FileStoreException
     {
 	Id id = idGen.newId();
@@ -56,16 +58,19 @@ public class SimpleNIOFileStore
 	return id;
     }
 
+    @Override
     public InputStream readStream(Id id) throws FileStoreException
     {
 	return Channels.newInputStream(getFileChannel(id));
     }
 
+    @Override
     public ReadableByteChannel readChannel(Id id) throws FileStoreException
     {
 	return getFileChannel(id);
     }
 
+    @Override
     public void transferToOutputStream(OutputStream os, Id id) throws FileStoreException
     {
 	try {
@@ -76,6 +81,7 @@ public class SimpleNIOFileStore
 	}
     }
 
+    @Override
     public void transferToChannel(WritableByteChannel channel, Id id) throws FileStoreException
     {
 	try {
@@ -86,6 +92,7 @@ public class SimpleNIOFileStore
 	}
     }
 
+    @Override
     public FileChannel getFileChannel(Id id) throws FileStoreException
     {
 	try {
@@ -98,6 +105,7 @@ public class SimpleNIOFileStore
 	}
     }
 
+    @Override
     public void remove(Id id) throws FileStoreException
     {
 	try {
