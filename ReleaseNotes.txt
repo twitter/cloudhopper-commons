@@ -5,6 +5,7 @@ Commons IO Library
   * New build process (from ant to maven)
   * Moved src/demo/java into src/test/java directory (for maven)
   * Many new classes to primarily support ch-flamingo.
+  * Removed log4j dependendency - switched to SLF4J
 
 1.0 - 2009-04-01
   * Initial release extracted from ch-commons-util
