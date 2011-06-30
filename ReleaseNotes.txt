@@ -1,6 +1,10 @@
 Cloudhopper
 Commons IO Library
 --------------------------------------------------------------------------------
+2.1 - ?
+  * Removed host from FileStore Id. Added size to Id metadata.
+  * Removed file server and Netty dependency.
+
 2.0 - 2011-06-14
   * New build process (from ant to maven)
   * Moved src/demo/java into src/test/java directory (for maven)

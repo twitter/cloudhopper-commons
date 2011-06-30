@@ -10,18 +10,18 @@ import javax.activation.MimeTypeParseException;
 public class Id
 {
 
-    public Id(String host, String name)
+    public Id(String name)
     {
-	this.host = host;
 	this.name = name;
     }
 
-    private String host;
+    private long size;
     private String name;
     private String originalName;
     private MimeType mimeType;
 
-    public String getHost() { return this.host; }
+    public long getSize() { return this.size; }
+    public void setSize(long size) { this.size = size; }
     public String getName() { return this.name; }
     public String getOriginalName() { return this.originalName; }
     public void setOriginalName(String s) { this.originalName = s; }
@@ -33,12 +33,11 @@ public class Id
     public String toString()
     {
 	StringBuilder o = new StringBuilder();
-	o.append(host);
-	o.append(":");
 	o.append(name);
 	o.append(" (");
 	o.append(originalName);
 	if (mimeType != null) o.append(":").append(mimeType.getBaseType());
+	if (size > 0) o.append(":[").append(mimeType.getBaseType()).append(" bytes]");
 	o.append(")");
 	return o.toString();
     }

@@ -22,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Simple demo that creates a FileStore, stores a file, and then fetches the file with HTTP.
+ * Simple demo that creates a FileStore, stores a file.
  * @author garth
  */
 public class FileServerMain {
@@ -30,29 +30,6 @@ public class FileServerMain {
 
     public static void main(String[] argv) {
         loadFilesFromDir(argv[0], Integer.parseInt(argv[1]));
-
-// 	BasicConfigurator.configure();
-// 	Logger log = Logger.getLogger(FileServerMain.class);
-
-// 	try {
-// 	    IdGenerator idGen = new UUIDIdGenerator();
-// 	    FileStore store = new SimpleNIOFileStore(idGen, "/tmp/fileStore/");
-
-// 	    HttpStaticFileServer server = new HttpStaticFileServer(store, 8080);
-// 	    server.start();
-
-// 	    File f = new File("test.png");
-// 	    RandomAccessFile randomAccessFile = new RandomAccessFile(f, "r");
-// 	    FileChannel fileChannel = randomAccessFile.getChannel();
-
-// 	    Id fileId = store.write(fileChannel);
-
-// 	    saveFileFromUrl(new URL("http://"+fileId.getHost()+":8080/"+fileId.getName()), "test2.png");
-
-// 	    //server.stop();
-// 	} catch (Exception e) {
-// 	    log.error(e);
-// 	}
     }
 
     public static void loadFilesFromDir(String dir, int threads) {
