@@ -2,6 +2,11 @@ Cloudhopper, Inc.
 http://www.cloudhopper.com/
 Commons Charset Library
 --------------------------------------------------------------------------------
+2.2.0 - 2011-07-26
+  * Upgrade parent POM dependency from 1.1 to 1.5
+  * Switched to new version format.
+  * Added Version class to compile build info into jar
+
 2.1 - 2011-05-27
   * Dotless i (used mainly in Turkic language) is now replaced with the char "1"
     (digit one) in MobileTextUtil. Please see wiki page for common SMS usage:
