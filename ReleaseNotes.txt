@@ -4,7 +4,7 @@ http://www.cloudhopper.com/
 Commons Utility Library
 --------------------------------------------------------------------------------
 5.1.0 - 2011-07-26
-  * Upgrade parent POM dependency from 1.1 to 1.4
+  * Upgrade parent POM dependency from 1.1 to 1.5
   * Switched to new version format.
   * Added HexString utility class and fixed a few compiler warnings.
   * Added Version class to compile build info into jar
