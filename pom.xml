@@ -7,13 +7,13 @@
   <groupId>cloudhopper</groupId>
   <artifactId>ch-commons-util</artifactId>
   <packaging>jar</packaging>
-  <version>5.0</version>
+  <version>5.1.0</version>
   <name>ch-commons-util</name>
 
   <parent>
     <groupId>cloudhopper</groupId>
     <artifactId>ch-maven-parent-public</artifactId>
-    <version>1.1</version>
+    <version>1.4</version>
   </parent>
 
   <repositories>
@@ -69,6 +69,7 @@
   </dependencies>
 
   <properties>
+    <main.java.package>com.cloudhopper.commons.util</main.java.package>
     <ch-sevenzip.version>4.65</ch-sevenzip.version>
   </properties>
 

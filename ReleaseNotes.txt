@@ -3,6 +3,12 @@ http://twitter.com/
 http://www.cloudhopper.com/
 Commons Utility Library
 --------------------------------------------------------------------------------
+5.1.0 - 2011-07-26
+  * Upgrade parent POM dependency from 1.1 to 1.4
+  * Switched to new version format.
+  * Added HexString utility class and fixed a few compiler warnings.
+  * Added Version class to compile build info into jar
+
 5.0 - 2011-05-09
   * Log4j dependency switched for SLF4J
   * WARN: Windowing package has been refactored. Source changes were significant
