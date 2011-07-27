@@ -2,6 +2,11 @@ Cloudhopper, Inc.
 http://www.cloudhopper.com/
 Commons GSM Library
 --------------------------------------------------------------------------------
+2.1.0 - 2011-07-26
+  * Upgrade parent POM dependency from 1.0 to 1.5
+  * Switched to new version format.
+  * Added Version class to compile build info into jar
+
 2.0 - 2010-03-14
   * Migrated build system from Ant to Maven
   * Deleted all legacy Ant build files (build.xml, Dependency.txt)

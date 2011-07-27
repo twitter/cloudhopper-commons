@@ -7,13 +7,13 @@
   <groupId>cloudhopper</groupId>
   <artifactId>ch-commons-gsm</artifactId>
   <packaging>jar</packaging>
-  <version>2.0</version>
+  <version>2.1.0</version>
   <name>ch-commons-gsm</name>
 
   <parent>
     <groupId>cloudhopper</groupId>
     <artifactId>ch-maven-parent-public</artifactId>
-    <version>1.0</version>
+    <version>1.5</version>
   </parent>
 
   <repositories>
@@ -48,4 +48,9 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  
+  <properties>
+    <main.java.package>com.cloudhopper.commons.gsm</main.java.package>
+  </properties>
+  
 </project>
