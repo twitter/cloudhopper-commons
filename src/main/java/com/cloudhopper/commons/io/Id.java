@@ -19,6 +19,7 @@ public class Id
     private String name;
     private String originalName;
     private MimeType mimeType;
+    private String metaData;
 
     public long getSize() { return this.size; }
     public void setSize(long size) { this.size = size; }
@@ -28,6 +29,8 @@ public class Id
     public MimeType getMimeType() { return this.mimeType; }
     public void setMimeType(MimeType m) { this.mimeType = m; }
     public void setMimeType(String s) throws MimeTypeParseException { this.mimeType = new MimeType(s); }
+    public String getMetaData() { return this.metaData; }
+    public void setMetaData(String metaData) { this.metaData = metaData; }
 
     @Override
     public String toString()

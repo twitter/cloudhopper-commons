@@ -194,9 +194,9 @@ public class FileMonitor
     FileMonitor monitor = new FileMonitor (1000);
 
     // Add some files to listen for
-    monitor.addFile (new File ("/home/jacob/test1.txt"));
-    monitor.addFile (new File ("/home/jacob/test2.txt"));
-    monitor.addFile (new File ("/home/jacob/"));    
+    monitor.addFile (new File ("/Users/garth/cloudhopper/dev/utility/java/ch-commons-io/trunk/tmp/"));
+    //monitor.addFile (new File ("/home/jacob/test2.txt"));
+    //monitor.addFile (new File ("/home/jacob/"));    
 
     // Add a dummy listener
     monitor.addListener (monitor.new TestListener());

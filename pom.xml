@@ -72,7 +72,7 @@
 
   <properties>
     <ch-commons-util.version>[1.6,)</ch-commons-util.version>
-    <commons-io.version>[2.0.1,)</commons-io.version>
+    <commons-io.version>2.0.1</commons-io.version>
   </properties>
 
 </project>
