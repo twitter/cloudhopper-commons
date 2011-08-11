@@ -1,6 +1,9 @@
 Cloudhopper
 Commons IO Library
 --------------------------------------------------------------------------------
+2.2 - 2011-08-11
+  * Added metaData field to Id.
+
 2.1 - 2011-07-06
   * Removed host from FileStore Id. Added size to Id metadata.
   * Removed file server and Netty dependency.
