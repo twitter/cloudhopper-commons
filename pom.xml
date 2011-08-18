@@ -7,7 +7,7 @@
   <groupId>cloudhopper</groupId>
   <artifactId>ch-commons-util</artifactId>
   <packaging>jar</packaging>
-  <version>5.1.0</version>
+  <version>5.1.1</version>
   <name>ch-commons-util</name>
 
   <parent>
@@ -33,7 +33,7 @@
       <version>${joda-time.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
+      <groupId>slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>${slf4j.version}</version>
     </dependency>
@@ -55,13 +55,13 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>ch.qos.logback</groupId>
+      <groupId>logback</groupId>
       <artifactId>logback-core</artifactId>
       <version>${logback.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>ch.qos.logback</groupId>
+      <groupId>logback</groupId>
       <artifactId>logback-classic</artifactId>
       <version>${logback.version}</version>
       <scope>test</scope>
