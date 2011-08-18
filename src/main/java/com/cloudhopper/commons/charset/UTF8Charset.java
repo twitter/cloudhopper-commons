@@ -14,16 +14,13 @@
 
 package com.cloudhopper.commons.charset;
 
-import org.apache.log4j.Logger;
-
 /**
- * 
+ * Charset for UTF-8.
  *
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class UTF8Charset extends JavaCharset {
-    private static final Logger logger = Logger.getLogger(UTF8Charset.class);
-
+    
     public UTF8Charset() {
         super("UTF8");
     }

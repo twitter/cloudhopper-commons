@@ -14,20 +14,18 @@
 
 package com.cloudhopper.commons.charset;
 
-import org.apache.log4j.Logger;
-
 /**
- * 
+ * Charset for UCS2 (ISO-10646-UCS-2 in Java).
  *
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class UCS2Charset extends JavaCharset {
-    private static final Logger logger = Logger.getLogger(UCS2Charset.class);
-
+    
     public UCS2Charset() {
         super("ISO-10646-UCS-2");
     }
 
+    @Override
     public int estimateEncodeByteLength(CharSequence str0) {
         if (str0 == null) {
             return 0;
@@ -36,6 +34,7 @@ public class UCS2Charset extends JavaCharset {
         return str0.length() * 2;
     }
 
+    @Override
     public int estimateDecodeCharLength(byte[] bytes) {
         if (bytes == null) {
             return 0;

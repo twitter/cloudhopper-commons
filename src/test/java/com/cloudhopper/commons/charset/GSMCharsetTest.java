@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
 
 /**
  *
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class GSMCharsetTest {
     private static final Logger logger = Logger.getLogger(GSMCharsetTest.class);
@@ -38,5 +38,10 @@ public class GSMCharsetTest {
         Assert.assertEquals(true, GSMCharset.canRepresent("\u20ac"));
         // arabic char is not valid GSM char
         Assert.assertEquals(false, GSMCharset.canRepresent("\u0623"));
+        // bug found with A-z if statement in previous charset
+        // 1 char in-between the upper-case and lower-case snuck in the
+        // simple range check -- the '`' char is NOT in the GSM charset
+        Assert.assertEquals(false, GSMCharset.canRepresent("`"));
+        Assert.assertEquals(true, GSMCharset.canRepresent("[\\]^_"));
     }
 }

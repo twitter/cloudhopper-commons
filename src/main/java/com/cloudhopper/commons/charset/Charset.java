@@ -17,7 +17,7 @@ package com.cloudhopper.commons.charset;
 /**
  * Interface for any charset.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public interface Charset {
 

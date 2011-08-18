@@ -17,8 +17,9 @@ package com.cloudhopper.commons.charset;
 import java.util.HashMap;
 
 /**
- *
- * @author joelauer
+ * Utility class for encoding and decoding between Strings and byte arrays.
+ * 
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class CharsetUtil {
     public static final HashMap<String,Charset> charsets;

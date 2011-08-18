@@ -21,7 +21,7 @@ package com.cloudhopper.commons.charset;
  * The encoding and decoding are based on the mapping at
  * http://www.unicode.org/Public/MAPPINGS/ETSI/GSM0338.TXT
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class PackedGSMCharset extends GSMCharset {
 

@@ -21,7 +21,7 @@ import java.text.Normalizer;
  * Helpful methods for converting unicode characters into their ascii equivalents
  * such as smart quotes to dumb quotes.
  * 
- * @author jlauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class MobileTextUtil {
     

@@ -15,17 +15,15 @@
 package com.cloudhopper.commons.charset;
 
 import java.util.Arrays;
-import org.apache.log4j.Logger;
 
 /**
  * The <b>VFTRGSMCharset</b> class is mostly based on Latin-1, but mixed almost
  * equally with the GSM default charset.
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class VFTRGSMCharset extends GSMCharset {
-    private static final Logger logger = Logger.getLogger(VFTRGSMCharset.class);
-
+    
     private static final int GSM_COL = 0;
     private static final int VFTR_COL = 1;
     // mapping GSM byte value to VFTR byte value

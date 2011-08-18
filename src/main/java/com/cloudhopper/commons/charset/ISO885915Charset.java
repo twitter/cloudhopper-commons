@@ -14,21 +14,19 @@
 
 package com.cloudhopper.commons.charset;
 
-import org.apache.log4j.Logger;
-
 /**
  * This class encodes and decodes Java Strings to and from the Latin-9/ISO-8859-15
  * alphabet.
  *
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class ISO885915Charset extends JavaCharset {
-    private static final Logger logger = Logger.getLogger(ISO885915Charset.class);
-
+    
     public ISO885915Charset() {
         super("ISO-8859-15");
     }
 
+    @Override
     public int estimateEncodeByteLength(CharSequence str0) {
         if (str0 == null) {
             return 0;
@@ -37,6 +35,7 @@ public class ISO885915Charset extends JavaCharset {
         return str0.length();
     }
 
+    @Override
     public int estimateDecodeCharLength(byte[] bytes) {
         if (bytes == null) {
             return 0;

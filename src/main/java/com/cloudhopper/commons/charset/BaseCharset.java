@@ -17,7 +17,7 @@ package com.cloudhopper.commons.charset;
 /**
  * Base Charset class implementing common functionality.
  *
- * @author jlauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public abstract class BaseCharset implements Charset {
 

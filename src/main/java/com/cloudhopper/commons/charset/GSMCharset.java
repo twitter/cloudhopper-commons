@@ -16,17 +16,15 @@ package com.cloudhopper.commons.charset;
 
 import com.cloudhopper.commons.util.FastByteArrayOutputStream;
 import java.io.IOException;
-import org.apache.log4j.Logger;
 
 /**
  * This class encodes and decodes Java Strings to and from the SMS default
  * alphabet. It also supports the default extension table. The default alphabet
  * and it's extension table is defined in GSM 03.38.
  *
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class GSMCharset extends BaseCharset {
-    private static final Logger logger = Logger.getLogger(GSMCharset.class);
 
     public static final int EXTENDED_ESCAPE = 0x1b;
 
@@ -96,10 +94,8 @@ public class GSMCharset extends BaseCharset {
         for (int i = 0; i < len; i++) {
             // get the char in this string
             char c = str0.charAt(i);
-            // a very easy check a-z, A-Z, and 0-9 are always valid
-            if (c >= 'A' && c <= 'z') {
-                continue;
-            } else if (c >= '0' && c <= '9') {
+            // a very easy check a-z, A-Z (and [\]^_ chars too), and 0-9 are always valid
+            if ((c >= 'A' && c <= '_') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')) {
                 continue;
             } else {
                 // search both charmaps (if char is in either, we're good!)
@@ -107,10 +103,10 @@ public class GSMCharset extends BaseCharset {
                 for (int j = 0; j < CHAR_TABLE.length; j++) {
                     if (c == CHAR_TABLE[j]) {
                         found = true;
-                        continue;
+                        break;          // stop searching thru char table!
                     } else if (c == EXT_CHAR_TABLE[j]) {
                         found = true;
-                        continue;
+                        break;          // stop searching thru char table!
                     }
                 }
                 // if we searched both charmaps and didn't find it, then its bad
@@ -122,6 +118,7 @@ public class GSMCharset extends BaseCharset {
         return true;
     }
 
+    @Override
     public int estimateEncodeByteLength(CharSequence str0) {
         if (str0 == null) {
             return 0;
@@ -130,6 +127,7 @@ public class GSMCharset extends BaseCharset {
         return str0.length() + 10;
     }
 
+    @Override
     public byte[] encode(CharSequence str0) {
         if (str0 == null) {
             return null;
@@ -166,15 +164,15 @@ public class GSMCharset extends BaseCharset {
                 }
             }
         } catch (IOException e) {
-            logger.error("Impossible error with FastByteArrayOutputStream: " + e.getMessage());
-            // impossible error
-
+            // should be an impossible error
+            throw new RuntimeException("Impossible error with FastByteArrayOutputStream: " + e.getMessage(), e);
         }
 
         return baos.toByteArray();
 
     }
 
+    @Override
     public int estimateDecodeCharLength(byte[] bytes) {
         if (bytes == null) {
             return 0;
@@ -189,6 +187,7 @@ public class GSMCharset extends BaseCharset {
     /**
      * Decode an SMS default alphabet-encoded octet string into a Java String.
      */
+    @Override
     public void decode(byte[] bytes, StringBuilder buffer) {
         if (bytes == null) {
             // append nothing

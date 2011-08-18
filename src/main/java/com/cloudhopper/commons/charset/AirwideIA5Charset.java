@@ -23,7 +23,7 @@ import java.util.Arrays;
  * byte values will need transcoded first, then run thru the normal GSMCharset
  * class.  Stupid, stupid Airwide....
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class AirwideIA5Charset extends GSMCharset {
 

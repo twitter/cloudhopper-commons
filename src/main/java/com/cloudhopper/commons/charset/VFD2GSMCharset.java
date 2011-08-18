@@ -15,7 +15,6 @@
 package com.cloudhopper.commons.charset;
 
 import java.util.Arrays;
-import org.apache.log4j.Logger;
 
 /**
  * The <b>VFD2GSMCharset</b> class is mostly based on standard GSM charset, but
@@ -28,11 +27,10 @@ import org.apache.log4j.Logger;
  * NOTE: This charset was only for MT (application -> mobile).  Vodafone-D2 has
  * an entirely different charset for MO (mobile -> application).
  * 
- * @author joelauer
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class VFD2GSMCharset extends GSMCharset {
-    private static final Logger logger = Logger.getLogger(VFD2GSMCharset.class);
-
+    
     private static final int GSM_COL = 0;
     private static final int VFD2_COL = 1;
     private static final byte[][] VFD2_OVERRIDE_TABLE = {

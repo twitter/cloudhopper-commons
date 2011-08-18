@@ -1,7 +1,20 @@
-Cloudhopper, Inc.
+Twitter, Inc. (formerly created by Cloudhopper, Inc.)
+http://twitter.com/
 http://www.cloudhopper.com/
 Commons Charset Library
 --------------------------------------------------------------------------------
+2.2.1 - 2011-08-18
+  * Fixed a performance bug with GSMCharset.canRepresent() where an inner loop
+    was not broken as soon as a char was found and the search continued.
+    Thanks to Yury Korolev (https://github.com/yury) for finding.
+  * Fixed a correctness bug with GSMCharset.canRepresent() where the '`' (0x60)
+    character was included as part of the GSM charset. This character was not
+    included on encodes or decodes, but was included in this specific method
+    as part of an optimization.
+    Thanks to Yury Korolev (https://github.com/yury) for finding.
+  * Removed any external dependency on log4j.
+  * Cleaned up documentation
+
 2.2.0 - 2011-07-26
   * Upgrade parent POM dependency from 1.1 to 1.5
   * Switched to new version format.

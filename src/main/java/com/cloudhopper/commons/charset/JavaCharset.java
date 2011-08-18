@@ -17,15 +17,15 @@ package com.cloudhopper.commons.charset;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.UnsupportedCharsetException;
-import org.apache.log4j.Logger;
 
 /**
- *
- * @author joelauer
+ * Base class for all charset conversions that rely on the internal Java
+ * String getBytes() methods.
+ * 
+ * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public abstract class JavaCharset extends BaseCharset {
-    private static final Logger logger = Logger.getLogger(JavaCharset.class);
-
+    
     private final java.nio.charset.Charset charset;
 
     public JavaCharset(String charsetName) {
@@ -36,6 +36,7 @@ public abstract class JavaCharset extends BaseCharset {
         }
     }
 
+    @Override
     public byte[] encode(CharSequence str0) {
         if (str0 == null) {
             return null;
@@ -44,6 +45,7 @@ public abstract class JavaCharset extends BaseCharset {
         return str0.toString().getBytes(charset);
     }
 
+    @Override
     public void decode(byte[] bytes, StringBuilder buffer) {
         if (bytes == null) {
             // append nothing
