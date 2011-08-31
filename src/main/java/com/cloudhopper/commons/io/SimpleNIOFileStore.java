@@ -45,15 +45,24 @@ public class SimpleNIOFileStore
     @Override
     public Id write(ReadableByteChannel channel) throws FileStoreException
     {
+	File f = null;
+	RandomAccessFile randomAccessFile = null;
+	FileChannel fileChannel = null;
 	Id id = idGen.newId();
 	try {
-	    File f = createFile(id.getName());
-	    RandomAccessFile randomAccessFile = new RandomAccessFile(f, "rw");
-	    FileChannel fileChannel = randomAccessFile.getChannel();
-	    //channelCopy(channel, fileChannel);
+	    f = createFile(id.getName());
+	    randomAccessFile = new RandomAccessFile(f, "rw");
+	    fileChannel = randomAccessFile.getChannel();
 	    channelCopyToFile(channel, fileChannel);
 	} catch (IOException e) {
 	    throw new FileStoreException(e);
+	} finally {
+	    try {
+		if (fileChannel != null) fileChannel.close();
+	    } catch (Exception e) {}
+	    try {
+		if (randomAccessFile != null) randomAccessFile.close();
+	    } catch (Exception e) {}
 	}
 	return id;
     }
@@ -73,22 +82,32 @@ public class SimpleNIOFileStore
     @Override
     public void transferToOutputStream(OutputStream os, Id id) throws FileStoreException
     {
+	FileChannel fileChannel = null;
 	try {
-	    //channelCopy(getChannel(id), Channels.newChannel(os));
-	    channelCopyFromFile(getFileChannel(id), Channels.newChannel(os));
+	    fileChannel = getFileChannel(id);
+	    channelCopyFromFile(fileChannel, Channels.newChannel(os));
 	} catch (IOException e) {
 	    throw new FileStoreException(e);
+	} finally {
+	    try {
+		if (fileChannel != null) fileChannel.close();
+	    } catch (Exception e) {}
 	}
     }
 
     @Override
     public void transferToChannel(WritableByteChannel channel, Id id) throws FileStoreException
     {
+	FileChannel fileChannel = null;
 	try {
-	    //channelCopy(getChannel(id), channel);
-	    channelCopyFromFile(getFileChannel(id), channel);
-	}  catch (IOException e) {
+	    fileChannel = getFileChannel(id);
+	    channelCopyFromFile(fileChannel, channel);
+	} catch (IOException e) {
 	    throw new FileStoreException(e);
+	} finally {
+	    try {
+		if (fileChannel != null) fileChannel.close();
+	    } catch (Exception e) {}
 	}
     }
 

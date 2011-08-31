@@ -1,6 +1,9 @@
 Cloudhopper
 Commons IO Library
 --------------------------------------------------------------------------------
+2.2.1 - 2011-08-31
+  * Close channels in SimpleNIOFileStore. We were leaking open file descriptors.
+
 2.2 - 2011-08-11
   * Added metaData field to Id.
 
