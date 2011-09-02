@@ -7,13 +7,13 @@
   <groupId>cloudhopper</groupId>
   <artifactId>ch-commons-io</artifactId>
   <packaging>jar</packaging>
-  <version>2.2.1</version>
+  <version>2.2.2</version>
   <name>ch-commons-io</name>
 
   <parent>
     <groupId>cloudhopper</groupId>
     <artifactId>ch-maven-parent-internal</artifactId>
-    <version>1.0</version>
+    <version>1.5</version>
   </parent>
 
   <repositories>
@@ -71,6 +71,7 @@
   </dependencies>
 
   <properties>
+    <main.java.package>com.cloudhopper.commons.io</main.java.package>
     <ch-commons-util.version>[1.6,)</ch-commons-util.version>
     <commons-io.version>2.0.1</commons-io.version>
   </properties>

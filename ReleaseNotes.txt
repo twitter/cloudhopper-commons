@@ -1,6 +1,10 @@
 Cloudhopper
 Commons IO Library
 --------------------------------------------------------------------------------
+2.2.2 - 2011-09-01
+  * Upgrade parent pom from 1.0 to 1.5
+  * New Version class now added with upgrade parent pom
+
 2.2.1 - 2011-08-31
   * Close channels in SimpleNIOFileStore. We were leaking open file descriptors.
 

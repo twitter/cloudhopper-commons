@@ -1,0 +1,12 @@
+
+The following files have been resolved:
+   ch.qos.logback:logback-classic:jar:0.9.29:test
+   ch.qos.logback:logback-core:jar:0.9.29:test
+   cloudhopper:ch-commons-util:jar:5.1.1:compile
+   commons-io:commons-io:jar:2.0.1:test
+   joda:joda-time:jar:1.6.2:compile
+   junit:junit:jar:4.9:test
+   org.hamcrest:hamcrest-core:jar:1.1:test
+   org.slf4j:slf4j-api:jar:1.6.1:test
+   slf4j:slf4j-api:jar:1.6.1:compile
+
