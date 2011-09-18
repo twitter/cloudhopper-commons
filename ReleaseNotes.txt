@@ -2,6 +2,11 @@ Cloudhopper, Inc.
 http://www.cloudhopper.com/
 Commons XBean Library
 --------------------------------------------------------------------------------
+1.2.0 - 2011-09-18
+   * Updated license to match Twitter's common opensource one.
+   * Updated build process to maven.
+   * Switched to SLF4J from Log4J
+
 1.1 - 2010-02-15
    * Fixed type issue with Bytes that were incorrectly created as Shorts.
 

@@ -7,57 +7,46 @@
   <groupId>cloudhopper</groupId>
   <artifactId>ch-commons-xbean</artifactId>
   <packaging>jar</packaging>
-  <version>1.1</version>
-  <name>Cloudhopper xbean library</name>
+  <version>1.2.0</version>
+  <name>ch-commons-xbean</name>
 
   <parent>
     <groupId>cloudhopper</groupId>
-    <artifactId>ch-maven-parent-internal</artifactId>
-    <version>1.0</version>
+    <artifactId>ch-maven-parent-public</artifactId>
+    <version>1.5</version>
   </parent>
 
   <repositories>
     <repository>
-      <id>cloudhopper-internal</id>
-      <name>Cloudhopper Internal Maven Repository</name>
+      <id>cloudhopper-public</id>
+      <name>Cloudhopper Public Maven Repository</name>
       <layout>default</layout>
-      <url>https://maven.cloudhopper.lan/repos/internal</url>
+      <url>http://maven.cloudhopper.com/repos/third-party</url>
     </repository>
   </repositories>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>com.mycila.maven-license-plugin</groupId>
-        <artifactId>maven-license-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
-
+  <!--
+    I prefer jars managed out of the Cloudhopper Maven Repo with more consistent
+    versioning.  I apologize for not using more common Maven repos
+  -->
   <dependencies>
     <!-- compile scope -->
     <dependency>
-      <groupId>joda</groupId>
-      <artifactId>joda-time</artifactId>
-      <version>${joda-time.version}</version>
+      <groupId>slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
     </dependency>
     <dependency>
       <groupId>cloudhopper</groupId>
       <artifactId>ch-commons-util</artifactId>
-      <version>${ch-commons-util.version}</version>
+      <version>[2.1,)</version>
     </dependency>
     <dependency>
       <groupId>cloudhopper</groupId>
       <artifactId>ch-commons-xml</artifactId>
-      <version>${ch-commons-xml.version}</version>
+      <version>[1.0,)</version>
     </dependency>
     <!-- provided scope -->
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>${log4j.version}</version>
-      <scope>provided</scope>
-    </dependency>
     <!-- runtime scope -->
     <!-- testing scope -->
     <dependency>
@@ -66,11 +55,28 @@
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>slf4j</groupId>
+      <artifactId>log4j-over-slf4j</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <version>${logback.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${logback.version}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <properties>
-    <ch-commons-util.version>[2.1,)</ch-commons-util.version>
-    <ch-commons-xml.version>[1.0,)</ch-commons-xml.version>
+    <main.java.package>com.cloudhopper.commons.xbean</main.java.package>
   </properties>
 
 </project>
