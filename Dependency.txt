@@ -1,8 +1,8 @@
 
 The following files have been resolved:
    cloudhopper:ch-commons-util:jar:5.1.1:test
-   cloudhopper:ch-commons-xbean:jar:1.1:test
-   cloudhopper:ch-commons-xml:jar:1.1:test
+   cloudhopper:ch-commons-xbean:jar:1.2.0:test
+   cloudhopper:ch-commons-xml:jar:1.2.0:test
    javax:servlet-api:jar:2.5:compile
    jetty:jetty-continuation:jar:7.4.2:compile
    jetty:jetty-http:jar:7.4.2:compile

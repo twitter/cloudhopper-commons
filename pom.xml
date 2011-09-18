@@ -7,12 +7,12 @@
   <groupId>cloudhopper</groupId>
   <artifactId>ch-jetty</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <name>ch-jetty</name>
 
   <parent>
     <groupId>cloudhopper</groupId>
-    <artifactId>ch-maven-parent-internal</artifactId>
+    <artifactId>ch-maven-parent-public</artifactId>
     <version>1.5</version>
   </parent>
 
