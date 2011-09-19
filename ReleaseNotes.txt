@@ -2,6 +2,8 @@ Cloudhopper, Inc.
 http://www.cloudhopper.com/
 Commons Remote FileSystem Library
 --------------------------------------------------------------------------------
+1.2.0 - 2011-09-18
+   * Updated build.
 
 1.1 - 2009-10-26
    * Added support for provider URIs to include name/value pairs as normal URL
