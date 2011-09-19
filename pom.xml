@@ -7,65 +7,54 @@
   <groupId>cloudhopper</groupId>
   <artifactId>ch-commons-sql</artifactId>
   <packaging>jar</packaging>
-  <version>1.0</version>
-  <name>Cloudhopper SQL library</name>
+  <version>1.0.1</version>
+  <name>ch-commons-sql</name>
 
   <parent>
     <groupId>cloudhopper</groupId>
-    <artifactId>ch-maven-parent-internal</artifactId>
-    <version>1.0</version>
+    <artifactId>ch-maven-parent-public</artifactId>
+    <version>1.5</version>
   </parent>
 
   <repositories>
     <repository>
-      <id>cloudhopper-internal</id>
-      <name>Cloudhopper Internal Maven Repository</name>
+      <id>cloudhopper-public</id>
+      <name>Cloudhopper Public Maven Repository</name>
       <layout>default</layout>
-      <url>https://maven.cloudhopper.lan/repos/internal</url>
+      <url>http://maven.cloudhopper.com/repos/third-party</url>
     </repository>
   </repositories>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>com.mycila.maven-license-plugin</groupId>
-        <artifactId>maven-license-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
-
+  <!--
+    I prefer jars managed out of the Cloudhopper Maven Repo with more consistent
+    versioning.  I apologize for not using more common Maven repos
+  -->
   <dependencies>
     <!-- compile scope -->
     <dependency>
-      <groupId>cloudhopper</groupId>
-      <artifactId>ch-commons-util</artifactId>
-      <version>${ch-commons-util.version}</version>
+      <groupId>slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
     </dependency>
     <dependency>
-      <groupId>joda</groupId>
-      <artifactId>joda-time</artifactId>
-      <version>${joda-time.version}</version>
+        <groupId>cloudhopper</groupId>
+        <artifactId>ch-commons-util</artifactId>
+        <version>[2.1,)</version>
     </dependency>
-    <!-- provided scope -->
+    
     <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>${log4j.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>c3p0</groupId>
-      <artifactId>c3p0</artifactId>
-      <version>${c3p0.version}</version>
-      <scope>provided</scope>
+        <groupId>c3p0</groupId>
+        <artifactId>c3p0</artifactId>
+        <version>0.9.1.2</version>
+        <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>proxool</groupId>
-      <artifactId>proxool</artifactId>
-      <version>${proxool.version}</version>
-      <scope>provided</scope>
+        <groupId>proxool</groupId>
+        <artifactId>proxool</artifactId>
+        <version>[0.9.1,)</version>
+        <scope>provided</scope>
     </dependency>
-    <!-- runtime scope -->
+
     <!-- testing scope -->
     <dependency>
       <groupId>junit</groupId>
@@ -74,38 +63,44 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>${junit.version}</version>
+      <groupId>slf4j</groupId>
+      <artifactId>log4j-over-slf4j</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <version>${logback.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>cloudhopper</groupId>
-      <artifactId>ch-commons-xml</artifactId>
-      <version>${ch-commons-xml.version}</version>
+      <groupId>logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${logback.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>cloudhopper</groupId>
-      <artifactId>ch-commons-xbean</artifactId>
-      <version>${ch-commons-xbean.version}</version>
-      <scope>test</scope>
+        <groupId>cloudhopper</groupId>
+        <artifactId>ch-commons-xml</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector</artifactId>
-      <version>${mysql-connector.version}</version>
-      <scope>test</scope>
+        <groupId>cloudhopper</groupId>
+        <artifactId>ch-commons-xbean</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector</artifactId>
+        <version>[5.1,)</version>
+        <scope>test</scope>
     </dependency>
   </dependencies>
 
   <properties>
-    <c3p0.version>0.9.1.2</c3p0.version>
-    <ch-commons-util.version>[2.1,)</ch-commons-util.version>
-    <ch-commons-xbean.version>[1.1,)</ch-commons-xbean.version>
-    <ch-commons-xml.version>[1.1,)</ch-commons-xml.version>
-    <mysql-connector.version>[5.1,)</mysql-connector.version>
-    <proxool.version>[0.9.1,)</proxool.version>
+    <main.java.package>com.cloudhopper.commons.sql</main.java.package>
   </properties>
 
 </project>
