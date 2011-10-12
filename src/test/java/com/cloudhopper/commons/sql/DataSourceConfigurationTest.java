@@ -15,9 +15,6 @@
 package com.cloudhopper.commons.sql;
 
 // third party imports
-import java.io.ByteArrayInputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import org.junit.*;
 import org.apache.log4j.Logger;
 

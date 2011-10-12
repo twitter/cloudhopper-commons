@@ -5,7 +5,7 @@ The following files have been resolved:
    cloudhopper:ch-commons-xbean:jar:1.0-SNAPSHOT:test
    cloudhopper:ch-commons-xml:jar:1.0-SNAPSHOT:test
    joda:joda-time:jar:1.6.2:compile
-   junit:junit:jar:4.9:test
+   junit:junit:jar:4.10:test
    logback:logback-classic:jar:0.9.28:test
    logback:logback-core:jar:0.9.28:test
    mysql:mysql-connector:jar:5.1.14:test

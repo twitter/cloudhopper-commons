@@ -26,7 +26,7 @@ public enum DatabaseVendor {
     /** Microsoft SQLServer, default driver net.sourceforge.jtds.jdbc.Driver */
     MSSQL("net.sourceforge.jtds.jdbc.Driver", "SELECT GETDATE()"),
     /** PostgreSQL, default driver org.postgresql.Driver */
-    //POSTGRESQL("org.postgresql.Driver"),
+    POSTGRESQL("org.postgresql.Driver", "SELECT NOW()"),
     /** MySQL, default driver com.mysql.jdbc.Driver */
     MYSQL("com.mysql.jdbc.Driver", "SELECT NOW()");
 

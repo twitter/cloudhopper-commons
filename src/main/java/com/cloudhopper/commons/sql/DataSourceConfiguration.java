@@ -465,6 +465,8 @@ public class DataSourceConfiguration implements Cloneable {
         // and also the driver if those properties have not yet been set
         if (protocol.equals("mysql")) {
             setVendorIfNotSet(DatabaseVendor.MYSQL);
+        } else if (protocol.equals("postgresql")) {
+            setVendorIfNotSet(DatabaseVendor.POSTGRESQL);
         } else if (protocol.equals("jtds") && subProtocol.equals("sqlserver")) {
             setVendorIfNotSet(DatabaseVendor.MSSQL);
         } else {
