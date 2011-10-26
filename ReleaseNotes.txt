@@ -5,6 +5,10 @@ Commons Charset Library
 --------------------------------------------------------------------------------
 2.3.0 - NOT YET RELEASED
   * Parent POM upgraded to 1.6 - for support of OSGi in final jar package.
+  * UTF8Charset.calculateByteLength() is deprecated.  The algorithm  only
+    calculates the byte length for a "modified UTF-8" string and is wrong on
+    higher range characters.  Will be removed in a future release since it
+    now calls ModifiedUTF8Charset.calculateByteLength() for backwards compatability.
   * GSMCharset.canRepresent is now ~10X faster by switching from a lookup table
     to a switch statement.  See test "PrintGSMMain.class" for automated class
     for re-generating the switch statement if needed.

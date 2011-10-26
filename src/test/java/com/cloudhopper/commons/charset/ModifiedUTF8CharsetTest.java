@@ -80,4 +80,50 @@ public class ModifiedUTF8CharsetTest {
         String decoded = CharsetUtil.decode(encoded, CharsetUtil.CHARSET_MODIFIED_UTF8);
         Assert.assertEquals(upperRangeString, decoded);
     }
+    
+    @Test
+    public void calculateByteLength() throws Exception {
+        String sample = null;
+        // test the incredibly fast method for calculating a Java strings UTF-8 byte length
+        Assert.assertEquals(0, ModifiedUTF8Charset.calculateByteLength(null));
+        Assert.assertEquals(0, ModifiedUTF8Charset.calculateByteLength(""));
+        Assert.assertEquals(1, ModifiedUTF8Charset.calculateByteLength("a"));
+        Assert.assertEquals(2, ModifiedUTF8Charset.calculateByteLength("\n\r"));
+        sample = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        Assert.assertEquals(sample.getBytes("UTF8").length, ModifiedUTF8Charset.calculateByteLength(sample));
+        sample = "\u20ac";
+        Assert.assertEquals(sample.getBytes("UTF8").length, ModifiedUTF8Charset.calculateByteLength(sample));
+        sample = "\u20ac\u0623";
+        Assert.assertEquals(sample.getBytes("UTF8").length, ModifiedUTF8Charset.calculateByteLength(sample));
+        sample = "\u00A7\u00E5\uFFFF";
+        Assert.assertEquals(sample.getBytes("UTF8").length, ModifiedUTF8Charset.calculateByteLength(sample));
+    }
+    
+    @Test
+    public void emoticons() throws Exception {
+        // follows sample of unit test in for UTF8Charset
+        // these chars triggered a problem in production -- these are specifically
+        // not supported for decoding -- but should work to/from for serialization
+        // U+1F631 is a very high range example of an emoticon (something more people are using)
+        // UTF-8 bytes look like this: F09F98B1
+        // UTF-16 bytes look like this: D83DDE31
+        // JavaScript escapes: \uD83D\uDE31
+        byte[] bytes = HexUtil.toByteArray("F09F98B1");
+        String str = "\uD83D\uDE31";    // this is the UTF-16 version of the UTF-8 bytes
+        
+        try {
+            String t = CharsetUtil.CHARSET_MODIFIED_UTF8.decode(bytes);
+            Assert.fail("exception should have been thrown");
+        } catch (IllegalArgumentException e) {
+            // correct behavior -- this UTF-8 char is NOT supported!
+        }
+        
+        // try serializing and deserializing
+        byte[] encoded = CharsetUtil.CHARSET_MODIFIED_UTF8.encode(str);
+        // this is what the Modified UTF-8 version looks like: EDA0BDEDB8B1     // 6 bytes instead of 4
+        //logger.info(HexUtil.toHexString(encoded));
+        String decoded = CharsetUtil.CHARSET_MODIFIED_UTF8.decode(encoded);
+        
+        Assert.assertEquals(str, decoded);
+    }
 }

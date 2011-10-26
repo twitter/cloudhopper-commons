@@ -126,6 +126,18 @@ public class ModifiedUTF8Charset extends BaseCharset {
         //return new String(charBuffer, 0, charLength);
     }
     
+    public String decode(byte[] bytes, int offset, int length) {
+        if (bytes == null) {
+            return null;
+        }
+        char[] charBuffer = new char[bytes.length];
+        int charLength = decodeToCharArray(bytes, offset, length, charBuffer, 0);
+        // this prevents re-duplicating a char[] that we know will never change
+        // its performance impact is more pronounced when decoding larger strings
+        return CharSequenceAccessor.createOptimizedString(charBuffer, 0, charLength);
+        //return new String(charBuffer, 0, charLength);
+    }
+    
     /**
      * Highly efficient method for calculating the byte length of
      * a String if it was encoded as modified UTF-8 bytes. Since no byte array

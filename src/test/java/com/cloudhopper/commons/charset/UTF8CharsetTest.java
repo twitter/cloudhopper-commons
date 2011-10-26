@@ -15,6 +15,7 @@
 package com.cloudhopper.commons.charset;
 
 // third party imports
+import com.cloudhopper.commons.util.HexUtil;
 import org.junit.*;
 import org.apache.log4j.Logger;
 
@@ -26,20 +27,18 @@ public class UTF8CharsetTest {
     private static final Logger logger = Logger.getLogger(UTF8CharsetTest.class);
 
     @Test
-    public void calculateByteLength() throws Exception {
-        String sample = null;
-        // test the incredibly fast method for calculating a Java strings UTF-8 byte length
-        Assert.assertEquals(0, UTF8Charset.calculateByteLength(null));
-        Assert.assertEquals(0, UTF8Charset.calculateByteLength(""));
-        Assert.assertEquals(1, UTF8Charset.calculateByteLength("a"));
-        Assert.assertEquals(2, UTF8Charset.calculateByteLength("\n\r"));
-        sample = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        Assert.assertEquals(sample.getBytes("UTF8").length, UTF8Charset.calculateByteLength(sample));
-        sample = "\u20ac";
-        Assert.assertEquals(sample.getBytes("UTF8").length, UTF8Charset.calculateByteLength(sample));
-        sample = "\u20ac\u0623";
-        Assert.assertEquals(sample.getBytes("UTF8").length, UTF8Charset.calculateByteLength(sample));
-        sample = "\u00A7\u00E5\uFFFF";
-        Assert.assertEquals(sample.getBytes("UTF8").length, UTF8Charset.calculateByteLength(sample));
+    public void emoticons() throws Exception {
+        // great site: http://www.rishida.net/tools/conversion/
+        // U+1F631 is a very high range example of an emoticon (something more people are using)
+        // UTF-8 bytes look like this: F09F98B1
+        // UTF-16 bytes look like this: D83DDE31
+        // JavaScript escapes: \uD83D\uDE31
+        byte[] bytes = HexUtil.toByteArray("F09F98B1");
+        String str = CharsetUtil.CHARSET_UTF_8.decode(bytes);
+        //logger.debug(str);
+        //byte[] utf32 = str.getBytes("UTF-32");
+        //logger.debug(HexUtil.toHexString(utf32));
+        Assert.assertEquals("\uD83D\uDE31", str);   // UTF-16 used with JVM
     }
+    
 }
