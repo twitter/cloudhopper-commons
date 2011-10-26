@@ -35,7 +35,7 @@ public class GSMCharset extends BaseCharset {
         '@', '\u00a3', '$', '\u00a5', '\u00e8', '\u00e9', '\u00f9', '\u00ec',
         '\u00f2', '\u00c7', '\n', '\u00d8', '\u00f8', '\r', '\u00c5', '\u00e5',
         '\u0394', '_', '\u03a6', '\u0393', '\u039b', '\u03a9', '\u03a0', '\u03a8',
-        '\u03a3', '\u0398', '\u039e', ' ', '\u00c6', '\u00e6', '\u00df', '\u00c9',
+        '\u03a3', '\u0398', '\u039e', ' ', '\u00c6', '\u00e6', '\u00df', '\u00c9',  // 0x1B is actually an escape which we'll encode to a space char
         ' ', '!', '"', '#', '\u00a4', '%', '&', '\'',
         '(', ')', '*', '+', ',', '-', '.', '/',
         '0', '1', '2', '3', '4', '5', '6', '7',
@@ -76,12 +76,11 @@ public class GSMCharset extends BaseCharset {
             0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
     };
-
-
+    
     /**
      * Verifies that this charset can represent every character in the Java
      * String (char sequence).
-     * @param str0 The String to verfiy
+     * @param str0 The String to verify
      * @return True if the charset can represent every character in the Java
      *      String, otherwise false.
      */
@@ -94,24 +93,57 @@ public class GSMCharset extends BaseCharset {
         for (int i = 0; i < len; i++) {
             // get the char in this string
             char c = str0.charAt(i);
-            // a very easy check a-z, A-Z (and [\]^_ chars too), and 0-9 are always valid
-            if ((c >= 'A' && c <= '_') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')) {
+            // simple range checks for most common characters (0x20 -> 0x5F) or (0x61 -> 0x7E)
+            if ((c >= ' ' && c <= '_') || (c >= 'a' && c <= '~')) {
                 continue;
             } else {
-                // search both charmaps (if char is in either, we're good!)
-                boolean found = false;
-                for (int j = 0; j < CHAR_TABLE.length; j++) {
-                    if (c == CHAR_TABLE[j]) {
-                        found = true;
-                        break;          // stop searching thru char table!
-                    } else if (c == EXT_CHAR_TABLE[j]) {
-                        found = true;
-                        break;          // stop searching thru char table!
-                    }
-                }
-                // if we searched both charmaps and didn't find it, then its bad
-                if (!found) {
-                    return false;
+                // 10X more efficient using a switch statement vs. a lookup table search
+                switch (c) {
+                    case '\u00A3':	// £
+                    case '\u00A5':	// ¥
+                    case '\u00E8':	// è
+                    case '\u00E9':	// é
+                    case '\u00F9':	// ù
+                    case '\u00EC':	// ì
+                    case '\u00F2':	// ò
+                    case '\u00C7':	// Ç
+                    case '\n':          // newline
+                    case '\u00D8':	// Ø
+                    case '\u00F8':	// ø
+                    case '\r':          // carriage return
+                    case '\u00C5':	// Å
+                    case '\u00E5':	// å
+                    case '\u0394':	// Δ
+                    case '\u03A6':	// Φ
+                    case '\u0393':	// Γ
+                    case '\u039B':	// Λ
+                    case '\u03A9':	// Ω
+                    case '\u03A0':	// Π
+                    case '\u03A8':	// Ψ
+                    case '\u03A3':	// Σ
+                    case '\u0398':	// Θ
+                    case '\u039E':	// Ξ
+                    case '\u00C6':	// Æ
+                    case '\u00E6':	// æ
+                    case '\u00DF':	// ß
+                    case '\u00C9':	// É
+                    case '\u00A4':	// ¤
+                    case '\u00A1':	// ¡
+                    case '\u00C4':	// Ä
+                    case '\u00D6':	// Ö
+                    case '\u00D1':	// Ñ
+                    case '\u00DC':	// Ü
+                    case '\u00A7':	// §
+                    case '\u00BF':	// ¿
+                    case '\u00E4':	// ä
+                    case '\u00F6':	// ö
+                    case '\u00F1':	// ñ
+                    case '\u00FC':	// ü
+                    case '\u00E0':	// à
+                    case '\u20AC':	// €
+                        continue;
+                    default:
+                        return false;
                 }
             }
         }
