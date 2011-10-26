@@ -3,7 +3,8 @@ http://twitter.com/
 http://www.cloudhopper.com/
 Commons Charset Library
 --------------------------------------------------------------------------------
-2.3.0 - 2011-10-25
+2.3.0 - NOT YET RELEASED
+  * Parent POM upgraded to 1.6 - for support of OSGi in final jar package.
   * GSMCharset.canRepresent is now ~10X faster by switching from a lookup table
     to a switch statement.  See test "PrintGSMMain.class" for automated class
     for re-generating the switch statement if needed.
