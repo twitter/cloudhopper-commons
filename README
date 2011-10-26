@@ -3,12 +3,12 @@ ch-commons-charset
 The ch-commons-charset library provides utility classes for converting between
 charsets (mostly "mobile" in nature) such as Unicode to GSM and vice versa.
 This library attempts to contain the fastest and most efficient methods for
-converting charsets to/from byte arrays. For example, the method to convert a
-Java string to a byte array of UTF-8 bytes is several times faster than using
-Java's String.getBytes("UTF-8") method.
+converting charsets to/from byte arrays.  There are also some useful charset
+specific static methods (e.g. GSMCharset.canRepresent()).
+
 
 Installation
----------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
 Binary builds are publicly available at the Cloudhopper Maven repo:
 http://maven.cloudhopper.com/repos/third-party/cloudhopper
@@ -16,15 +16,57 @@ http://maven.cloudhopper.com/repos/third-party/cloudhopper
 Source builds require a parent POM available in a project:
 http://maven.cloudhopper.com/repos/third-party/cloudhopper/ch-maven-parent-public
 
+
 Contributors
 --------------------------------------------------------------------------------
 
 Joe Lauer (twitter: http://twitter.com/jjlauer) OR
     Text "FOLLOW jjlauer" to 40404
 
+
 License
----------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
 Copyright (C) 2011 Twitter, Inc.
 
 This work is licensed under the Apache License, Version 2.0. See LICENSE for details.
+
+
+Modified UTF-8 Performance
+--------------------------------------------------------------------------------
+
+This library contains a charset called "Modified UTF-8".  Most of the
+implementation is based on Java's DataOutputStream.writeUTF() and
+DataInputStream.readUTF() methods.  Modified UTF-8 is not actually valid UTF-8
+for Java characters > 0x7FFF, but as long as you read/write the produced byte
+arrays for something like serialization, you'll be guaranteed to always get
+the same Java character values.  You'll also benefit from much faster decoding
+performance than Java's String class can provide and sometimes faster encoding.
+Also, if you already have a pre-allocated byte array, this charset is generally
+much faster for direct encoding vs. String.getBytes() and copying that again
+into your target byte buffer.
+
+Run "make run-utf8-benchmark" for a comparison between some real world strings
+on your own system:
+
+Encode Benchmark: JVM String.getBytes()
+ count: 1000000
+  time: 7623 ms
+Encode Benchmark: CharsetUtil.encode() w/ UTF-8 Charset
+ count: 1000000
+  time: 7916 ms
+Encode Benchmark: CharsetUtil.encode() w/ Modified UTF-8 Charset
+ count: 1000000
+  time: 7060 ms
+Encode Benchmark: CharsetUtil.encode() w/ Modified UTF-8 Charset (mocking a buffer already allocated)
+ count: 1000000
+  time: 4742 ms
+Decode Benchmark: JVM new String()
+ count: 1000000
+  time: 15441 ms
+Decode Benchmark: CharsetUtil.decode() w/ UTF-8 Charset
+ count: 1000000
+  time: 15956 ms
+Decode Benchmark: CharsetUtil.decode() w/ Modified UTF-8 Charset
+ count: 1000000
+  time: 11793 ms

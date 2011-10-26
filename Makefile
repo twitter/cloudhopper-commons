@@ -18,3 +18,12 @@ run-charset6:
 
 run-benchmark:
 	mvn test-compile exec:java -Dexec.classpathScope="test" -Dexec.mainClass="com.cloudhopper.commons.charset.demo.BenchmarkMain"
+
+run-utf8-benchmark:
+	mvn -e test-compile exec:java -Dexec.classpathScope="test" -Dexec.mainClass="com.cloudhopper.commons.charset.demo.UTF8BenchmarkMain"
+
+run-gsm-benchmark:
+	mvn -e test-compile exec:java -Dexec.classpathScope="test" -Dexec.mainClass="com.cloudhopper.commons.charset.demo.GSMBenchmarkMain"
+
+run-string-reflection:
+	mvn -e test-compile exec:java -Dexec.classpathScope="test" -Dexec.mainClass="com.cloudhopper.commons.charset.demo.StringReflectionMain"

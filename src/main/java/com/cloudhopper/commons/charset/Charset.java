@@ -42,6 +42,16 @@ public interface Charset {
     public void decode(final byte[] bytes, StringBuilder buffer);
 
     /**
+     * Decode the byte array and return a new Java string.
+     * Implementations of this method will not change any of the byte values
+     * contained in the byte array.
+     * @param bytes The array of bytes to decode
+     * @return A new String with characters decoded from the byte array in
+     *      the given charset.
+     */
+    public String decode(final byte[] bytes);
+    
+    /**
      * Normalize the characters of the source string to characters that can be
      * represented by this charset. Any characters in the input String that
      * cannot be represented by this charset are replaced with a '?' (question

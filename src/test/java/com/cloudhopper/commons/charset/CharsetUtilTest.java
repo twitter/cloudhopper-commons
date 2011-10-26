@@ -359,7 +359,34 @@ public class CharsetUtilTest {
     public void verifyNullByteArray() throws Exception {
         for (Map.Entry<String,Charset> entry : CharsetUtil.getCharsetMap().entrySet()) {
             // test that the byte array wasn't changed
-            Assert.assertEquals("Charset " + entry.getKey() + " impl bad -- did not return null", "", CharsetUtil.decode(null, entry.getValue()));
+            Assert.assertEquals("Charset " + entry.getKey() + " impl bad -- did not return null", null, CharsetUtil.decode(null, entry.getValue()));
+        }
+    }
+    
+    @Test
+    public void decodeToStringBuilderAllCharsets() throws Exception {
+        // try every charset with simple A-Z, a-z, and 0-9 which should work in all charsets
+        String expectedString = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefjhijklmnopqrstuvwxyz01234567890";
+        // test decode to stringBuilder
+        for (Map.Entry<String,Charset> entry : CharsetUtil.getCharsetMap().entrySet()) {
+            // make this a harder test where we actually test this was appended!
+            byte[] expectedBytes = CharsetUtil.encode(expectedString, entry.getKey());
+            StringBuilder sb = new StringBuilder("T");
+            CharsetUtil.decode(expectedBytes, sb, entry.getValue());
+            Assert.assertEquals("Charset " + entry.getKey() + " impl broken", "T"+expectedString, sb.toString());
+        }
+    }
+    
+    @Test
+    public void decodeToStringAllCharsets() throws Exception {
+        // try every charset with simple A-Z, a-z, and 0-9 which should work in all charsets
+        String expectedString = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefjhijklmnopqrstuvwxyz01234567890";
+        // test decode to stringBuilder
+        for (Map.Entry<String,Charset> entry : CharsetUtil.getCharsetMap().entrySet()) {
+            // make this a harder test where we actually test this was appended!
+            byte[] expectedBytes = CharsetUtil.encode(expectedString, entry.getValue());
+            String actualString = CharsetUtil.decode(expectedBytes, entry.getKey());
+            Assert.assertEquals("Charset " + entry.getKey() + " impl broken", expectedString, actualString);
         }
     }
 
@@ -367,8 +394,7 @@ public class CharsetUtilTest {
     public void normalize() throws Exception {
         String in = null;
 
-        // try every charset with simple A-Z, a-z, and 0-9 which should work
-        // in all charsets
+        // try every charset with simple A-Z, a-z, and 0-9 which should work in all charsets
         in = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefjhijklmnopqrstuvwxyz01234567890?&@";
         for (Map.Entry<String,Charset> entry : CharsetUtil.getCharsetMap().entrySet()) {
             Assert.assertEquals("Charset " + entry.getKey() + " implementation broken", in, CharsetUtil.normalize(in, entry.getValue()));

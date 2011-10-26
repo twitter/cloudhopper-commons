@@ -14,6 +14,7 @@
 
 package com.cloudhopper.commons.charset;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.UnsupportedCharsetException;
@@ -48,13 +49,19 @@ public abstract class JavaCharset extends BaseCharset {
     @Override
     public void decode(byte[] bytes, StringBuilder buffer) {
         if (bytes == null) {
-            // append nothing
             return;
         }
-        
         ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
         CharBuffer charBuffer = charset.decode(byteBuffer);
         buffer.append(charBuffer);
+    }
+    
+    @Override
+    public String decode(byte[] bytes) {
+        if (bytes == null) {
+            return null;
+        }
+        return new String(bytes, charset);
     }
 
 }

@@ -3,6 +3,22 @@ http://twitter.com/
 http://www.cloudhopper.com/
 Commons Charset Library
 --------------------------------------------------------------------------------
+2.3.0 - 2011-10-25
+  * GSMCharset.canRepresent is now ~10X faster by switching from a lookup table
+    to a switch statement.  See test "PrintGSMMain.class" for automated class
+    for re-generating the switch statement if needed.
+  * Added "Modified UTF-8" charset for improved performance on encoding/decoding
+    vs. Java's native UTF-8 charset.  Decoding is generally ~35% faster and 
+    encoding is generally between 0 and 25% faster than Java's UTF-8 impl. 
+    Encoding performance will be higher assuming you already had a byte buffer
+    you planned on copying the bytes into anyway (very useful for serialization).
+  * Much better performance on CharsetUtil.decode() into a String.  Each 
+    charset can now optimize this usage vs. the previous method of creating
+    an underlying StringBuilder.  Performance is ~25% better on most charsets.
+  * Some behavior of encode() and decode() with NULL parameters was changed
+    to always either do a NOOP or return a NULL.  Unit tests now check every
+    registered charset for similar behavior.
+
 2.2.1 - 2011-08-18
   * Fixed a performance bug with GSMCharset.canRepresent() where an inner loop
     was not broken as soon as a char was found and the search continued.

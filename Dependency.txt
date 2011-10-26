@@ -2,7 +2,8 @@
 The following files have been resolved:
    cloudhopper:ch-commons-util:jar:5.1.1:compile
    joda:joda-time:jar:1.6.2:compile
-   junit:junit:jar:4.8.2:test
+   junit:junit:jar:4.10:test
    log4j:log4j:jar:1.2.16:test
+   org.hamcrest:hamcrest-core:jar:1.1:test
    slf4j:slf4j-api:jar:1.6.1:compile
 
