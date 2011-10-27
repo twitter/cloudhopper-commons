@@ -3,6 +3,10 @@ http://twitter.com/
 http://www.cloudhopper.com/
 Commons Utility Library
 --------------------------------------------------------------------------------
+5.1.2 - 2011-10-26
+  * Upgrade parent POM dependency from 1.5 to 1.6
+  * Added support for OSGI in final jar
+
 5.1.1 - 2011-08-18
   * Switched org.slf4j to slf4j maven group due to issue with upstream maven repo.
   * Switched ch.qos.logback to logback maven group due to issue with upstream maven repo.
