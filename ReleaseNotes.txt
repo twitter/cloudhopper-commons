@@ -3,8 +3,9 @@ http://twitter.com/
 http://www.cloudhopper.com/
 Commons Charset Library
 --------------------------------------------------------------------------------
-2.3.0 - NOT YET RELEASED
-  * Parent POM upgraded to 1.6 - for support of OSGi in final jar package.
+2.3.0 - 2011-10-26
+  * Upgrade parent POM dependency from 1.5 to 1.6
+  * Added support for OSGI in final jar
   * UTF8Charset.calculateByteLength() is deprecated.  The algorithm  only
     calculates the byte length for a "modified UTF-8" string and is wrong on
     higher range characters.  Will be removed in a future release since it
