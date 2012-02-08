@@ -30,7 +30,6 @@ import org.apache.log4j.Logger;
  * @author Joe Lauer
  */
 public class E164CountryCodeUtil {
-    
     private static Logger logger = Logger.getLogger(E164CountryCodeUtil.class);
 
     // all country codes hashed by prefix

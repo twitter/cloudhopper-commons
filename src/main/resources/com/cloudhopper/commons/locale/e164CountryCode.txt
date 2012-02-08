@@ -140,10 +140,13 @@
 377 MC
 378 SM
 380 UA
-381 YU
+# YU changed to RS for 381
+381 RS
+382 ME
 385 HR
 386 SI
 387 BA
+388 EU
 389 MK
 39 IT
 396 VA
@@ -189,7 +192,12 @@
 596 MQ
 597 SR
 598 UY
-599 AN
+# Netherlands Antilles dissolved in 2011...
+599 CW
+5999 CW
+5997 BQ
+5994 BQ
+5993 BQ
 60 MY
 61 AU
 62 ID
