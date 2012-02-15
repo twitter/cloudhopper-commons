@@ -2,26 +2,9 @@ Cloudhopper, Inc.
 http://www.cloudhopper.com/
 Commons Xbean Library
 --------------------------------------------------------------------------------
-  * Added feature to support integer types configured as hex values such as
-    0x34 for a byte value.  Anything with a prefix of 0x will be treated as hex
   * Add Annotations support for enforcing rules on values such as unsigned
     values, values >= 0, list of acceptable values, etc.  Allow utility methods
     for accessing these annotations for other classes when trying to set
     properties.
-  * Add XmlBeanFactory class with helpful utility methods for quickly creating
-    instances of classes by reading xml files from the classpath, local disk,
-    or even possibly more options.
   * Check that partial XML snippets actually work -- had issues using them while
     working on cortex project.
-  * Permit explicit typing as an attribute?
-    <server>
-       <host>www.google.com</host>
-       <port>80</port>
-    </server>
-
-    TO
-
-    <server type="com.cloudhopper.server.HttpServer">
-       <host>www.google.com</host>
-       <port>80</port>
-    </server>

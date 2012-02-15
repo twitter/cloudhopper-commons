@@ -8,5 +8,5 @@ The following files have been resolved:
    logback:logback-core:jar:0.9.28:test
    org.hamcrest:hamcrest-core:jar:1.1:test
    slf4j:log4j-over-slf4j:jar:1.6.1:test
-   slf4j:slf4j-api:jar:1.6.1:compile
+   slf4j:slf4j-api:jar:1.6.1:test
 
