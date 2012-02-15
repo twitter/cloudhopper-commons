@@ -14,6 +14,9 @@
 
 package com.cloudhopper.commons.xbean.util;
 
+import com.cloudhopper.commons.xbean.ConversionException;
+import com.cloudhopper.commons.xbean.ConversionOverflowException;
+
 /**
  * Utility for parsing strings and returning the String to actually attempt
  * to parse along with a radix.  For example, any integer starting with 0x
@@ -31,6 +34,33 @@ public class NumberRadixUtil {
             return new NumberRadixResult(number.substring(2), 16);
         } else {
             return new NumberRadixResult(number, 10);
+        }
+    }
+    
+    static public String normalizeLeadingHexZeroes(String v, int length) throws ConversionException {
+        if (v == null || v.length() == 0) {
+            throw new ConversionException("Empty or null value detected; unable to convert");
+        } else if (v.length() == length) {
+            return v;
+        } else if (v.length() < length) {
+            // add leading zeroes
+            int prepend = (length - v.length());
+            StringBuilder sb = new StringBuilder(length);
+            for (int i = 0; i < prepend; i++) {
+                sb.append('0');
+            }
+            sb.append(v);
+            return sb.toString();
+        } else {
+            // remove leading zeroes (or error out if not zeroes)
+            int remove = (v.length() - length);
+            // check if any of these are non-zero
+            for (int i = 0; i < remove; i++) {
+                if (v.charAt(i) != '0') {
+                    throw new ConversionOverflowException("Overflow of value detected; unable to trim value [" + v + "] to length " + length);
+                }
+            }
+            return v.substring(remove);
         }
     }
 

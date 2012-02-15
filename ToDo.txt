@@ -13,3 +13,15 @@ Commons Xbean Library
     or even possibly more options.
   * Check that partial XML snippets actually work -- had issues using them while
     working on cortex project.
+  * Permit explicit typing as an attribute?
+    <server>
+       <host>www.google.com</host>
+       <port>80</port>
+    </server>
+
+    TO
+
+    <server type="com.cloudhopper.server.HttpServer">
+       <host>www.google.com</host>
+       <port>80</port>
+    </server>

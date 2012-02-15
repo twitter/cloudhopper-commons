@@ -16,8 +16,10 @@ package com.cloudhopper.commons.xbean;
 
 // third party imports
 import java.io.ByteArrayInputStream;
-import org.junit.*;
 import org.apache.log4j.Logger;
+import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.Test;
 
 // my imports
 

@@ -14,7 +14,12 @@
 
 package com.cloudhopper.commons.xbean.convert;
 
-import com.cloudhopper.commons.xbean.*;
+import com.cloudhopper.commons.util.ByteArrayUtil;
+import com.cloudhopper.commons.util.HexUtil;
+import com.cloudhopper.commons.xbean.ConversionException;
+import com.cloudhopper.commons.xbean.PropertyConverter;
+import com.cloudhopper.commons.xbean.util.NumberRadixResult;
+import com.cloudhopper.commons.xbean.util.NumberRadixUtil;
 
 /**
  * Converts a String to an int.
@@ -22,9 +27,17 @@ import com.cloudhopper.commons.xbean.*;
  */
 public class IntegerPrimitivePropertyConverter implements PropertyConverter {
 
+    @Override
     public Object convert(String value) throws ConversionException {
+        NumberRadixResult result = NumberRadixUtil.parseNumberRadix(value);
         try {
-            return Integer.parseInt(value);
+            if (result.getRadix() == 16) {
+                String hex = NumberRadixUtil.normalizeLeadingHexZeroes(result.getNumber(), 8);
+                byte[] bytes = HexUtil.toByteArray(hex);
+                return ByteArrayUtil.toInt(bytes);
+            } else {
+                return Integer.parseInt(result.getNumber());
+            }
         } catch (NumberFormatException e) {
             throw new ConversionException(e.getMessage());
         }

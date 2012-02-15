@@ -14,7 +14,8 @@
 
 package com.cloudhopper.commons.xbean.convert;
 
-import com.cloudhopper.commons.xbean.*;
+import com.cloudhopper.commons.xbean.ConversionException;
+import com.cloudhopper.commons.xbean.PropertyConverter;
 
 /**
  * Converts a String to a boolean.
@@ -22,6 +23,7 @@ import com.cloudhopper.commons.xbean.*;
  */
 public class BooleanPrimitivePropertyConverter implements PropertyConverter {
 
+    @Override
     public Object convert(String value) throws ConversionException {
         if (value.equalsIgnoreCase("true")) {
             return true;

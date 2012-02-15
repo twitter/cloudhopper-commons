@@ -14,7 +14,12 @@
 
 package com.cloudhopper.commons.xbean.convert;
 
-import com.cloudhopper.commons.xbean.*;
+import com.cloudhopper.commons.util.ByteArrayUtil;
+import com.cloudhopper.commons.util.HexUtil;
+import com.cloudhopper.commons.xbean.ConversionException;
+import com.cloudhopper.commons.xbean.PropertyConverter;
+import com.cloudhopper.commons.xbean.util.NumberRadixResult;
+import com.cloudhopper.commons.xbean.util.NumberRadixUtil;
 
 /**
  * Converts a String to a short.
@@ -22,9 +27,17 @@ import com.cloudhopper.commons.xbean.*;
  */
 public class ShortPrimitivePropertyConverter implements PropertyConverter {
 
+    @Override
     public Object convert(String value) throws ConversionException {
+        NumberRadixResult result = NumberRadixUtil.parseNumberRadix(value);
         try {
-            return Short.parseShort(value);
+            if (result.getRadix() == 16) {
+                String hex = NumberRadixUtil.normalizeLeadingHexZeroes(result.getNumber(), 4);
+                byte[] bytes = HexUtil.toByteArray(hex);
+                return ByteArrayUtil.toShort(bytes);
+            } else {
+                return Short.parseShort(result.getNumber());
+            }
         } catch (NumberFormatException e) {
             throw new ConversionException(e.getMessage());
         }

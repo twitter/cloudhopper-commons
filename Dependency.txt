@@ -1,9 +1,9 @@
 
 The following files have been resolved:
-   cloudhopper:ch-commons-util:jar:5.1.1:compile
+   cloudhopper:ch-commons-util:jar:5.1.2:compile
    cloudhopper:ch-commons-xml:jar:1.2.0:compile
    joda:joda-time:jar:1.6.2:compile
-   junit:junit:jar:4.9:test
+   junit:junit:jar:4.10:test
    logback:logback-classic:jar:0.9.28:test
    logback:logback-core:jar:0.9.28:test
    org.hamcrest:hamcrest-core:jar:1.1:test

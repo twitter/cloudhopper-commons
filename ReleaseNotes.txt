@@ -2,13 +2,31 @@ Cloudhopper, Inc.
 http://www.cloudhopper.com/
 Commons XBean Library
 --------------------------------------------------------------------------------
+1.3.0 - 2012-02-14
+  * Added support for "type" attribute on any property. Allows specific types
+    of objects to be created rather than only instances of of the property itself.
+    Useful for configuring objects with properties of a superclass or interface
+    so that creating specific concrete instances is easy.  For example, assuming
+    a property is of type Number, specific instances of a Number could be created:
+       
+      <property type="java.lang.Integer">1</property>
+      
+  * Hex format is now permitted for any byte, short, int, or long.  The number
+    starts with 0x or 0X and is not permitted to be negative.  For example:
+ 
+      <property>0xFF</property>
+ 
+  * Cleaned up converter source code by adding source annotations for overrides. 
+  * All demo code moved to src/test/com/cloudhopper/xbean/demo
+  * 
+
 1.2.0 - 2011-09-18
-   * Updated license to match Twitter's common opensource one.
-   * Updated build process to maven.
-   * Switched to SLF4J from Log4J
+  * Updated license to match Twitter's common opensource one.
+  * Updated build process to maven.
+  * Switched to SLF4J from Log4J
 
 1.1 - 2010-02-15
-   * Fixed type issue with Bytes that were incorrectly created as Shorts.
+  * Fixed type issue with Bytes that were incorrectly created as Shorts.
 
 1.0 - 2009-06-29
-   * Initial release
+  * Initial release

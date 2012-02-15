@@ -11,17 +11,14 @@
  * CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package com.cloudhopper.commons.xbean;
+package com.cloudhopper.commons.xbean.demo;
 
 // java imports
+import com.cloudhopper.commons.xbean.XmlBean;
+import com.cloudhopper.commons.xml.XmlParser;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-// third party imports
 import org.apache.log4j.Logger;
-
-// my imports
-import com.cloudhopper.commons.xml.*;
 
 /**
  *

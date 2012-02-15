@@ -14,7 +14,10 @@
 
 package com.cloudhopper.commons.xbean.convert;
 
-import com.cloudhopper.commons.xbean.*;
+import com.cloudhopper.commons.util.ByteArrayUtil;
+import com.cloudhopper.commons.util.HexUtil;
+import com.cloudhopper.commons.xbean.ConversionException;
+import com.cloudhopper.commons.xbean.PropertyConverter;
 import com.cloudhopper.commons.xbean.util.NumberRadixResult;
 import com.cloudhopper.commons.xbean.util.NumberRadixUtil;
 
@@ -24,10 +27,17 @@ import com.cloudhopper.commons.xbean.util.NumberRadixUtil;
  */
 public class BytePrimitivePropertyConverter implements PropertyConverter {
 
+    @Override
     public Object convert(String value) throws ConversionException {
         NumberRadixResult result = NumberRadixUtil.parseNumberRadix(value);
         try {
-            return Byte.parseByte(result.getNumber(), result.getRadix());
+            if (result.getRadix() == 16) {
+                String hex = NumberRadixUtil.normalizeLeadingHexZeroes(result.getNumber(), 2);
+                byte[] bytes = HexUtil.toByteArray(hex);
+                return ByteArrayUtil.toByte(bytes);
+            } else {
+                return Byte.parseByte(result.getNumber());
+            }
         } catch (NumberFormatException e) {
             throw new ConversionException(e.getMessage());
         }

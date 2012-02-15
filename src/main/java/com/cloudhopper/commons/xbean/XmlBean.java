@@ -28,7 +28,11 @@ import com.cloudhopper.commons.util.ClassUtil;
 import com.cloudhopper.commons.xbean.convert.*;
 import com.cloudhopper.commons.xml.XPath;
 import com.cloudhopper.commons.xml.XmlParser;
+import com.cloudhopper.commons.xml.XmlParser.Attribute;
 import java.io.File;
+import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Represents a Java bean configured via XML. This class essentially is a much
@@ -329,17 +333,14 @@ public class XmlBean {
         // create a hashmap to track properties
         HashMap<String,String> properties = new HashMap<String,String>();
 
-        doConfigure(rootNode, obj, properties, true);
+        doConfigure(rootNode, obj, properties, true, null);
     }
 
     /**
      * Internal method for handling the configuration of an object. This method
      * is recursively called for simple and complex properties.
      */
-    private void doConfigure(XmlParser.Node rootNode, Object obj, HashMap<String,String> properties, boolean checkForDuplicates) throws XmlBeanException {
-
-        // FIXME: do we do anything with attributes of a node?
-
+    private void doConfigure(XmlParser.Node rootNode, Object obj, HashMap<String,String> properties, boolean checkForDuplicates, CollectionHelper ch) throws XmlBeanException {
         // loop thru all child nodes
         if (rootNode.hasChildren()) {
 
@@ -351,10 +352,14 @@ public class XmlBean {
                 // find the property if it exists
                 BeanProperty property = null;
                 
-                try {
-                    property = BeanUtil.findBeanProperty(obj.getClass(), propertyName, true);
-                } catch (IllegalAccessException e) {
-                    throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Illegal access while attempting to reflect property from class", e);
+                if (ch != null) {
+                    property = ch.getProperty();
+                } else {
+                    try {
+                        property = BeanUtil.findBeanProperty(obj.getClass(), propertyName, true);
+                    } catch (IllegalAccessException e) {
+                        throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Illegal access while attempting to reflect property from class", e);
+                    }
                 }
 
                 // if property is null, then this isn't a valid property on this object
@@ -363,10 +368,17 @@ public class XmlBean {
                 }
 
                 // were any attributes included?
+                String typeAttrString = null;
                 if (node.hasAttributes()) {
-                    throw new PropertyNoAttributesExpectedException(propertyName, node.getPath(), obj.getClass(), "No xml attributes expected for property '" + propertyName + "'");
+                    for (Attribute attr : node.getAttributes()) {
+                        if (attr.getName().equals("type")) {
+                            typeAttrString = attr.getValue();
+                        } else {
+                            throw new PropertyNoAttributesExpectedException(propertyName, node.getPath(), obj.getClass(), "One or more attributes not allowed for property '" + propertyName + "'");
+                        }
+                    }
                 }
-
+                
                 //
                 // otherwise, the property exists, attempt to set it
                 //
@@ -391,6 +403,22 @@ public class XmlBean {
                 // add this property to our hashmap
                 properties.put(node.getPath(), null);
 
+                
+                // if a "type" attribute was included - check that it both exists
+                // and is compatible with the type of the property it is being added/set to
+                Class typeAttrClass = null;
+                if (typeAttrString != null) {
+                    try {
+                        typeAttrClass = Class.forName(typeAttrString);
+                    } catch (ClassNotFoundException e) {
+                        throw new PropertyInvalidTypeException(propertyName, node.getPath(), obj.getClass(), "Unable to find class [" + typeAttrString + "] specified in type attribute of property '" + propertyName + "'");
+                    }
+                    
+                    if (!property.getType().isAssignableFrom(typeAttrClass)) {
+                        throw new PropertyInvalidTypeException(propertyName, node.getPath(), obj.getClass(), "Unable to assign a value of specified type [" + typeAttrString + "] to property [" + propertyName + "] which is a type [" + property.getType().getName() + "]");
+                    }
+                }
+                
 
                 // is this a simple conversion?
                 if (isSimpleType(property.getType())) {
@@ -456,18 +484,36 @@ public class XmlBean {
                     
                     // if null, then we need to create a new instance of it
                     if (targetObj == null) {
-                        try {
-                            // create a new instance of this type
-                            targetObj = property.getType().newInstance();
-                        } catch (InstantiationException e) {
-                            throw new XmlBeanClassException("Failed while attempting to create object of type " + property.getType().getName(), e);
-                        } catch (IllegalAccessException e) {
-                            throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Illegal access while attempting to create new instance of " + property.getType().getName(), e);
+                        Class newType = property.getType();
+                        // create a new instance of either the actual type OR the
+                        // type specified in the "type" attribute
+                        if (typeAttrClass != null) {
+                            newType = typeAttrClass;
                         }
+                        
+                        try {
+                            targetObj = newType.newInstance();
+                        } catch (InstantiationException e) {
+                            throw new XmlBeanClassException("Failed while attempting to create object of type " + newType.getName(), e);
+                        } catch (IllegalAccessException e) {
+                            throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Illegal access while attempting to create new instance of " + newType.getName(), e);
+                        }
+                    }
+                    
+                    // special handling for "collections"
+                    CollectionHelper newch = null;
+                    if (targetObj instanceof Collection) {
+                        // figure out propertyName to use to add items to collection
+                        String colPropName = "value";
+                        if (propertyName.endsWith("s")) {
+                            colPropName = propertyName.substring(0, propertyName.length()-1);
+                        }
+                        Collection c = (Collection)targetObj;
+                        newch = CollectionHelper.createCollectionType(c, String.class, colPropName);
                     }
 
                     // recursively configure it
-                    doConfigure(node, targetObj, properties, checkForDuplicates);
+                    doConfigure(node, targetObj, properties, checkForDuplicates, newch);
 
                     try {
                         // save this reference object back, but only if successfully configured

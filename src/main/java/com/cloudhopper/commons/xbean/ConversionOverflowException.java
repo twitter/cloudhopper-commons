@@ -12,19 +12,20 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.cloudhopper.commons.xbean.convert;
-
-import com.cloudhopper.commons.xbean.ConversionException;
+package com.cloudhopper.commons.xbean;
 
 /**
- * Converts a String to a Byte.
+ * Thrown when a property fails during conversion to a Java object.
  * @author joelauer
  */
-public class BytePropertyConverter extends BytePrimitivePropertyConverter {
+public class ConversionOverflowException extends ConversionException {
+    private static final long serialVersionUID = 1L;
 
-    @Override
-    public Object convert(String value) throws ConversionException {
-        return (Byte)super.convert(value);
+    public ConversionOverflowException(String msg) {
+        this(msg, null);
     }
-    
+
+    public ConversionOverflowException(String msg, Throwable t) {
+        super(msg, t);
+    }
 }

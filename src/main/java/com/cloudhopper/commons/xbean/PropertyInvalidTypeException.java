@@ -12,19 +12,21 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.cloudhopper.commons.xbean.convert;
-
-import com.cloudhopper.commons.xbean.ConversionException;
+package com.cloudhopper.commons.xbean;
 
 /**
- * Converts a String to a Byte.
+ * Thrown if a type was invalid such as a class not found or mismatched types.
+ * 
  * @author joelauer
  */
-public class BytePropertyConverter extends BytePrimitivePropertyConverter {
+public class PropertyInvalidTypeException extends BasePropertyException {
+    private static final long serialVersionUID = 1L;
 
-    @Override
-    public Object convert(String value) throws ConversionException {
-        return (Byte)super.convert(value);
+    public PropertyInvalidTypeException(String propertyName, String xmlPath, Class targetClass, String msg) {
+        this(propertyName, xmlPath, null, msg, null);
     }
-    
+
+    public PropertyInvalidTypeException(String propertyName, String xmlPath, Class targetClass, String msg, Throwable t) {
+        super(propertyName, xmlPath, targetClass, msg, t);
+    }
 }
