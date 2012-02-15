@@ -16,6 +16,7 @@
 package com.cloudhopper.commons.xbean;
 
 import com.cloudhopper.commons.util.BeanProperty;
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
 

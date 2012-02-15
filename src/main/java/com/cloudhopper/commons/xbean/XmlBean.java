@@ -30,6 +30,9 @@ import com.cloudhopper.commons.xml.XPath;
 import com.cloudhopper.commons.xml.XmlParser;
 import com.cloudhopper.commons.xml.XmlParser.Attribute;
 import java.io.File;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -353,6 +356,10 @@ public class XmlBean {
                 BeanProperty property = null;
                 
                 if (ch != null) {
+                    // make sure node tag name matches propertyName
+                    if (!propertyName.equals(ch.getProperty().getName())) {
+                        throw new PropertyNotFoundException(propertyName, node.getPath(), obj.getClass(), "Collection can only be configured with a property name of [" + ch.getProperty().getName() + "] but [" + propertyName + "] was used instead");
+                    }
                     property = ch.getProperty();
                 } else {
                     try {
@@ -386,12 +393,14 @@ public class XmlBean {
                 // is there actually a "setter" method -- we shouldn't let
                 // user's be able to configure fields in this case
                 // unless accessing private properties is allowed
-                if (!this.accessPrivateProperties && property.getAddMethod() == null && property.getSetMethod() == null) {
+                // unless a collection helper is also null
+                if (ch == null && !this.accessPrivateProperties && property.getAddMethod() == null && property.getSetMethod() == null) {
                     throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Not permitted to add or set property '" + propertyName + "'");
                 }
 
                 // if we can "add" this property, then turn off checkForDuplicates
-                if (property.canAdd()) {
+                // we also don't check for duplicates in the case of a collection
+                if (ch != null || property.canAdd()) {
                     checkForDuplicates = false;
                 }
                 
@@ -419,47 +428,27 @@ public class XmlBean {
                     }
                 }
                 
-
+                // the object we'll eventually add or set
+                Object value = null;
+                // get the node's text value
+                String nodeText = node.getText();
+                
                 // is this a simple conversion?
                 if (isSimpleType(property.getType())) {
-                    
-                    // get the node's text value
-                    String string0 = node.getText();
-
                     // was any text set?  if not, throw an exception
-                    if (string0 == null) {
+                    if (nodeText == null) {
                         throw new PropertyIsEmptyException(propertyName, node.getPath(), obj.getClass(), "Value for property '" + propertyName + "' was empty in xml");
                     }
 
                     // try to convert this to a Java object value
-                    Object value = null;
                     try {
-                        value = convertType(string0, property.getType());
+                        value = convertType(nodeText, property.getType());
                     } catch (ConversionException e) {
-                        throw new PropertyConversionException(propertyName, node.getPath(), obj.getClass(), "The value '" + string0 + "' for property '" + propertyName + "' could not be converted to a(n) " + property.getType().getSimpleName() + ". " + e.getMessage());
-                    }
-
-                    // k, time to try to add or set the value
-                    try {
-                        property.addOrSet(obj, value);
-                    } catch (InvocationTargetException e) {
-                        Throwable t = e;
-                        // this generally means the setXXXX method on the object
-                        // threw an exception -- we want to unwrap that and just
-                        // return that exception instead
-                        if (e.getCause() != null) {
-                            t = e.getCause();
-                        }
-                        throw new PropertyInvocationException(propertyName, node.getPath(), obj.getClass(), "The value '" + string0 + "' for property '" + propertyName + "' caused an exception", t.getMessage(), t);
-                    } catch (IllegalAccessException e) {
-                        throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Illegal access while setting property", e);
+                        throw new PropertyConversionException(propertyName, node.getPath(), obj.getClass(), "The value '" + nodeText + "' for property '" + propertyName + "' could not be converted to a(n) " + property.getType().getSimpleName() + ". " + e.getMessage());
                     }
 
                 // otherwise, this is a "complicated" type
                 } else {
-
-                    // try to "get" an instance of this variable if it exists
-                    Object targetObj = null;
 
                     // only "get" the property if its possible -- e.g. if there
                     // is only an addXXXX method available, then this would throw
@@ -467,7 +456,7 @@ public class XmlBean {
                     // is possible first
                     if (property.canGet()) {
                         try {
-                            targetObj = property.get(obj);
+                            value = property.get(obj);
                         } catch (IllegalAccessException e) {
                             throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Illegal access while attempting to get property value from object", e);
                         } catch (InvocationTargetException e) {
@@ -483,7 +472,7 @@ public class XmlBean {
                     }
                     
                     // if null, then we need to create a new instance of it
-                    if (targetObj == null) {
+                    if (value == null) {
                         Class newType = property.getType();
                         // create a new instance of either the actual type OR the
                         // type specified in the "type" attribute
@@ -492,7 +481,7 @@ public class XmlBean {
                         }
                         
                         try {
-                            targetObj = newType.newInstance();
+                            value = newType.newInstance();
                         } catch (InstantiationException e) {
                             throw new XmlBeanClassException("Failed while attempting to create object of type " + newType.getName(), e);
                         } catch (IllegalAccessException e) {
@@ -502,24 +491,51 @@ public class XmlBean {
                     
                     // special handling for "collections"
                     CollectionHelper newch = null;
-                    if (targetObj instanceof Collection) {
-                        // figure out propertyName to use to add items to collection
+                    if (value instanceof Collection) {
+                        // determine propertyName to use to add items to collection
                         String colPropName = "value";
                         if (propertyName.endsWith("s")) {
                             colPropName = propertyName.substring(0, propertyName.length()-1);
                         }
-                        Collection c = (Collection)targetObj;
-                        newch = CollectionHelper.createCollectionType(c, String.class, colPropName);
+                        
+                        // determine type of objects to create by determining generic type
+                        if (property.getField() == null) {
+                            throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Unable to access field for collection type [" + value.getClass().getName() + "]");
+                        } else {
+                            Type type = property.getField().getGenericType();
+                            if (!(type instanceof ParameterizedType)) {
+                                throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Only collection types with a parameterized type are supported");
+                            } else {
+                                ParameterizedType pt = (ParameterizedType)type;
+                                Type[] pts = pt.getActualTypeArguments();
+                                if (pts.length != 1) {
+                                    throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Only collection types with only 1 parameterized type are supported; actual [" + pts.length + "]");
+                                }
+                                Type firstPt = pts[0];
+                                if (!(firstPt instanceof Class)) {
+                                    throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Only collection types with a parameterized type of a specific class are supported (e.g. ArrayList<String> rather than ArrayList<ArrayList<String>>)");
+                                }
+                                Class pclass = (Class)firstPt;
+                                Collection c = (Collection)value;
+                                newch = CollectionHelper.createCollectionType(c, pclass, colPropName);
+                            }
+                        }
                     }
 
-                    // recursively configure it
-                    doConfigure(node, targetObj, properties, checkForDuplicates, newch);
-
+                    // recursively configure the next object
+                    doConfigure(node, value, properties, checkForDuplicates, newch);
+                }
+                
+                // save this reference object back (since it was successfully configured)
+                if (ch != null) {
+                    if (ch.isCollectionType()) {
+                        ch.getCollectionObject().add(value);
+                    } else {
+                        throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Unsupported collection type used");
+                    }
+                } else {
                     try {
-                        // save this reference object back, but only if successfully configured
-                        property.addOrSet(obj, targetObj);
-                    } catch (IllegalAccessException e) {
-                        throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Illegal access while attempting to set property", e);
+                        property.addOrSet(obj, value);
                     } catch (InvocationTargetException e) {
                         Throwable t = e;
                         // this generally means the setXXXX method on the object
@@ -528,7 +544,9 @@ public class XmlBean {
                         if (e.getCause() != null) {
                             t = e.getCause();
                         }
-                        throw new PropertyInvocationException(propertyName, node.getPath(), obj.getClass(), "The value(s) for property '" + propertyName + "' caused an exception", t.getMessage(), t);
+                        throw new PropertyInvocationException(propertyName, node.getPath(), obj.getClass(), "The value '" + nodeText + "' for property '" + propertyName + "' caused an exception", t.getMessage(), t);
+                    } catch (IllegalAccessException e) {
+                        throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Illegal access while setting property", e);
                     }
                 }
             }
