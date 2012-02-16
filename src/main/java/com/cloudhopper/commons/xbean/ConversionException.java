@@ -17,6 +17,7 @@ package com.cloudhopper.commons.xbean;
 /**
  * Thrown by PropertyConverter classes when a String fails conversion to a
  * Java object.
+ * 
  * @author joelauer
  */
 public class ConversionException extends Exception {

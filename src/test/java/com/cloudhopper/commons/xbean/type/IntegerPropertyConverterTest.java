@@ -12,12 +12,14 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.cloudhopper.commons.xbean.convert;
+package com.cloudhopper.commons.xbean.type;
 
 // third party imports
+import com.cloudhopper.commons.xbean.type.IntegerTypeConverter;
+import com.cloudhopper.commons.xbean.type.IntegerPrimitiveTypeConverter;
 import com.cloudhopper.commons.xbean.ConversionException;
 import com.cloudhopper.commons.xbean.ConversionOverflowException;
-import com.cloudhopper.commons.xbean.PropertyConverter;
+import com.cloudhopper.commons.xbean.TypeConverter;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,14 +29,14 @@ import org.junit.Test;
 public class IntegerPropertyConverterTest {
     private static final Logger logger = Logger.getLogger(IntegerPropertyConverterTest.class);
 
-    private PropertyConverter[] pcs = new PropertyConverter[] {
-        new IntegerPropertyConverter(),
-        new IntegerPrimitivePropertyConverter()
+    private TypeConverter[] pcs = new TypeConverter[] {
+        new IntegerTypeConverter(),
+        new IntegerPrimitiveTypeConverter()
     };
     
     @Test
     public void validConversions() throws Exception {
-        for (PropertyConverter pc : pcs) {
+        for (TypeConverter pc : pcs) {
             Assert.assertEquals(Integer.valueOf(0), pc.convert("0"));
             // min and max  value of an integer
             Assert.assertEquals(Integer.valueOf(-2147483648), pc.convert("-2147483648"));
@@ -49,7 +51,7 @@ public class IntegerPropertyConverterTest {
     
     @Test
     public void overflow() throws Exception {
-        for (PropertyConverter pc : pcs) {
+        for (TypeConverter pc : pcs) {
             try {
                 pc.convert("0x100000000");
             } catch (ConversionOverflowException e) {
@@ -60,7 +62,7 @@ public class IntegerPropertyConverterTest {
     
     @Test
     public void negativeInHexNotAllowed() throws Exception {
-        for (PropertyConverter pc : pcs) {
+        for (TypeConverter pc : pcs) {
             try {
                 pc.convert("-0x01");
             } catch (ConversionException e) {

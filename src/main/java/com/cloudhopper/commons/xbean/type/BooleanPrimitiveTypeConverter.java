@@ -12,16 +12,16 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.cloudhopper.commons.xbean.convert;
+package com.cloudhopper.commons.xbean.type;
 
 import com.cloudhopper.commons.xbean.ConversionException;
-import com.cloudhopper.commons.xbean.PropertyConverter;
+import com.cloudhopper.commons.xbean.TypeConverter;
 
 /**
  * Converts a String to a boolean.
  * @author joelauer
  */
-public class BooleanPrimitivePropertyConverter implements PropertyConverter {
+public class BooleanPrimitiveTypeConverter implements TypeConverter {
 
     @Override
     public Object convert(String value) throws ConversionException {

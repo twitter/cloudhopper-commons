@@ -12,19 +12,19 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.cloudhopper.commons.xbean.convert;
+package com.cloudhopper.commons.xbean.type;
 
 import com.cloudhopper.commons.xbean.ConversionException;
 
 /**
- * Converts a String to a Byte.
+ * Converts a String to an Integer.
  * @author joelauer
  */
-public class BytePropertyConverter extends BytePrimitivePropertyConverter {
+public class IntegerTypeConverter extends IntegerPrimitiveTypeConverter {
 
     @Override
     public Object convert(String value) throws ConversionException {
-        return (Byte)super.convert(value);
+        return (Integer)super.convert(value);
     }
     
 }

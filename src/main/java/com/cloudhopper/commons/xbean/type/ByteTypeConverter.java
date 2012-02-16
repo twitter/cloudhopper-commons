@@ -12,26 +12,19 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.cloudhopper.commons.xbean.convert;
+package com.cloudhopper.commons.xbean.type;
 
 import com.cloudhopper.commons.xbean.ConversionException;
-import com.cloudhopper.commons.xbean.PropertyConverter;
 
 /**
- * Converts a String to a Boolean.
+ * Converts a String to a Byte.
  * @author joelauer
  */
-public class BooleanPropertyConverter implements PropertyConverter {
+public class ByteTypeConverter extends BytePrimitiveTypeConverter {
 
     @Override
     public Object convert(String value) throws ConversionException {
-        if (value.equalsIgnoreCase("true")) {
-            return Boolean.TRUE;
-        } else if (value.equalsIgnoreCase("false")) {
-            return Boolean.FALSE;
-        } else {
-            throw new ConversionException("A boolean value must either be 'true' or 'false' [actual='" + value + "']");
-        }
+        return (Byte)super.convert(value);
     }
-
+    
 }

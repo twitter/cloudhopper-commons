@@ -12,31 +12,31 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.cloudhopper.commons.xbean.convert;
+package com.cloudhopper.commons.xbean.type;
 
 import com.cloudhopper.commons.util.ByteArrayUtil;
 import com.cloudhopper.commons.util.HexUtil;
 import com.cloudhopper.commons.xbean.ConversionException;
-import com.cloudhopper.commons.xbean.PropertyConverter;
+import com.cloudhopper.commons.xbean.TypeConverter;
 import com.cloudhopper.commons.xbean.util.NumberRadixResult;
 import com.cloudhopper.commons.xbean.util.NumberRadixUtil;
 
 /**
- * Converts a String to a long.
+ * Converts a String to a byte.
  * @author joelauer
  */
-public class LongPrimitivePropertyConverter implements PropertyConverter {
+public class BytePrimitiveTypeConverter implements TypeConverter {
 
     @Override
     public Object convert(String value) throws ConversionException {
         NumberRadixResult result = NumberRadixUtil.parseNumberRadix(value);
         try {
             if (result.getRadix() == 16) {
-                String hex = NumberRadixUtil.normalizeLeadingHexZeroes(result.getNumber(), 16);
+                String hex = NumberRadixUtil.normalizeLeadingHexZeroes(result.getNumber(), 2);
                 byte[] bytes = HexUtil.toByteArray(hex);
-                return ByteArrayUtil.toLong(bytes);
+                return ByteArrayUtil.toByte(bytes);
             } else {
-                return Long.parseLong(result.getNumber());
+                return Byte.parseByte(result.getNumber());
             }
         } catch (NumberFormatException e) {
             throw new ConversionException(e.getMessage());

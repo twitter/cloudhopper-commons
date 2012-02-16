@@ -25,17 +25,13 @@ import org.xml.sax.SAXException;
 import com.cloudhopper.commons.util.BeanProperty;
 import com.cloudhopper.commons.util.BeanUtil;
 import com.cloudhopper.commons.util.ClassUtil;
-import com.cloudhopper.commons.xbean.convert.*;
 import com.cloudhopper.commons.xml.XPath;
 import com.cloudhopper.commons.xml.XmlParser;
 import com.cloudhopper.commons.xml.XmlParser.Attribute;
 import java.io.File;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Represents a Java bean configured via XML. This class essentially is a much
@@ -89,25 +85,6 @@ import java.util.logging.Logger;
  * @author joelauer
  */
 public class XmlBean {
-
-    // registry of converters
-    private static HashMap<Class,PropertyConverter> converterRegistry;
-
-    // statically create registry
-    static {
-        converterRegistry = new HashMap<Class,PropertyConverter>();
-        converterRegistry.put(String.class, new StringPropertyConverter());
-        converterRegistry.put(boolean.class, new BooleanPrimitivePropertyConverter());
-        converterRegistry.put(Boolean.class, new BooleanPropertyConverter());
-        converterRegistry.put(byte.class, new BytePrimitivePropertyConverter());
-        converterRegistry.put(Byte.class, new BytePropertyConverter());
-        converterRegistry.put(short.class, new ShortPrimitivePropertyConverter());
-        converterRegistry.put(Short.class, new ShortPropertyConverter());
-        converterRegistry.put(int.class, new IntegerPrimitivePropertyConverter());
-        converterRegistry.put(Integer.class, new IntegerPropertyConverter());
-        converterRegistry.put(long.class, new LongPrimitivePropertyConverter());
-        converterRegistry.put(Long.class, new LongPropertyConverter());
-    }
 
     private String rootTag;
     private boolean accessPrivateProperties;
@@ -371,7 +348,7 @@ public class XmlBean {
 
                 // if property is null, then this isn't a valid property on this object
                 if (property == null) {
-                    throw new PropertyNotFoundException(propertyName, node.getPath(), obj.getClass(), "Property '" + propertyName + "' not found");
+                    throw new PropertyNotFoundException(propertyName, node.getPath(), obj.getClass(), "Property [" + propertyName + "] not found");
                 }
 
                 // were any attributes included?
@@ -381,7 +358,7 @@ public class XmlBean {
                         if (attr.getName().equals("type")) {
                             typeAttrString = attr.getValue();
                         } else {
-                            throw new PropertyNoAttributesExpectedException(propertyName, node.getPath(), obj.getClass(), "One or more attributes not allowed for property '" + propertyName + "'");
+                            throw new PropertyNoAttributesExpectedException(propertyName, node.getPath(), obj.getClass(), "One or more attributes not allowed for property [" + propertyName + "]");
                         }
                     }
                 }
@@ -395,7 +372,7 @@ public class XmlBean {
                 // unless accessing private properties is allowed
                 // unless a collection helper is also null
                 if (ch == null && !this.accessPrivateProperties && property.getAddMethod() == null && property.getSetMethod() == null) {
-                    throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Not permitted to add or set property '" + propertyName + "'");
+                    throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Not permitted to add or set property [" + propertyName + "]");
                 }
 
                 // if we can "add" this property, then turn off checkForDuplicates
@@ -407,7 +384,7 @@ public class XmlBean {
                 // was this property already previously set?
                 // only use this check if an "add" method doesn't exist for the bean
                 if (checkForDuplicates && properties.containsKey(node.getPath())) {
-                    throw new PropertyAlreadySetException(propertyName, node.getPath(), obj.getClass(), "Property '" + propertyName + "' was already previously set in the xml");
+                    throw new PropertyAlreadySetException(propertyName, node.getPath(), obj.getClass(), "Property [" + propertyName + "] was already previously set in the xml");
                 }
                 // add this property to our hashmap
                 properties.put(node.getPath(), null);
@@ -434,17 +411,17 @@ public class XmlBean {
                 String nodeText = node.getText();
                 
                 // is this a simple conversion?
-                if (isSimpleType(property.getType())) {
+                if (TypeConverterUtil.isSupported(property.getType())) {
                     // was any text set?  if not, throw an exception
                     if (nodeText == null) {
-                        throw new PropertyIsEmptyException(propertyName, node.getPath(), obj.getClass(), "Value for property '" + propertyName + "' was empty in xml");
+                        throw new PropertyIsEmptyException(propertyName, node.getPath(), obj.getClass(), "Value for property [" + propertyName + "] was empty in xml");
                     }
 
                     // try to convert this to a Java object value
                     try {
-                        value = convertType(nodeText, property.getType());
+                        value = TypeConverterUtil.convert(nodeText, property.getType());
                     } catch (ConversionException e) {
-                        throw new PropertyConversionException(propertyName, node.getPath(), obj.getClass(), "The value '" + nodeText + "' for property '" + propertyName + "' could not be converted to a(n) " + property.getType().getSimpleName() + ". " + e.getMessage());
+                        throw new PropertyConversionException(propertyName, node.getPath(), obj.getClass(), "The value [" + nodeText + "] for property [" + propertyName + "] could not be converted to a(n) " + property.getType().getSimpleName() + ". " + e.getMessage());
                     }
 
                 // otherwise, this is a "complicated" type
@@ -467,7 +444,7 @@ public class XmlBean {
                             if (e.getCause() != null) {
                                 t = e.getCause();
                             }
-                            throw new PropertyInvocationException(propertyName, node.getPath(), obj.getClass(), "The existing value for property '" + propertyName + "' caused an exception during get", t.getMessage(), t);
+                            throw new PropertyInvocationException(propertyName, node.getPath(), obj.getClass(), "The existing value for property [" + propertyName + "] caused an exception during get", t.getMessage(), t);
                         }
                     }
                     
@@ -551,61 +528,5 @@ public class XmlBean {
                 }
             }
         }
-
     }
-
-    /**
-     * Returns whether or not this property type is supported by a simple
-     * conversion of a String to a Java object. This method checks if the type
-     * is registered in the converter registry or if it represents an Enum.
-     * 
-     * @param type The property type
-     * @return True if its a simple conversion, false otherwise.
-     */
-    private boolean isSimpleType(Class type) {
-        return (converterRegistry.containsKey(type) || type.isEnum());
-    }
-
-    /**
-     * Converts the string value into an Object of the Class type. Will either
-     * delegate conversion to a PropertyConverter or will handle creating enums
-     * directly.
-     * 
-     * @param string0 The string value to convert
-     * @param type The Class type to convert it into
-     * @return A new Object converted from the String value
-     */
-    private Object convertType(String string0, Class type) throws ConversionException {
-        // if enum, handle differently
-        if (type.isEnum()) {
-            Object obj = ClassUtil.findEnumConstant(type, string0);
-            if (obj == null) {
-                throw new ConversionException("Invalid constant '" + string0 + "' used, supported values [" + toListString(type.getEnumConstants()) + "]");
-            }
-            return obj;
-        // else, handle normally
-        } else {
-            PropertyConverter converter = converterRegistry.get(type);
-
-            if (converter == null) {
-                throw new ConversionException("The type " + type.getSimpleName() + " is not supported");
-            }
-
-            return converter.convert(string0);
-        }
-    }
-
-    private String toListString(Object[] list) {
-        StringBuilder buf = new StringBuilder(200);
-        int i = 0;
-        for (Object obj : list) {
-            if (i != 0) {
-                buf.append(",");
-            }
-            buf.append(obj.toString());
-            i++;
-        }
-        return buf.toString();
-    }
-
 }

@@ -12,46 +12,48 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.cloudhopper.commons.xbean.convert;
+package com.cloudhopper.commons.xbean.type;
 
 // third party imports
+import com.cloudhopper.commons.xbean.type.ByteTypeConverter;
+import com.cloudhopper.commons.xbean.type.BytePrimitiveTypeConverter;
 import com.cloudhopper.commons.xbean.ConversionException;
 import com.cloudhopper.commons.xbean.ConversionOverflowException;
-import com.cloudhopper.commons.xbean.PropertyConverter;
+import com.cloudhopper.commons.xbean.TypeConverter;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
 // my imports
 
-public class ShortPropertyConverterTest {
-    private static final Logger logger = Logger.getLogger(ShortPropertyConverterTest.class);
+public class BytePropertyConverterTest {
+    private static final Logger logger = Logger.getLogger(BytePropertyConverterTest.class);
 
-    private PropertyConverter[] pcs = new PropertyConverter[] {
-        new ShortPropertyConverter(),
-        new ShortPrimitivePropertyConverter()
+    private TypeConverter[] pcs = new TypeConverter[] {
+        new ByteTypeConverter(),
+        new BytePrimitiveTypeConverter()
     };
     
     @Test
     public void validConversions() throws Exception {
-        for (PropertyConverter pc : pcs) {
-            Assert.assertEquals(Short.valueOf((short)0), pc.convert("0"));
-            // min and max value of a short
-            Assert.assertEquals(Short.valueOf((short)-32768), pc.convert("-32768"));
-            Assert.assertEquals(Short.valueOf((short)32767), pc.convert("32767"));
+        for (TypeConverter pc : pcs) {
+            Assert.assertEquals(Byte.valueOf((byte)0), pc.convert("0"));
+            // min and max value of a byte
+            Assert.assertEquals(Byte.valueOf((byte)-128), pc.convert("-128"));
+            Assert.assertEquals(Byte.valueOf((byte)127), pc.convert("127"));
             // hex versions
-            Assert.assertEquals(Short.valueOf((short)0), pc.convert("0x0"));
-            Assert.assertEquals(Short.valueOf((short)0), pc.convert("0X0"));
-            Assert.assertEquals(Short.valueOf((short)32767), pc.convert("0x7FFF"));
-            Assert.assertEquals(Short.valueOf((short)0xFFFF), pc.convert("0xFFFF"));
+            Assert.assertEquals(Byte.valueOf((byte)0), pc.convert("0x0"));
+            Assert.assertEquals(Byte.valueOf((byte)0), pc.convert("0X0"));
+            Assert.assertEquals(Byte.valueOf((byte)127), pc.convert("0x7F"));
+            Assert.assertEquals(Byte.valueOf((byte)0xFF), pc.convert("0xFF"));
         }
     }
     
     @Test
     public void overflow() throws Exception {
-        for (PropertyConverter pc : pcs) {
+        for (TypeConverter pc : pcs) {
             try {
-                pc.convert("0x10000");
+                pc.convert("0x100");
             } catch (ConversionOverflowException e) {
                 // valid
             }
@@ -60,7 +62,7 @@ public class ShortPropertyConverterTest {
     
     @Test
     public void negativeInHexNotAllowed() throws Exception {
-        for (PropertyConverter pc : pcs) {
+        for (TypeConverter pc : pcs) {
             try {
                 pc.convert("-0x01");
             } catch (ConversionException e) {

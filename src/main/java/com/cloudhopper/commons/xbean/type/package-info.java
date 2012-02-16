@@ -12,19 +12,7 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.cloudhopper.commons.xbean.convert;
-
-import com.cloudhopper.commons.xbean.ConversionException;
-
 /**
- * Converts a String to a Long.
- * @author joelauer
+ * Classes for converting Strings to Java types such as Integers.
  */
-public class LongPropertyConverter extends LongPrimitivePropertyConverter {
-
-    @Override
-    public Object convert(String value) throws ConversionException {
-        return (Long)super.convert(value);
-    }
-    
-}
+package com.cloudhopper.commons.xbean.type;
