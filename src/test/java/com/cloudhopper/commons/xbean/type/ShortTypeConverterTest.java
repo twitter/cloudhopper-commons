@@ -26,8 +26,8 @@ import org.junit.Test;
 
 // my imports
 
-public class ShortPropertyConverterTest {
-    private static final Logger logger = Logger.getLogger(ShortPropertyConverterTest.class);
+public class ShortTypeConverterTest {
+    private static final Logger logger = Logger.getLogger(ShortTypeConverterTest.class);
 
     private TypeConverter[] pcs = new TypeConverter[] {
         new ShortTypeConverter(),

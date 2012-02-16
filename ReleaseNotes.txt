@@ -2,12 +2,18 @@ Cloudhopper, Inc.
 http://www.cloudhopper.com/
 Commons XBean Library
 --------------------------------------------------------------------------------
-2.0.0 - 2012-02-14
+2.0.0 - 2012-02-15
   * Upgrade parent POM to 1.6
   * Moved compile dependency of slf4j-api to test
   * PropertyConverter and impl classes all renamed to TypeConverter
   * Added XmlBeanFactory to simplify the process of creating a new object and
     configuring it all in 1 method call.
+  * Added new annotation XmlBeanProperty for defining in source code what 
+    element names are expected for either values or keys.  For example:
+
+      @XmlBeanProperty(value="host")
+      ArrayList<String> hosts;
+
   * Added support for Collections.  Any class implementing the Collection
     interface can have items/elements added automatically with child elements.
     The underlying generic parameterized type is reflected from the specific

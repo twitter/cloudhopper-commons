@@ -26,8 +26,8 @@ import org.junit.Test;
 
 // my imports
 
-public class BytePropertyConverterTest {
-    private static final Logger logger = Logger.getLogger(BytePropertyConverterTest.class);
+public class ByteTypeConverterTest {
+    private static final Logger logger = Logger.getLogger(ByteTypeConverterTest.class);
 
     private TypeConverter[] pcs = new TypeConverter[] {
         new ByteTypeConverter(),

@@ -38,6 +38,11 @@ public class XmlBeanCollectionTest {
         private ArrayList<String> hosts;
     }
     
+    public static class SampleAWithAnnotation {
+        @XmlBeanProperty(value="host")
+        private ArrayList<String> hosts;
+    }
+    
     public static class SampleB {
         private HashSet<String> hosts;
         private TreeSet<Integer> ids;
@@ -87,7 +92,7 @@ public class XmlBeanCollectionTest {
         // build xml
         StringBuilder string0 = new StringBuilder(200)
                 .append("<configuration>\n")
-                .append("  <hosts>\n")
+                .append("  <hosts value=\"host\">\n")
                 .append("    <host>www.google.com</host>\n")
                 .append("    <host>www.twitter.com</host>\n")
                 .append("  </hosts>\n")
@@ -137,12 +142,12 @@ public class XmlBeanCollectionTest {
         // build xml
         StringBuilder string0 = new StringBuilder(200)
                 .append("<configuration>\n")
-                .append("  <hosts>\n")
+                .append("  <hosts value=\"host\">\n")
                 .append("    <host>www.google.com</host>\n")
                 .append("    <host>www.twitter.com</host>\n")
                 .append("    <host>www.twitter.com</host>\n")   // duplicate in set should be ignored
                 .append("  </hosts>\n")
-                .append("  <ids>\n")
+                .append("  <ids value=\"id\">\n")
                 .append("    <id>1</id>\n")
                 .append("    <id>20</id>\n")
                 .append("    <id>3</id>\n")
@@ -181,7 +186,7 @@ public class XmlBeanCollectionTest {
         // build xml
         StringBuilder string0 = new StringBuilder(200)
                 .append("<configuration>\n")
-                .append("  <samples>\n")
+                .append("  <samples value=\"sample\">\n")
                 .append("    <sample>\n")
                 .append("      <name>name1</name>\n")
                 .append("      <comment>comment1</comment>\n")
@@ -220,7 +225,7 @@ public class XmlBeanCollectionTest {
         // build xml
         StringBuilder string0 = new StringBuilder(200)
                 .append("<configuration>\n")
-                .append("  <hosts>\n")
+                .append("  <hosts value=\"host\">\n")
                 .append("    <host>\n")
                 .append("      <value>www.google.com</value>\n")
                 .append("      <value>www.google2.com</value>\n")
@@ -244,9 +249,9 @@ public class XmlBeanCollectionTest {
         // build xml
         StringBuilder string0 = new StringBuilder(200)
                 .append("<configuration>\n")
-                .append("  <hosts type=\"java.util.ArrayList\">\n")
-                .append("    <host>www.google.com</host>\n")
-                .append("    <host>www.twitter.com</host>\n")
+                .append("  <hosts type=\"java.util.ArrayList\" value=\"host2\">\n")
+                .append("    <host2>www.google.com</host2>\n")
+                .append("    <host2>www.twitter.com</host2>\n")
                 .append("  </hosts>\n")
                 .append("</configuration>")
                 .append("");
@@ -286,5 +291,25 @@ public class XmlBeanCollectionTest {
         Assert.assertEquals(2, a.hostList.size());
         Assert.assertEquals("www.google.com", a.hostList.get(0));
         Assert.assertEquals("www.twitter.com", a.hostList.get(1));
+    }
+    
+    @Test
+    public void addValuesViaAnnotationToArrayList() throws Exception {
+        // build xml
+        StringBuilder string0 = new StringBuilder(200)
+                .append("<configuration>\n")
+                .append("  <hosts>\n")
+                .append("    <host>www.google.com</host>\n")
+                .append("    <host>www.twitter.com</host>\n")
+                .append("  </hosts>\n")
+                .append("</configuration>")
+                .append("");
+
+        SampleAWithAnnotation a = XmlBeanFactory.create(string0.toString(), SampleAWithAnnotation.class);
+        
+        Assert.assertNotNull(a.hosts);
+        Assert.assertEquals(2, a.hosts.size());
+        Assert.assertEquals("www.google.com", a.hosts.get(0));
+        Assert.assertEquals("www.twitter.com", a.hosts.get(1));
     }
 }

@@ -25,6 +25,7 @@ import org.xml.sax.SAXException;
 import com.cloudhopper.commons.util.BeanProperty;
 import com.cloudhopper.commons.util.BeanUtil;
 import com.cloudhopper.commons.util.ClassUtil;
+import com.cloudhopper.commons.util.StringUtil;
 import com.cloudhopper.commons.xml.XPath;
 import com.cloudhopper.commons.xml.XmlParser;
 import com.cloudhopper.commons.xml.XmlParser.Attribute;
@@ -32,6 +33,7 @@ import java.io.File;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * Represents a Java bean configured via XML. This class essentially is a much
@@ -351,12 +353,40 @@ public class XmlBean {
                     throw new PropertyNotFoundException(propertyName, node.getPath(), obj.getClass(), "Property [" + propertyName + "] not found");
                 }
 
+                // only some attributes are permitted if we're dealing with a
+                // collection or map at this point
+                boolean isCollection = (Collection.class.isAssignableFrom(property.getType()));
+                boolean isMap = (Map.class.isAssignableFrom(property.getType()));
+                
                 // were any attributes included?
                 String typeAttrString = null;
+                String valueAttrString = null;
+                String keyAttrString = null;
+                
+                // check if an annotation is present for the field
+                if (property.getField() != null) {
+                    XmlBeanProperty annotation = property.getField().getAnnotation(XmlBeanProperty.class);
+                    if (annotation != null) {
+                        if (!StringUtil.isEmpty(annotation.value())) {
+                            valueAttrString = annotation.value();
+                        }
+                        if (!StringUtil.isEmpty(annotation.key())) {
+                            keyAttrString = annotation.key();
+                        }
+                    }
+                }
+                
+                // process attributes within the xml itself
                 if (node.hasAttributes()) {
                     for (Attribute attr : node.getAttributes()) {
                         if (attr.getName().equals("type")) {
                             typeAttrString = attr.getValue();
+                        } else if (attr.getName().equals("value") && (isCollection || isMap)) {
+                            // only permitted on collections or map
+                            valueAttrString = attr.getValue();
+                        } else if (attr.getName().equals("key") && isMap) {
+                            // only permitted on map
+                            keyAttrString = attr.getValue();
                         } else {
                             throw new PropertyNoAttributesExpectedException(propertyName, node.getPath(), obj.getClass(), "One or more attributes not allowed for property [" + propertyName + "]");
                         }
@@ -466,37 +496,11 @@ public class XmlBean {
                         }
                     }
                     
-                    // special handling for "collections"
+                    // special handling for "collections" -- required for handling
+                    // the values in configuring of child objects
                     CollectionHelper newch = null;
                     if (value instanceof Collection) {
-                        // determine propertyName to use to add items to collection
-                        String colPropName = "value";
-                        if (propertyName.endsWith("s")) {
-                            colPropName = propertyName.substring(0, propertyName.length()-1);
-                        }
-                        
-                        // determine type of objects to create by determining generic type
-                        if (property.getField() == null) {
-                            throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Unable to access field for collection type [" + value.getClass().getName() + "]");
-                        } else {
-                            Type type = property.getField().getGenericType();
-                            if (!(type instanceof ParameterizedType)) {
-                                throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Only collection types with a parameterized type are supported");
-                            } else {
-                                ParameterizedType pt = (ParameterizedType)type;
-                                Type[] pts = pt.getActualTypeArguments();
-                                if (pts.length != 1) {
-                                    throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Only collection types with only 1 parameterized type are supported; actual [" + pts.length + "]");
-                                }
-                                Type firstPt = pts[0];
-                                if (!(firstPt instanceof Class)) {
-                                    throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Only collection types with a parameterized type of a specific class are supported (e.g. ArrayList<String> rather than ArrayList<ArrayList<String>>)");
-                                }
-                                Class pclass = (Class)firstPt;
-                                Collection c = (Collection)value;
-                                newch = CollectionHelper.createCollectionType(c, pclass, colPropName);
-                            }
-                        }
+                        newch = createCollectionHelper(node, obj, value, propertyName, property, valueAttrString, keyAttrString);
                     }
 
                     // recursively configure the next object
@@ -528,5 +532,38 @@ public class XmlBean {
                 }
             }
         }
+    }
+    
+    public CollectionHelper createCollectionHelper(XmlParser.Node node, Object obj, Object value, String propertyName, BeanProperty property, String valueAttrString, String keyAttrString) throws PropertyPermissionException {
+        // special handling for "collections"
+        CollectionHelper newch = null;
+        
+        // determine "propertyName" for elements within the collection
+        String elementPropertyName = (valueAttrString != null ? valueAttrString : "value");
+
+        // determine type of objects to create by determining generic type
+        if (property.getField() == null) {
+            throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Unable to access field for collection type [" + value.getClass().getName() + "]");
+        } else {
+            Type type = property.getField().getGenericType();
+            if (!(type instanceof ParameterizedType)) {
+                throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Only collection types with a parameterized type are supported");
+            } else {
+                ParameterizedType pt = (ParameterizedType)type;
+                Type[] pts = pt.getActualTypeArguments();
+                if (pts.length != 1) {
+                    throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Only collection types with only 1 parameterized type are supported; actual [" + pts.length + "]");
+                }
+                Type firstPt = pts[0];
+                if (!(firstPt instanceof Class)) {
+                    throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Only collection types with a parameterized type of a specific class are supported (e.g. ArrayList<String> rather than ArrayList<ArrayList<String>>)");
+                }
+                Class pclass = (Class)firstPt;
+                Collection c = (Collection)value;
+                newch = CollectionHelper.createCollectionType(c, pclass, elementPropertyName);
+            }
+        }
+        
+        return newch;
     }
 }
