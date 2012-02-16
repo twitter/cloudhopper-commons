@@ -14,6 +14,7 @@
 package com.cloudhopper.commons.xbean;
 
 import com.cloudhopper.commons.util.BeanProperty;
+import com.cloudhopper.commons.util.BeanUtil;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
@@ -25,9 +26,11 @@ import java.util.Map;
 public class CollectionHelper {
     
     private Collection collectionObject;
+    private Class valueClass;                   // used on maps or collections
+    private BeanProperty valueProperty;         // used on maps or collections
     private Map mapObject;
-    private Class valueType;
-    private BeanProperty property;
+    private Class keyClass;                     // only used on maps
+    private BeanProperty keyProperty;           // only used on maps
     
     public boolean isCollectionType() {
         return (collectionObject != null);
@@ -41,24 +44,64 @@ public class CollectionHelper {
         return collectionObject;
     }
 
+    public Class getValueClass() {
+        return valueClass;
+    }
+    
+    public BeanProperty getValueProperty() {
+        return valueProperty;
+    }
+    
     public Map getMapObject() {
         return mapObject;
     }
 
-    public Class getValueType() {
-        return valueType;
+    public Class getKeyClass() {
+        return keyClass;
     }
-    
-    public BeanProperty getProperty() {
-        return property;
+
+    public BeanProperty getKeyProperty() {
+        return keyProperty;
     }
-    
-    static public CollectionHelper createCollectionType(Collection collection, Class valueType, String propertyName) {
+
+    static public CollectionHelper createCollectionType(Collection collection, String valuePropertyName, Class valueClass) {
         CollectionHelper ch = new CollectionHelper();
         ch.collectionObject = collection;
-        ch.valueType = valueType;
-        ch.property = new BeanProperty(propertyName, valueType, null);
+        ch.valueClass = valueClass;
+        ch.valueProperty = new BeanProperty(valuePropertyName, valueClass, null);
         return ch;
     }
     
+    static public CollectionHelper createMapType(Map map, String valuePropertyName, Class valueClass, String keyPropertyName, Class keyClass) throws XmlBeanClassException {
+        CollectionHelper ch = new CollectionHelper();
+        ch.mapObject = map;
+        ch.valueClass = valueClass;
+        ch.valueProperty = new BeanProperty(valuePropertyName, valueClass, null);
+        
+        // key properties
+        ch.keyClass = keyClass;
+        
+        // if the key property name is set -- this is the value which will be
+        // used for the key -- if its null then the xml MUST supply a key attribute
+        if (keyPropertyName != null) {
+            // find BeanProperty to "get" the key when we're ready to put
+            try {
+                ch.keyProperty = BeanUtil.findBeanProperty(valueClass, keyPropertyName, true);
+            } catch (IllegalAccessException e) {
+                throw new XmlBeanClassException("Unable to access class " + valueClass.getName() + " while searching for key", e);
+            }
+            if (ch.keyProperty == null) {
+                throw new XmlBeanClassException("Unable to find key getter/setter for property [" + keyPropertyName + "] on class " + valueClass.getName());
+            }
+        } else {
+            // if no key property is explicity set -- then only strings in the 
+            // key attribute on an element must be used.  Thereforce, the keyClass
+            // must be of a simpleType
+            if (!TypeConverterUtil.isSupported(keyClass)) {
+                throw new XmlBeanClassException("If no key getter/setter property was set then only key attributes are allowed; these can only be simple types such as a String, Integer; but was actually class " + keyClass.getName());
+            }
+        }
+        
+        return ch;
+    }
 }

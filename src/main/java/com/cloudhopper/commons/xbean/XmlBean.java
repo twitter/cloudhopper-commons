@@ -336,10 +336,10 @@ public class XmlBean {
                 
                 if (ch != null) {
                     // make sure node tag name matches propertyName
-                    if (!propertyName.equals(ch.getProperty().getName())) {
-                        throw new PropertyNotFoundException(propertyName, node.getPath(), obj.getClass(), "Collection can only be configured with a property name of [" + ch.getProperty().getName() + "] but [" + propertyName + "] was used instead");
+                    if (!propertyName.equals(ch.getValueProperty().getName())) {
+                        throw new PropertyNotFoundException(propertyName, node.getPath(), obj.getClass(), "Collection can only be configured with a property name of [" + ch.getValueProperty().getName() + "] but [" + propertyName + "] was used instead");
                     }
-                    property = ch.getProperty();
+                    property = ch.getValueProperty();
                 } else {
                     try {
                         property = BeanUtil.findBeanProperty(obj.getClass(), propertyName, true);
@@ -384,8 +384,8 @@ public class XmlBean {
                         } else if (attr.getName().equals("value") && (isCollection || isMap)) {
                             // only permitted on collections or map
                             valueAttrString = attr.getValue();
-                        } else if (attr.getName().equals("key") && isMap) {
-                            // only permitted on map
+                        } else if (attr.getName().equals("key") && (isMap || (ch != null && ch.isMapType()))) {
+                            // only permitted on map type OR on a map value
                             keyAttrString = attr.getValue();
                         } else {
                             throw new PropertyNoAttributesExpectedException(propertyName, node.getPath(), obj.getClass(), "One or more attributes not allowed for property [" + propertyName + "]");
@@ -499,7 +499,7 @@ public class XmlBean {
                     // special handling for "collections" -- required for handling
                     // the values in configuring of child objects
                     CollectionHelper newch = null;
-                    if (value instanceof Collection) {
+                    if (value instanceof Collection || value instanceof Map) {
                         newch = createCollectionHelper(node, obj, value, propertyName, property, valueAttrString, keyAttrString);
                     }
 
@@ -511,6 +511,31 @@ public class XmlBean {
                 if (ch != null) {
                     if (ch.isCollectionType()) {
                         ch.getCollectionObject().add(value);
+                    } else if (ch.isMapType()) {
+                        try {
+                            // need to figure out the key value -- it may either be
+                            // a value from the value OR a simple type
+                            Object keyValue = null;
+                            if (ch.getKeyProperty() == null) {
+                                // a KEY must have been set!
+                                if (StringUtil.isEmpty(keyAttrString)) {
+                                    throw new Exception("A key attribute is required for put onto map");
+                                } else {
+                                    keyValue = TypeConverterUtil.convert(keyAttrString, ch.getKeyClass());
+                                }
+                            } else {
+                                // extract the key value from the object
+                                keyValue = ch.getKeyProperty().get(value);
+                            }
+                            
+                            if (keyValue == null) {
+                                throw new NullPointerException("Keys cannot be null for put onto map");
+                            }
+                        
+                            ch.getMapObject().put(keyValue, value);
+                        } catch (Exception e) {
+                            throw new PropertyPermissionException(propertyName, node.getPath(), value.getClass(), "Unable to find/get key value for put onto map", e);
+                        }
                     } else {
                         throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Unsupported collection type used");
                     }
@@ -534,12 +559,12 @@ public class XmlBean {
         }
     }
     
-    public CollectionHelper createCollectionHelper(XmlParser.Node node, Object obj, Object value, String propertyName, BeanProperty property, String valueAttrString, String keyAttrString) throws PropertyPermissionException {
+    public CollectionHelper createCollectionHelper(XmlParser.Node node, Object obj, Object value, String propertyName, BeanProperty property, String valueAttrString, String keyAttrString) throws PropertyPermissionException, XmlBeanClassException {
         // special handling for "collections"
         CollectionHelper newch = null;
         
         // determine "propertyName" for elements within the collection
-        String elementPropertyName = (valueAttrString != null ? valueAttrString : "value");
+        String valuePropertyName = (valueAttrString != null ? valueAttrString : "value");
 
         // determine type of objects to create by determining generic type
         if (property.getField() == null) {
@@ -551,16 +576,34 @@ public class XmlBean {
             } else {
                 ParameterizedType pt = (ParameterizedType)type;
                 Type[] pts = pt.getActualTypeArguments();
-                if (pts.length != 1) {
-                    throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Only collection types with only 1 parameterized type are supported; actual [" + pts.length + "]");
+                
+                if (value instanceof Map) {
+                    // Maps must have 2 parameterized types
+                    if (pts.length != 2) {
+                        throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Only map types with 2 parameterized types are supported; actual [" + pts.length + "]");
+                    }
+                    Type keyType = pts[0];
+                    Type valueType = pts[1];
+                    if (!(keyType instanceof Class && valueType instanceof Class)) {
+                        throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Only a map with paramertized types of concrete classes are supported (e.g. TreeMap<String,Integer> rather than TreeMap<String,ArrayList<String>>)");
+                    }
+                    Class keyClass = (Class)keyType;
+                    Class valueClass = (Class)valueType;
+                    Map m = (Map)value;
+                    newch = CollectionHelper.createMapType(m, valuePropertyName, valueClass, keyAttrString, keyClass);
+                } else {
+                    // Collections must have 1 parameterized type
+                    if (pts.length != 1) {
+                        throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Only collection types with 1 parameterized type are supported; actual [" + pts.length + "]");
+                    }
+                    Type valueType = pts[0];
+                    if (!(valueType instanceof Class)) {
+                        throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Only a collection with a parameterized type of a concrete class is supported (e.g. ArrayList<String> rather than ArrayList<ArrayList<String>>)");
+                    }
+                    Class valueClass = (Class)valueType;
+                    Collection c = (Collection)value;
+                    newch = CollectionHelper.createCollectionType(c, valuePropertyName, valueClass);
                 }
-                Type firstPt = pts[0];
-                if (!(firstPt instanceof Class)) {
-                    throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Only collection types with a parameterized type of a specific class are supported (e.g. ArrayList<String> rather than ArrayList<ArrayList<String>>)");
-                }
-                Class pclass = (Class)firstPt;
-                Collection c = (Collection)value;
-                newch = CollectionHelper.createCollectionType(c, pclass, elementPropertyName);
             }
         }
         
