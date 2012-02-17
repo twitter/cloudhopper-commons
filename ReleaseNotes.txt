@@ -2,6 +2,12 @@ Cloudhopper, Inc.
 http://www.cloudhopper.com/
 Commons XBean Library
 --------------------------------------------------------------------------------
+2.0.1 - 2012-02-17
+  * Added support for TimeUnit extensions for any "long" or "Long" property.
+    In the XML, the following would actually set 30000.
+
+      <interval>30.seconds</interval>
+
 2.0.0 - 2012-02-16
   * Upgrade parent POM to 1.6
   * Moved compile dependency of slf4j-api to test

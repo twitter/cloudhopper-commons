@@ -20,6 +20,8 @@ import com.cloudhopper.commons.xbean.ConversionException;
 import com.cloudhopper.commons.xbean.TypeConverter;
 import com.cloudhopper.commons.xbean.util.NumberRadixResult;
 import com.cloudhopper.commons.xbean.util.NumberRadixUtil;
+import com.cloudhopper.commons.xbean.util.TimeUnitUtil;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Converts a String to a long.
@@ -36,7 +38,15 @@ public class LongPrimitiveTypeConverter implements TypeConverter {
                 byte[] bytes = HexUtil.toByteArray(hex);
                 return ByteArrayUtil.toLong(bytes);
             } else {
-                return Long.parseLong(result.getNumber());
+                // special handling of longs with a TimeUnit ending
+                TimeUnitUtil.Result timeResult = TimeUnitUtil.parse(result.getNumber());
+                if (timeResult != null) {
+                    long l = Long.parseLong(timeResult.getNumber());
+                    long ms = TimeUnit.MILLISECONDS.convert(l, timeResult.getTimeUnit());
+                    return ms;
+                } else {
+                    return Long.parseLong(result.getNumber());
+                }
             }
         } catch (NumberFormatException e) {
             throw new ConversionException(e.getMessage());

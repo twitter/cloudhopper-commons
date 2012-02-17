@@ -49,6 +49,20 @@ public class LongTypeConverterTest {
     }
     
     @Test
+    public void timeUnits() throws Exception {
+        for (TypeConverter pc : pcs) {
+            Assert.assertEquals(Long.valueOf(0L), pc.convert("0.second"));
+            Assert.assertEquals(Long.valueOf(0L), pc.convert("0.seconds"));
+            Assert.assertEquals(Long.valueOf(1000L), pc.convert("1.second"));
+            Assert.assertEquals(Long.valueOf(30000L), pc.convert("30.seconds"));
+            Assert.assertEquals(Long.valueOf(30L), pc.convert("30.millis"));
+            Assert.assertEquals(Long.valueOf(2L*60L*60L*1000L), pc.convert("2.hours"));
+            Assert.assertEquals(Long.valueOf(2L*24L*60L*60L*1000L), pc.convert("2.days"));
+            Assert.assertEquals(Long.valueOf(2L*60L*1000L), pc.convert("2.minutes"));
+        }
+    }
+    
+    @Test
     public void overflow() throws Exception {
         for (TypeConverter pc : pcs) {
             try {
