@@ -171,3 +171,19 @@ element (e.g. operatorMappings).  This can be accomplished as follows:
 
   @XmlBeanProperty(value="operatorMap", key="stratusOperatorId")
   TreeMap<Integer,OperatorMap> operatorMappings;
+
+With the addition of this annotation, the final example XML is even cleaner:
+
+  <custom type="com.cloudhopper.integration.pario.ParioSmppHandler">
+    <carrierIdLength>4</carrierIdLength>
+    <operatorMappings>
+      <operatorMap>
+        <stratusOperatorId>1</stratusOperatorId>
+        <parioCarrierId>6015</parioCarrierId>
+      </operatorMap>
+      <operatorMap>
+        <stratusOperatorId>2</stratusOperatorId>
+        <parioCarrierId>6016</parioCarrierId>
+      </operatorMap>
+    </operatorMappings>
+  </custom>
