@@ -3,22 +3,50 @@ http://www.cloudhopper.com/
 Commons XBean Library
 --------------------------------------------------------------------------------
 
-The Xbean Java library is a set of simple utility classes for configuring a
-Java object from XML.  The Java object may contain other Java objects in which
-case the XML may configure a graph of Java objects.  The properties of a
-class that need configured generally must use JavaBean naming patterns.
+The Xbean Java library is a set of utility classes for creating or configuring
+a Java object from XML. The library is a simple alternative to other XML-to-Java
+frameworks such as Spring.  The library will only map in a single direction - 
+XML -> Java. This limited scope helps keep this library small, fast, and very
+good at what it was mainly intended for -- application configuration files.
 
-The library does have the ability to bypass access permissions and directly
-set the value of private or protected fields.  The library will always try to
-use the appropriate get/set methods and fallback to directly setting the field
-value if a get/set is missing and "access private properties" is enabled.
+Unlike most XML-to-Java frameworks, the XML has no defined schema.  The element
+names may only match the actual names of the properties of the Java object being
+configured.  If a Java property name is changed, the corresponding XML element
+name must change too. Thus, while the XML does not have an official schema, the
+Java object being configured IS the runtime schema. The result is a very clean
+XML configuration file syntax -- that isn't polluted with unnecessary info or
+deep knowledge of Java.
+
+Additionally, the focus on the single mapping direction of XML -> Java increases
+the flexibility of how string values within the XML are converted to their 
+Java equivalent. For example:
+
+ * A byte value in decimal: "1"
+ * A byte value in hexidecimal: "0x01"
+ * A long value in decimal: "10"
+ * A long value in hexidecimal: "0x0A"
+ * A long value that represents time: "10.seconds"
+
+Since the library only focuses on a single mapping direction, the runtime
+flexibility in automatically determining how to convert types is easier to 
+implement and enforce.
+
+The Java object may contain either simple properties such as Strings, ints, etc.
+or other Java objects. The properties of a class that need configured must use
+JavaBean naming conventions, but a public getter/setter is optional. The library
+has the ability to bypass access permissions and directly set the value of a private
+or protected field.  The library will try to use the matching getter/setter
+methods and fallback to directly setting the field value if a getter/setter is
+missing and "access private properties" is enabled.
 
 While its best if a Java class configured with this library has an empty
 constructor, the library does not always need to actually create a new object.
 For properties that represent other Java objects, the library will always check
 to see if a value already exists, and set the properties on that instance.
 This is the one case where the Java object being configured does not necessarily
-need an empty constructor.
+need an empty constructor.  This is also how the library supports configuring
+the same object multiple times -- it will attempt to fetch a set value first
+rather than create a new instance.
 
 ================================ Overview ======================================
 

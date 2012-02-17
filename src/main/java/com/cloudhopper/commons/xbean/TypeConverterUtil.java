@@ -51,6 +51,20 @@ public class TypeConverterUtil {
     }
     
     /**
+     * Registers a new TypeConverter to be used for a specific class.  Once
+     * registered an XmlBean will be able to automatically convert a String
+     * value in an XML file into a new instance of the registered type. Since
+     * the registry is a static global instance, the caller needs to be careful
+     * to register types at the start of their application to avoid threading
+     * issues.
+     * @param type The class to register
+     * @param tc The TypeConverter instance
+     */
+    static public void register(Class type, TypeConverter tc) {
+        REGISTRY.put(type, tc);
+    }
+    
+    /**
      * Returns whether or not this property type is supported by a simple
      * conversion of a String to a Java object. This method checks if the type
      * is registered in the converter registry or if it represents an enum.

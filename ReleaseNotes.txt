@@ -4,9 +4,15 @@ Commons XBean Library
 --------------------------------------------------------------------------------
 2.0.1 - 2012-02-17
   * Added support for TimeUnit extensions for any "long" or "Long" property.
-    In the XML, the following would actually set 30000.
+    In the XML, the following would actually set a long value of 30000 on the
+    interval property.
 
       <interval>30.seconds</interval>
+
+    The assumption is that either a long or Long could represent a unit of
+    time in milliseconds.  There is built-in support for milliseconds, seconds,
+    minutes, hours, and days.
+  * Added support for registering custom TypeConverters in TypeConverterUtil. 
 
 2.0.0 - 2012-02-16
   * Upgrade parent POM to 1.6
