@@ -15,7 +15,6 @@ package com.cloudhopper.commons.xbean;
 
 import com.cloudhopper.commons.util.BeanProperty;
 import com.cloudhopper.commons.util.BeanUtil;
-import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
 
@@ -92,6 +91,10 @@ public class CollectionHelper {
             }
             if (ch.keyProperty == null) {
                 throw new XmlBeanClassException("Unable to find key getter/setter for property [" + keyPropertyName + "] on class " + valueClass.getName());
+            }
+            // also need to check that the property type is compatible with the actual generic
+            if (!keyClass.isAssignableFrom(ch.keyProperty.getType())) {
+                throw new XmlBeanClassException("Incompatible class specified for key; class of map key [" + keyClass.getName() + "] and class of object key [" + ch.keyProperty.getType().getName() + "] for property [" + keyPropertyName + "]");
             }
         } else {
             // if no key property is explicity set -- then only strings in the 

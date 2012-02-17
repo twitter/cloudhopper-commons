@@ -14,17 +14,13 @@
 
 package com.cloudhopper.commons.xbean.type;
 
-// third party imports
-import com.cloudhopper.commons.xbean.type.ShortTypeConverter;
-import com.cloudhopper.commons.xbean.type.ShortPrimitiveTypeConverter;
 import com.cloudhopper.commons.xbean.ConversionException;
 import com.cloudhopper.commons.xbean.ConversionOverflowException;
 import com.cloudhopper.commons.xbean.TypeConverter;
+import com.cloudhopper.commons.xbean.TypeConverterUtil;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
-
-// my imports
 
 public class ShortTypeConverterTest {
     private static final Logger logger = Logger.getLogger(ShortTypeConverterTest.class);
@@ -37,6 +33,9 @@ public class ShortTypeConverterTest {
     @Test
     public void validConversions() throws Exception {
         for (TypeConverter pc : pcs) {
+            // check that the registry has this class
+            Object obj = pc.convert("0");
+            Assert.assertEquals(obj, TypeConverterUtil.convert("0", obj.getClass()));
             Assert.assertEquals(Short.valueOf((short)0), pc.convert("0"));
             // min and max value of a short
             Assert.assertEquals(Short.valueOf((short)-32768), pc.convert("-32768"));

@@ -85,6 +85,7 @@ Commons XBean Library
  
   * Cleaned up converter source code by adding source annotations for overrides. 
   * All demo code moved to src/test/com/cloudhopper/xbean/demo
+  * Added support for Double, double, Float, float, URL, and File types.
 
 1.2.0 - 2011-09-18
   * Updated license to match Twitter's common opensource one.

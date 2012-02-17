@@ -29,6 +29,7 @@ public class XmlBeanMapTest {
     public static class Host {
         private String name;
         private String ip;
+        private Integer id;
     }
     
     public static class Host2 {
@@ -97,7 +98,7 @@ public class XmlBeanMapTest {
         Assert.assertNull(a.hosts.get("www.twitter2.com"));
     }
     
-    @Test(expected=PropertyPermissionException.class)
+    @Test(expected=PropertyIsEmptyException.class)
     public void putSimpleTypesToHashMapWithoutKeyThrowsException() throws Exception {
         // build xml
         StringBuilder string0 = new StringBuilder(200)
@@ -302,5 +303,53 @@ public class XmlBeanMapTest {
         Host2 h1 = d.hosts.get("www.twitter.com");
         Assert.assertNotNull(h1);
         Assert.assertNull(h1.ips);
+    }
+    
+    @Test(expected=XmlBeanClassException.class)
+    public void putWithKeyClassNotMatchingHashMapKeyClassThrowsException() throws Exception {
+        // build xml
+        StringBuilder string0 = new StringBuilder(200)
+                .append("<configuration>\n")
+                .append("  <hosts value=\"host\" key=\"id\">\n")
+                .append("    <host>\n")
+                .append("      <name>www.google.com</name>\n")
+                .append("      <ip>10.10.1.1</ip>\n")
+                .append("      <id>1</id>\n")
+                .append("    </host>\n")
+                .append("    <host>\n")
+                .append("      <name>www.twitter.com</name>\n")
+                .append("      <ip>10.10.1.2</ip>\n")
+                .append("      <id>2</id>\n")
+                .append("    </host>\n")
+                .append("  </hosts>\n")
+                .append("</configuration>")
+                .append("");
+
+        SampleB b = XmlBeanFactory.create(string0.toString(), SampleB.class);
+        // this should have failed!
+        Assert.fail();
+    }
+    
+    @Test(expected=PropertyIsEmptyException.class)
+    public void putNullKeyHashMapThrowsException() throws Exception {
+        // build xml
+        StringBuilder string0 = new StringBuilder(200)
+                .append("<configuration>\n")
+                .append("  <hosts value=\"host\" key=\"name\">\n")
+                .append("    <host>\n")
+                .append("      <name>www.google.com</name>\n")
+                .append("      <ip>10.10.1.1</ip>\n")
+                .append("    </host>\n")
+                .append("    <host>\n")
+                //.append("      <name>www.twitter.com</name>\n")   // missing name - null should throw exception
+                .append("      <ip>10.10.1.2</ip>\n")
+                .append("    </host>\n")
+                .append("  </hosts>\n")
+                .append("</configuration>")
+                .append("");
+
+        SampleB b = XmlBeanFactory.create(string0.toString(), SampleB.class);
+        // this should have failed!
+        Assert.fail();
     }
 }

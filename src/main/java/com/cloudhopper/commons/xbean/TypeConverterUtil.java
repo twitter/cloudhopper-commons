@@ -13,18 +13,10 @@
  */
 package com.cloudhopper.commons.xbean;
 
-import com.cloudhopper.commons.xbean.type.IntegerPrimitiveTypeConverter;
-import com.cloudhopper.commons.xbean.type.ByteTypeConverter;
-import com.cloudhopper.commons.xbean.type.LongTypeConverter;
-import com.cloudhopper.commons.xbean.type.BooleanPrimitiveTypeConverter;
-import com.cloudhopper.commons.xbean.type.IntegerTypeConverter;
-import com.cloudhopper.commons.xbean.type.ShortPrimitiveTypeConverter;
-import com.cloudhopper.commons.xbean.type.LongPrimitiveTypeConverter;
-import com.cloudhopper.commons.xbean.type.StringTypeConverter;
-import com.cloudhopper.commons.xbean.type.BooleanTypeConverter;
-import com.cloudhopper.commons.xbean.type.ShortTypeConverter;
-import com.cloudhopper.commons.xbean.type.BytePrimitiveTypeConverter;
 import com.cloudhopper.commons.util.ClassUtil;
+import com.cloudhopper.commons.xbean.type.*;
+import java.io.File;
+import java.net.URL;
 import java.util.HashMap;
 
 /**
@@ -50,6 +42,12 @@ public class TypeConverterUtil {
         REGISTRY.put(Integer.class, new IntegerTypeConverter());
         REGISTRY.put(long.class, new LongPrimitiveTypeConverter());
         REGISTRY.put(Long.class, new LongTypeConverter());
+        REGISTRY.put(double.class, new URLTypeConverter());
+        REGISTRY.put(Double.class, new DoubleTypeConverter());
+        REGISTRY.put(float.class, new FloatPrimitiveTypeConverter());
+        REGISTRY.put(Float.class, new FloatTypeConverter());
+        REGISTRY.put(URL.class, new URLTypeConverter());
+        REGISTRY.put(File.class, new FileTypeConverter());
     }
     
     /**

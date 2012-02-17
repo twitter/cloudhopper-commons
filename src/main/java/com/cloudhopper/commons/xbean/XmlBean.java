@@ -512,32 +512,35 @@ public class XmlBean {
                     if (ch.isCollectionType()) {
                         ch.getCollectionObject().add(value);
                     } else if (ch.isMapType()) {
-                        try {
-                            // need to figure out the key value -- it may either be
-                            // a value from the value OR a simple type
-                            Object keyValue = null;
-                            if (ch.getKeyProperty() == null) {
-                                // a KEY must have been set!
-                                if (StringUtil.isEmpty(keyAttrString)) {
-                                    throw new Exception("A key attribute is required for put onto map");
-                                } else {
-                                    keyValue = TypeConverterUtil.convert(keyAttrString, ch.getKeyClass());
-                                }
+                        // need to figure out the key value -- it may either be a value from the value OR a simple type
+                        Object keyValue = null;
+                        if (ch.getKeyProperty() == null) {
+                            // a KEY must have been set!
+                            if (StringUtil.isEmpty(keyAttrString)) {
+                                throw new PropertyIsEmptyException(propertyName, node.getPath(), obj.getClass(), "The XML attribute [key] was null or empty and is required");
                             } else {
+                                try {
+                                    keyValue = TypeConverterUtil.convert(keyAttrString, ch.getKeyClass());
+                                } catch (ConversionException e) {
+                                    throw new PropertyConversionException(propertyName, node.getPath(), obj.getClass(), "Unable to cleanly convert key value [" + keyAttrString + "] into type [" + ch.getKeyClass().getName() + ": " + e.getMessage(), e);
+                                }
+                            }
+                        } else {
+                            try {
                                 // extract the key value from the object
                                 keyValue = ch.getKeyProperty().get(value);
+                            } catch (Exception e) {
+                                throw new PropertyPermissionException(propertyName, node.getPath(), value.getClass(), "Unable to access property to get the value of the key: " + e.getMessage(), e);
                             }
                             
                             if (keyValue == null) {
-                                throw new NullPointerException("Keys cannot be null for put onto map");
+                                throw new PropertyIsEmptyException(propertyName, node.getPath(), obj.getClass(), "The value of the key [" + ch.getKeyProperty().getName() + "] was null; unable to put value onto the map");
                             }
-                        
-                            ch.getMapObject().put(keyValue, value);
-                        } catch (Exception e) {
-                            throw new PropertyPermissionException(propertyName, node.getPath(), value.getClass(), "Unable to find/get key value for put onto map", e);
                         }
+
+                        ch.getMapObject().put(keyValue, value);
                     } else {
-                        throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Unsupported collection type used");
+                        throw new PropertyPermissionException(propertyName, node.getPath(), obj.getClass(), "Unsupported collection/map type used");
                     }
                 } else {
                     try {
