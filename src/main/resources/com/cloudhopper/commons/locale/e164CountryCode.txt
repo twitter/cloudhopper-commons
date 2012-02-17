@@ -205,6 +205,8 @@
 64 NZ
 65 SG
 66 TH
+670 TL
+# and AQ i guess...
 672 NF
 673 BN
 674 NR
