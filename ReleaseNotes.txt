@@ -3,6 +3,11 @@ http://twitter.com/
 http://www.cloudhopper.com/
 Commons Charset Library
 --------------------------------------------------------------------------------
+2.3.1 - 2012-02-17
+  * Removed Turkish "dotless i" safe unicode replacements in MobileTextUtil.
+    At recommendation of locals in Turkey, these replacements changed the 
+    meaning of of a message too much.
+
 2.3.0 - 2011-10-26
   * Upgrade parent POM dependency from 1.5 to 1.6
   * Added support for OSGI in final jar

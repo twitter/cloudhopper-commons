@@ -6,6 +6,19 @@ This library attempts to contain the fastest and most efficient methods for
 converting charsets to/from byte arrays.  There are also some useful charset
 specific static methods (e.g. GSMCharset.canRepresent()).
 
+Based on experience at Twitter during our integrations with several hundred
+mobile operators around the world, the following charsets are supported:
+
+  * ISO-8859-1 (Latin-1)
+  * ISO-8859-15 (Latin-15)
+  * GSM (Default GSM alphabet including extended chars via 0x1B escapes)
+  * Packed GSM (GSM alphabet 8-bit values are packed into 7-bit alignment) 
+  * UCS-2
+  * UTF-8
+  * Modified UTF-8 (Useful for fast Java-only serialization; see info below)
+  * Airwide IA5/GSM (Similar to GSM alphabet; customizations for Airwide SMSCs)
+  * Vodafone D2 (Similar to GSM alphabet; customizations for Vodafone D2 SMSCs)
+  * Vodafone Turkey (Similar to GSM alphabet; customizations for Vodafone Turkey SMSCs)
 
 Installation
 --------------------------------------------------------------------------------

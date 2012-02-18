@@ -43,8 +43,9 @@ public class MobileTextUtil {
         { '\u2026', '.' }, // actually "...", but just replacing with "."
         { '\u2039', '<' },
         { '\u203A', '>' },
-        { '\u0131', '1' }, // U+0131 is a lower case letter dotless i (ı)
-        { '\u0130', 'i' }, // U+0130 (İ) is capital i with dot
+        /** deprecated at recommendation by Turkcell - these replacements changed meaning too much */
+        //{ '\u0131', '1' }, // U+0131 is a lower case letter dotless i (ı)
+        //{ '\u0130', 'i' }, // U+0130 (İ) is capital i with dot
     };
 
 
