@@ -28,7 +28,9 @@ public enum DatabaseVendor {
     /** PostgreSQL, default driver org.postgresql.Driver */
     POSTGRESQL("org.postgresql.Driver", "SELECT NOW()"),
     /** MySQL, default driver com.mysql.jdbc.Driver */
-    MYSQL("com.mysql.jdbc.Driver", "SELECT NOW()");
+    MYSQL("com.mysql.jdbc.Driver", "SELECT NOW()"),
+    /** Vertica, default driver com.vertica.Driver */
+    VERTICA("com.vertica.Driver", "SELECT NOW()");
 
     private final String defaultDriver;
     private final String defaultValidationQuery;

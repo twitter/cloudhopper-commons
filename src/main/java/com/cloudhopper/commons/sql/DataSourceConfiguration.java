@@ -437,6 +437,10 @@ public class DataSourceConfiguration implements Cloneable {
      *      jdbc:sqlserver://localhost;databaseName=AdventureWorks;integratedSecurity=true;applicationName=MyApp;
      *      jdbc:sqlserver://localhost:1433;instanceName=instance1;databaseName=AdventureWorks;integratedSecurity=true;applicationName=MyApp;
      *
+     * Vertica: jdbc:vertica:database
+     *      jdbc:vertica://host/database
+     *      jdbc:vertica://host:port/database
+     *
      * @param url
      * @throws com.cloudhopper.commons.sql.SQLConfigurationException
      */
@@ -469,6 +473,8 @@ public class DataSourceConfiguration implements Cloneable {
             setVendorIfNotSet(DatabaseVendor.POSTGRESQL);
         } else if (protocol.equals("jtds") && subProtocol.equals("sqlserver")) {
             setVendorIfNotSet(DatabaseVendor.MSSQL);
+        } else if (protocol.equals("vertica")) {
+	    setVendorIfNotSet(DatabaseVendor.VERTICA);
         } else {
             throw new SQLConfigurationException("Unsupported protocol '" + protocol + (!subProtocol.equals("") ? ":" + subProtocol : "") + "' in JDBC URL. Add mapping to DataSourceFactory?");
         }

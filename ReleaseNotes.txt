@@ -2,6 +2,15 @@ Cloudhopper, Inc.
 http://www.cloudhopper.com/
 Commons Sql Library
 --------------------------------------------------------------------------------
+
+1.2.0 - 2012-05-17
+   * Addded support for "vertica" driver and vendor.
+   * Updated ch-commons-util dependency from 5.1.1 to 5.1.2
+   * Upgraded logback-classic dependency from 0.9.28 to 1.0.1
+   * Upgraded logback-core dependency from 0.9.28 to 1.0.1
+   * Upgraded log4j-over-slf4j dependency from 1.6.1 to 1.6.4
+   * Upgraded slf4j-api dependency from 1.6.1 to 1.6.4
+
 1.1.0 - 2011-10-19
    * Added support for "postgresql" driver and vendor.
 
