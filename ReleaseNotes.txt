@@ -1,0 +1,32 @@
+Cloudhopper, Inc.
+http://www.cloudhopper.com/
+SXMP Library
+--------------------------------------------------------------------------------
+1.4.1 - 2012-01-31
+  * Added junit test to ensure secure processing of XML is enabled. An example
+    Denial of Service attack is now included as part of unit tests.  Only is 
+    passed if running on a JDK >= 1.6.0_29.
+
+1.4.0 - 2012-01-19
+  * Refactored build process.
+
+1.3 - 2010-08-23
+  * Refactored SXMP error codes and added additional ones.
+
+1.2 - 2010-06-06
+  * Added support for additional address types: NATIONAL and ALPHANUMERIC.
+  * Added support for application name property in all request types
+    including submit, deliver, and delivery report. Allows support for multiple
+    applications per account.
+  * Changed default text encoding from ISO-8859-1 to UTF-8.
+  * Added support for extra fields in a delivery report: createDate, finalDate,
+    and messageError.
+
+1.1 - 2010-05-11
+  * Fixed all unit test cases to properly run with updated commons-util lib.
+  * Fixed compiler warnings on all exception classes missing a serial number.
+  * Added support for UTF-8 text encoding for message text.
+  * Added simple SxmpSender class for sending requests and parsing responses.
+
+1.0 - 2010-01-31
+  * Initial release
