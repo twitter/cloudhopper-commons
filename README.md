@@ -4,8 +4,7 @@ Cloudhopper by Twitter
 cloudhopper-commons-util
 ------------------------
 
-The ch-commons-util library contains common utility classes for Cloudhopper-based
-Java projects.
+Common Java utility classes used across Cloudhopper-based projects.
 
 Contributors
 ------------
