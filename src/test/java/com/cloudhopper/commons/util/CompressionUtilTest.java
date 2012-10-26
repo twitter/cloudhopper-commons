@@ -1,18 +1,24 @@
-/**
- * Copyright (C) 2011 Twitter, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed
- * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
- * CONDITIONS OF ANY KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations under the License.
- */
-
 package com.cloudhopper.commons.util;
+
+/*
+ * #%L
+ * ch-commons-util
+ * %%
+ * Copyright (C) 2012 Cloudhopper by Twitter
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 
 import com.cloudhopper.commons.util.CompressionUtil.Algorithm;
 import java.io.File;
@@ -24,6 +30,8 @@ import org.junit.*;
  * @author joelauer (twitter: @jjlauer or <a href="http://twitter.com/jjlauer" target=window>http://twitter.com/jjlauer</a>)
  */
 public class CompressionUtilTest {
+    
+    private static final String TEST_FILE = "CHANGELOG.md";
 
     @Test
     public void isAlgorithmSupported() throws Exception {
@@ -58,7 +66,7 @@ public class CompressionUtilTest {
         //
 
         // test file to use for tests
-        File originalSourceFile = new File("ReleaseNotes.txt");
+        File originalSourceFile = new File(TEST_FILE);
 
         // copy original source to build directory -- becomes our actual source file
         File sourceFile = new File("target", originalSourceFile.getName());
@@ -84,7 +92,7 @@ public class CompressionUtilTest {
     @Test
     public void compressNoOverwrite() throws Exception {
         // test file to use for tests
-        File originalSourceFile = new File("ReleaseNotes.txt");
+        File originalSourceFile = new File(TEST_FILE);
 
         // copy original source to build directory -- becomes our actual source file
         File sourceFile = new File("target", originalSourceFile.getName());

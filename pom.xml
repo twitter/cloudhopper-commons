@@ -4,48 +4,31 @@
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>cloudhopper</groupId>
+  <groupId>com.cloudhopper</groupId>
   <artifactId>ch-commons-util</artifactId>
   <packaging>jar</packaging>
-  <version>5.1.2</version>
+  <version>6.0.0-SNAPSHOT</version>
   <name>ch-commons-util</name>
 
   <parent>
-    <groupId>cloudhopper</groupId>
-    <artifactId>ch-maven-parent-public</artifactId>
-    <version>1.6</version>
+    <groupId>com.cloudhopper</groupId>
+    <artifactId>ch-maven-parent-oss</artifactId>
+    <version>1.2</version>
   </parent>
-
-  <repositories>
-    <repository>
-      <id>cloudhopper-public</id>
-      <name>Cloudhopper Public Maven Repository</name>
-      <layout>default</layout>
-      <url>http://maven.cloudhopper.com/repos/third-party</url>
-    </repository>
-  </repositories>
 
   <dependencies>
     <!-- compile scope -->
     <dependency>
-      <groupId>joda</groupId>
+      <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
       <version>${joda-time.version}</version>
     </dependency>
     <dependency>
-      <groupId>slf4j</groupId>
+      <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>${slf4j.version}</version>
     </dependency>
     <!-- provided scope -->
-    <!-- only needed for LZMA algrorithm support in CompressionUtil -->
-    <dependency>
-      <groupId>cloudhopper</groupId>
-      <artifactId>ch-sevenzip</artifactId>
-      <version>${ch-sevenzip.version}</version>
-      <scope>provided</scope>
-      <optional>true</optional>
-    </dependency>
     <!-- runtime scope -->
     <!-- testing scope -->
     <dependency>
@@ -55,13 +38,13 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>logback</groupId>
+      <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
       <version>${logback.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>logback</groupId>
+      <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <version>${logback.version}</version>
       <scope>test</scope>
@@ -70,7 +53,10 @@
 
   <properties>
     <main.java.package>com.cloudhopper.commons.util</main.java.package>
-    <ch-sevenzip.version>4.65</ch-sevenzip.version>
+    <junit.version>4.10</junit.version>
+    <joda-time.version>[2.0,)</joda-time.version>
+    <slf4j.version>[1.7,)</slf4j.version>
+    <logback.version>[1.0,)</logback.version>
   </properties>
 
 </project>

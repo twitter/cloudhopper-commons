@@ -1,21 +1,21 @@
 
-run-encrypt:
+encrypt:
 	mvn test-compile exec:java -Dexec.classpathScope="test" exec:java -Dexec.mainClass="com.cloudhopper.commons.util.demo.EncryptUtilMain" -Dexec.args="providers"
 
-run-random:
+random:
 	mvn test-compile exec:java -Dexec.classpathScope="test" exec:java -Dexec.mainClass="com.cloudhopper.commons.util.demo.RandomUtilMain"
 
-run-uptime:
+uptime:
 	mvn test-compile exec:java -Dexec.classpathScope="test" exec:java -Dexec.mainClass="com.cloudhopper.commons.util.demo.UptimeMain"
 
-run-compression:
+compression:
 	mvn test-compile exec:java -Dexec.classpathScope="test" exec:java -Dexec.mainClass="com.cloudhopper.commons.util.demo.CompressionUtilMain"
 
-run-environment:
+environment:
 	mvn test-compile exec:java -Dexec.classpathScope="test" exec:java -Dexec.mainClass="com.cloudhopper.commons.util.demo.EnvironmentUtilMain"
 
-run-window:
+window:
 	mvn test-compile exec:java -Dexec.classpathScope="test" -Dexec.mainClass="com.cloudhopper.commons.util.demo.WindowMain"
 
-run-window2:
+window2:
 	mvn test-compile exec:java -Dexec.classpathScope="test" exec:java -Dexec.mainClass="com.cloudhopper.commons.util.demo.Window2Main"
