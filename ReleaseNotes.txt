@@ -3,6 +3,9 @@ http://twitter.com/
 http://www.cloudhopper.com/
 Commons Charset Library
 --------------------------------------------------------------------------------
+2.3.2 - 2012-10-29
+  * Added custom charset for T-Mobile NL, TMobileNlGSMCharset
+
 2.3.1 - 2012-02-17
   * Removed Turkish "dotless i" safe unicode replacements in MobileTextUtil.
     At recommendation of locals in Turkey, these replacements changed the 
