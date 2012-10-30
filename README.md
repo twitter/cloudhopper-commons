@@ -4,8 +4,8 @@ Cloudhopper by Twitter
 ch-commons-charset
 ------------------
 
-Utility classes for converting between charsets (mostly "mobile" in nature) such
-as Unicode to GSM and vice versa. This library attempts to contain the fastest
+Utility Java classes for converting between charsets (mostly "mobile" in nature)
+such as Unicode to GSM and vice versa. This library attempts to contain the fastest
 and most efficient methods for converting charsets to/from byte arrays.  There
 are also some useful charset specific static methods (e.g. GSMCharset.canRepresent()).
 
