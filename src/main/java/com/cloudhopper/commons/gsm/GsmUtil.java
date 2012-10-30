@@ -1,22 +1,27 @@
-/**
- * Copyright (C) 2011 Twitter, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed
- * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
- * CONDITIONS OF ANY KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations under the License.
- */
-
 package com.cloudhopper.commons.gsm;
+
+/*
+ * #%L
+ * ch-commons-gsm
+ * %%
+ * Copyright (C) 2012 Cloudhopper by Twitter
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 
 // third party imports
 import com.cloudhopper.commons.util.*;
-import org.apache.log4j.Logger;
 
 /**
  * Utility methods for working with GSM mobile technologies.
@@ -24,8 +29,7 @@ import org.apache.log4j.Logger;
  * @author joelauer
  */
 public class GsmUtil {
-    static private final Logger logger = Logger.getLogger(GsmUtil.class);
-
+    
     /**
      * Converts an address to a BCD-encoded byte array.  Any odd-length address
      * such as "10950" will have an 0xF byte added as the most signification
