@@ -4,7 +4,7 @@ Cloudhopper by Twitter
 cloudhopper-commons-util
 ------------------------
 
-Common Java utility classes used across Cloudhopper-based projects.
+Utility Java classes commonly used across all Cloudhopper-based projects.
 
 Contributors
 ------------
