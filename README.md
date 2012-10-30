@@ -1,8 +1,8 @@
 Cloudhopper by Twitter
 ============================
 
-ch-commons-gsm
-------------------
+cloudhopper-commons-gsm
+-----------------------
 
 Utility Java classes for working with GSM mobile technologies (usually SMS or MMS).
 Here are just some of the utilities:
