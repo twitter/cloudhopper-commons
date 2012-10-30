@@ -1,8 +1,8 @@
 Cloudhopper by Twitter
 ============================
 
-ch-commons-charset
-------------------
+cloudhopper-commons-charset
+---------------------------
 
 Utility Java classes for converting between charsets (mostly "mobile" in nature)
 such as Unicode to GSM and vice versa. This library attempts to contain the fastest
