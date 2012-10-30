@@ -4,6 +4,10 @@ Cloudhopper by Twitter
 cloudhopper-commons-util
 ------------------------
 
+## 6.0.1 - 2012-10-30
+ - Parent POM from to 1.3
+ - Packaged jar now with OSGi
+
 ## 6.0.0 - 2012-10-26
  - No major code changes, mostly project layout changes in prep of release to
    Maven Central Repository
