@@ -1,30 +1,37 @@
-/**
- * Copyright (C) 2011 Twitter, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed
- * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
- * CONDITIONS OF ANY KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations under the License.
- */
-
 package com.cloudhopper.commons.charset;
 
+/*
+ * #%L
+ * ch-commons-charset
+ * %%
+ * Copyright (C) 2012 Cloudhopper by Twitter
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 // third party imports
+import com.cloudhopper.commons.util.HexUtil;
 import org.junit.*;
-import org.apache.log4j.Logger;
-import org.apache.commons.codec.binary.Hex;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author dhoffman
  */
 public class TMobileNlGSMCharsetTest {
-    private static final Logger logger = Logger.getLogger(TMobileNlGSMCharsetTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(TMobileNlGSMCharsetTest.class);
 
     @Test
     public void canRepresent() throws Exception {
@@ -75,9 +82,9 @@ public class TMobileNlGSMCharsetTest {
         Assert.assertEquals(customEuro, sb.toString());
 
         // validate custom euro hex-encodes & decodes correctly also
-        String hexEncoded = new String(Hex.encodeHex(bytes));
+        String hexEncoded = new String(HexUtil.toHexString(bytes));
         Assert.assertEquals("80", hexEncoded);
-        byte[] bytes2 = Hex.decodeHex(hexEncoded.toCharArray());
+        byte[] bytes2 = HexUtil.toByteArray(hexEncoded);
         sb = new StringBuilder();
         tmo.decode(bytes2, sb);
         Assert.assertEquals(1, sb.length());

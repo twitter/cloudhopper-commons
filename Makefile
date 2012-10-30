@@ -1,29 +1,29 @@
-run-charset1:
+charset1:
 	mvn test-compile exec:java -Dexec.classpathScope="test" -Dexec.mainClass="com.cloudhopper.commons.charset.demo.CharsetMain"
 
-run-charset2:
+charset2:
 	mvn test-compile exec:java -Dexec.classpathScope="test" -Dexec.mainClass="com.cloudhopper.commons.charset.demo.Charset2Main"
 
-run-charset3:
+charset3:
 	mvn test-compile exec:java -Dexec.classpathScope="test" -Dexec.mainClass="com.cloudhopper.commons.charset.demo.Charset3Main"
 
-run-charset4:
+charset4:
 	mvn test-compile exec:java -Dexec.classpathScope="test" -Dexec.mainClass="com.cloudhopper.commons.charset.demo.Charset4Main"
 
-run-charset5:
+charset5:
 	mvn test-compile exec:java -Dexec.classpathScope="test" -Dexec.mainClass="com.cloudhopper.commons.charset.demo.Charset5Main"
 
-run-charset6:
+charset6:
 	mvn test-compile exec:java -Dexec.classpathScope="test" -Dexec.mainClass="com.cloudhopper.commons.charset.demo.Charset6Main"
 
-run-benchmark:
+benchmark:
 	mvn test-compile exec:java -Dexec.classpathScope="test" -Dexec.mainClass="com.cloudhopper.commons.charset.demo.BenchmarkMain"
 
-run-utf8-benchmark:
+utf8-benchmark:
 	mvn -e test-compile exec:java -Dexec.classpathScope="test" -Dexec.mainClass="com.cloudhopper.commons.charset.demo.UTF8BenchmarkMain"
 
-run-gsm-benchmark:
+gsm-benchmark:
 	mvn -e test-compile exec:java -Dexec.classpathScope="test" -Dexec.mainClass="com.cloudhopper.commons.charset.demo.GSMBenchmarkMain"
 
-run-string-reflection:
+string-reflection:
 	mvn -e test-compile exec:java -Dexec.classpathScope="test" -Dexec.mainClass="com.cloudhopper.commons.charset.demo.StringReflectionMain"
