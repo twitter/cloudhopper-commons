@@ -1,4 +1,4 @@
-package com.cloudhopper.commons.xbean;
+package com.cloudhopper.commons.xml;
 
 /*
  * #%L
@@ -20,19 +20,18 @@ package com.cloudhopper.commons.xbean;
  * #L%
  */
 
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+
 /**
- * Thrown if attributes are included for an xml element when no attributes
- * are expected.
+ * Interface for simple handling of XML.
+ * 
  * @author joelauer
  */
-public class PropertyNoAttributesExpectedException extends BasePropertyException {
-    private static final long serialVersionUID = 1L;
+public interface SimpleHandler {
 
-    public PropertyNoAttributesExpectedException(String propertyName, String xmlPath, Class targetClass, String msg) {
-        this(propertyName, xmlPath, null, msg, null);
-    }
+    public void startElement(int depth, String uri, String tag, Attributes attrs) throws SAXException;
 
-    public PropertyNoAttributesExpectedException(String propertyName, String xmlPath, Class targetClass, String msg, Throwable t) {
-        super(propertyName, xmlPath, targetClass, msg, t);
-    }
+    public void endElement(int depth, String uri, String tag, Attributes attrs, StringBuilder charBuffer) throws SAXException;
+
 }

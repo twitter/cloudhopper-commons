@@ -1,45 +1,37 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>cloudhopper</groupId>
+  <groupId>com.cloudhopper</groupId>
   <artifactId>ch-commons-xbean</artifactId>
   <packaging>jar</packaging>
-  <version>2.0.1</version>
+  <version>3.0.0</version>
   <name>ch-commons-xbean</name>
+  <description>Utility Java classes for configuring objects from xml</description>
+  <url>https://github.com/twitter/cloudhopper-commons-xbean</url>
+  <inceptionYear>2012</inceptionYear>
+
+  <scm>
+      <url>https://github.com/twitter/cloudhopper-commons-xbean</url>
+      <connection>scm:git:https://github.com/twitter/cloudhopper-commons-xbean.git</connection>
+  </scm>
 
   <parent>
-    <groupId>cloudhopper</groupId>
-    <artifactId>ch-maven-parent-public</artifactId>
-    <version>1.6</version>
+    <groupId>com.cloudhopper</groupId>
+    <artifactId>ch-maven-parent-oss</artifactId>
+    <version>1.4</version>
   </parent>
 
-  <repositories>
-    <repository>
-      <id>cloudhopper-public</id>
-      <name>Cloudhopper Public Maven Repository</name>
-      <layout>default</layout>
-      <url>http://maven.cloudhopper.com/repos/third-party</url>
-    </repository>
-  </repositories>
-
-  <!--
-    I prefer jars managed out of the Cloudhopper Maven Repo with more consistent
-    versioning.  I apologize for not using more common Maven repos
-  -->
   <dependencies>
     <!-- compile scope -->
     <dependency>
-      <groupId>cloudhopper</groupId>
+      <groupId>com.cloudhopper</groupId>
       <artifactId>ch-commons-util</artifactId>
-      <version>[2.1,)</version>
+      <version>[6.0.0,)</version>
     </dependency>
     <dependency>
-      <groupId>cloudhopper</groupId>
-      <artifactId>ch-commons-xml</artifactId>
-      <version>[1.0,)</version>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
     </dependency>
     <!-- provided scope -->
     <!-- runtime scope -->
@@ -51,25 +43,19 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>${slf4j.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>slf4j</groupId>
+      <groupId>org.slf4j</groupId>
       <artifactId>log4j-over-slf4j</artifactId>
       <version>${slf4j.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>logback</groupId>
+      <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
       <version>${logback.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>logback</groupId>
+      <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <version>${logback.version}</version>
       <scope>test</scope>

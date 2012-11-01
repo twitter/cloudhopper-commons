@@ -1,7 +1,10 @@
-Cloudhopper, Inc.
-http://www.cloudhopper.com/
+Cloudhopper by Twitter
 Commons XBean Library
 --------------------------------------------------------------------------------
+
+3.0.0 - 2012-10-31
+  * Upgraded parent maven POM.
+
 2.0.1 - 2012-02-17
   * Added support for TimeUnit extensions for any "long" or "Long" property.
     In the XML, the following would actually set a long value of 30000 on the
