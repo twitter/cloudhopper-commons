@@ -22,6 +22,7 @@ mobile operators around the world, the following charsets are supported:
  - Airwide IA5/GSM (Similar to GSM alphabet; customizations for Airwide SMSCs)
  - Vodafone D2 (Similar to GSM alphabet; customizations for Vodafone D2 SMSCs)
  - Vodafone Turkey (Similar to GSM alphabet; customizations for Vodafone Turkey SMSCs)
+ - T-Mobile NL (Similar to GSM alphabet; customizations for T-Mobile Netherlands)
 
 Contributors
 ------------

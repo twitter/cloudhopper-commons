@@ -4,6 +4,10 @@ Cloudhopper by Twitter
 cloudhopper-commons-charset
 ---------------------------
 
+## 3.0.1 - 2012-11-06
+ - Added T-Mobile NL charset to CharsetUtils and updated tests, also to Readme
+ - Changed byte constant in T-Mobile NL charset to uppercase for readability
+
 ## 3.0.0 - 2012-10-30
  - No major code changes, mostly project layout changes in prep of release to
    Maven Central Repository

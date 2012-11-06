@@ -74,6 +74,9 @@ public class CharsetUtilTest {
         bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_VFTR_GSM);
         Assert.assertArrayEquals(HexUtil.toByteArray("1B65"), bytes);
 
+        bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_TMOBILENL_GSM);
+        Assert.assertArrayEquals(HexUtil.toByteArray("80"), bytes);
+
         
         // longer string with @ symbol in-between
         str0 = "Hello @ World";
@@ -115,6 +118,10 @@ public class CharsetUtilTest {
         //logger.debug(HexUtil.toHexString(bytes));
         Assert.assertArrayEquals(HexUtil.toByteArray("48656C6C6F204020576F726C64"), bytes);
 
+        bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_TMOBILENL_GSM);
+        //logger.debug(HexUtil.toHexString(bytes));
+        Assert.assertArrayEquals(HexUtil.toByteArray("48656C6C6F200020576F726C64"), bytes);
+
 
         // longer string with @ symbol in-between
         str0 = "JoeyBlue";
@@ -152,6 +159,9 @@ public class CharsetUtilTest {
         Assert.assertArrayEquals(HexUtil.toByteArray("4A6F6579426C7565"), bytes);
 
         bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_VFTR_GSM);
+        Assert.assertArrayEquals(HexUtil.toByteArray("4A6F6579426C7565"), bytes);
+
+        bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_TMOBILENL_GSM);
         Assert.assertArrayEquals(HexUtil.toByteArray("4A6F6579426C7565"), bytes);
 
 
@@ -192,6 +202,10 @@ public class CharsetUtilTest {
 
         bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_VFTR_GSM);
         Assert.assertArrayEquals(HexUtil.toByteArray("1B281B291B3C1B3E24"), bytes);
+
+        // {}[] not supported
+        bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_TMOBILENL_GSM);
+        Assert.assertArrayEquals(HexUtil.toByteArray("3F3F3F3F02"), bytes);
 
         // chars specifically to vodafone-turkey
         //str0 = "$@£¤¥§ÄÅßñΓΔΘΩ€";
@@ -234,6 +248,9 @@ public class CharsetUtilTest {
         str1 = CharsetUtil.decode(HexUtil.toByteArray("1B65"), CharsetUtil.CHARSET_VFTR_GSM);
         Assert.assertEquals(str0, str1);
 
+        str1 = CharsetUtil.decode(HexUtil.toByteArray("80"), CharsetUtil.CHARSET_TMOBILENL_GSM);
+        Assert.assertEquals(str0, str1);
+
 
         // longer string with @ symbol in-between
         str0 = "Hello @ World";
@@ -265,6 +282,9 @@ public class CharsetUtilTest {
         str1 = CharsetUtil.decode(HexUtil.toByteArray("48656C6C6F204020576F726C64"), CharsetUtil.CHARSET_VFTR_GSM);
         Assert.assertEquals(str0, str1);
 
+        str1 = CharsetUtil.decode(HexUtil.toByteArray("48656C6C6F200020576F726C64"), CharsetUtil.CHARSET_TMOBILENL_GSM);
+        Assert.assertEquals(str0, str1);
+
 
         // longer string with @ symbol in-between
         str0 = "JoeyBlue";
@@ -294,6 +314,9 @@ public class CharsetUtilTest {
         Assert.assertEquals(str0, str1);
 
         str1 = CharsetUtil.decode(HexUtil.toByteArray("4A6F6579426C7565"), CharsetUtil.CHARSET_VFTR_GSM);
+        Assert.assertEquals(str0, str1);
+
+        str1 = CharsetUtil.decode(HexUtil.toByteArray("4A6F6579426C7565"), CharsetUtil.CHARSET_TMOBILENL_GSM);
         Assert.assertEquals(str0, str1);
 
 
@@ -328,6 +351,7 @@ public class CharsetUtilTest {
         str1 = CharsetUtil.decode(HexUtil.toByteArray("1B281B291B3C1B3E24"), CharsetUtil.CHARSET_VFTR_GSM);
         Assert.assertEquals(str0, str1);
 
+        // skip TMOBILENL_GSM - can't encode {}[]
 
         // had problem passing these tests on linux vs. mac os x -- issue with
         // byte encoding on differnet platforms, replaced tests with source strings
@@ -417,6 +441,7 @@ public class CharsetUtilTest {
         Assert.assertEquals("\u20AC", CharsetUtil.normalize(in, CharsetUtil.CHARSET_ISO_8859_15));
         Assert.assertEquals("\u20AC", CharsetUtil.normalize(in, CharsetUtil.CHARSET_UCS_2));
         Assert.assertEquals("\u20AC", CharsetUtil.normalize(in, CharsetUtil.CHARSET_UTF_8));
+        Assert.assertEquals("\u20AC", CharsetUtil.normalize(in, CharsetUtil.CHARSET_TMOBILENL_GSM));
 
         in = "\u6025";  // arabic char (only supported in a couple charsets)
         Assert.assertEquals("?", CharsetUtil.normalize(in, CharsetUtil.CHARSET_GSM));
@@ -428,5 +453,6 @@ public class CharsetUtilTest {
         Assert.assertEquals("?", CharsetUtil.normalize(in, CharsetUtil.CHARSET_ISO_8859_15));
         Assert.assertEquals("\u6025", CharsetUtil.normalize(in, CharsetUtil.CHARSET_UCS_2));
         Assert.assertEquals("\u6025", CharsetUtil.normalize(in, CharsetUtil.CHARSET_UTF_8));
+        Assert.assertEquals("?", CharsetUtil.normalize(in, CharsetUtil.CHARSET_TMOBILENL_GSM));
     }
 }

@@ -52,6 +52,8 @@ public class CharsetUtil {
     public static final String NAME_GSM8 = "GSM8";
     /** Alias for "AIRWIDE-IA5" */
     public static final String NAME_AIRWIDE_GSM = "AIRWIDE-GSM";
+    // special charset for "T-Mobile Netherlands" SMSC that has a unique GSM mapping
+    public static final String NAME_TMOBILENL_GSM = "TMOBILE-NL-GSM";
 
     public static final Charset CHARSET_ISO_8859_1 = new ISO88591Charset();
     public static final Charset CHARSET_ISO_8859_15 = new ISO885915Charset();
@@ -72,6 +74,7 @@ public class CharsetUtil {
     public static final Charset CHARSET_GSM8 = CHARSET_GSM;
     /** Alias for "AIRWIDE-IA5" */
     public static final Charset CHARSET_AIRWIDE_GSM = CHARSET_AIRWIDE_IA5;
+    public static final Charset CHARSET_TMOBILENL_GSM = new TMobileNlGSMCharset();
 
     static {
         charsets = new HashMap<String,Charset>();
@@ -88,6 +91,7 @@ public class CharsetUtil {
         charsets.put(NAME_GSM7, CHARSET_GSM7);
         charsets.put(NAME_GSM8, CHARSET_GSM8);
         charsets.put(NAME_AIRWIDE_GSM, CHARSET_AIRWIDE_GSM);
+        charsets.put(NAME_TMOBILENL_GSM, CHARSET_TMOBILENL_GSM);
     }
 
     static public HashMap<String,Charset> getCharsetMap() {

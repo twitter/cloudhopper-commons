@@ -34,7 +34,7 @@ import java.io.IOException;
 public class TMobileNlGSMCharset extends GSMCharset {
 
     static final int TMO_EURO_BYTE = 0x80;
-    static final char EURO_MARK = '\u20ac';
+    static final char EURO_MARK = '\u20AC';
 
     /**
      * Verifies that this charset can represent every character in the Java
