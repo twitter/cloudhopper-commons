@@ -120,7 +120,7 @@ public class CharsetUtilTest {
 
         bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_TMOBILENL_GSM);
         //logger.debug(HexUtil.toHexString(bytes));
-        Assert.assertArrayEquals(HexUtil.toByteArray("48656C6C6F204020576F726C64"), bytes);
+        Assert.assertArrayEquals(HexUtil.toByteArray("48656C6C6F200020576F726C64"), bytes);
 
 
         // longer string with @ symbol in-between
@@ -205,7 +205,7 @@ public class CharsetUtilTest {
 
         // {}[] not supported
         bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_TMOBILENL_GSM);
-        Assert.assertArrayEquals(HexUtil.toByteArray("3F3F3F3F24"), bytes);
+        Assert.assertArrayEquals(HexUtil.toByteArray("3F3F3F3F02"), bytes);
 
         // chars specifically to vodafone-turkey
         //str0 = "$@£¤¥§ÄÅßñΓΔΘΩ€";
@@ -282,7 +282,7 @@ public class CharsetUtilTest {
         str1 = CharsetUtil.decode(HexUtil.toByteArray("48656C6C6F204020576F726C64"), CharsetUtil.CHARSET_VFTR_GSM);
         Assert.assertEquals(str0, str1);
 
-        str1 = CharsetUtil.decode(HexUtil.toByteArray("48656C6C6F204020576F726C64"), CharsetUtil.CHARSET_TMOBILENL_GSM);
+        str1 = CharsetUtil.decode(HexUtil.toByteArray("48656C6C6F200020576F726C64"), CharsetUtil.CHARSET_TMOBILENL_GSM);
         Assert.assertEquals(str0, str1);
 
 
