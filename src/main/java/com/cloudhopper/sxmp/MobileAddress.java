@@ -31,7 +31,8 @@ public class MobileAddress {
         NETWORK,
         INTERNATIONAL,
         NATIONAL,
-        ALPHANUMERIC
+        ALPHANUMERIC,
+        PUSH_DESTINATION
     };
 
     private Type type;
@@ -62,7 +63,7 @@ public class MobileAddress {
         } else if (type == Type.NATIONAL) {
             // same rules apply to national as network
             MobileAddressUtil.validateNetworkAddress(address);
-        } else if (type == Type.ALPHANUMERIC) {
+        } else if (type == Type.ALPHANUMERIC || type == Type.PUSH_DESTINATION) {
             // do nothing special to validate
         } else if (type == Type.INTERNATIONAL) {
             MobileAddressUtil.validateInternationalAddress(address);

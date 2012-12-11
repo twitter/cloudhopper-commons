@@ -69,7 +69,7 @@ public class SxmpSessionTest {
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
 
         MockSxmpRequestProcessor processor = new MockSxmpRequestProcessor();
-        SxmpSession session = new SxmpSession(processor);
+        SxmpSession session = new SxmpSession(processor, SxmpParser.VERSION_1_0);
 
         Response response = null;
         try {
@@ -91,7 +91,7 @@ public class SxmpSessionTest {
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
 
         MockSxmpRequestProcessor processor = new MockSxmpRequestProcessor();
-        SxmpSession session = new SxmpSession(processor);
+        SxmpSession session = new SxmpSession(processor, SxmpParser.VERSION_1_0);
 
         Response response = null;
         try {
@@ -120,7 +120,7 @@ public class SxmpSessionTest {
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
 
         MockSxmpRequestProcessor processor = new MockSxmpRequestProcessor();
-        SxmpSession session = new SxmpSession(processor);
+        SxmpSession session = new SxmpSession(processor, SxmpParser.VERSION_1_0);
 
         // this should actually not throw an error and should be an error response
         ErrorResponse response = (ErrorResponse)session.process(is);
@@ -166,7 +166,7 @@ public class SxmpSessionTest {
             }
         };
         
-        SxmpSession session = new SxmpSession(processor);
+        SxmpSession session = new SxmpSession(processor, SxmpParser.VERSION_1_0);
 
         // this should actually not throw an error and should be an error response
         ErrorResponse response = (ErrorResponse)session.process(is);
@@ -212,7 +212,7 @@ public class SxmpSessionTest {
             }
         };
 
-        SxmpSession session = new SxmpSession(processor);
+        SxmpSession session = new SxmpSession(processor, SxmpParser.VERSION_1_0);
 
         // this should actually not throw an error and should be an error response
         ErrorResponse response = (ErrorResponse)session.process(is);
@@ -260,7 +260,7 @@ public class SxmpSessionTest {
 
         };
 
-        SxmpSession session = new SxmpSession(processor);
+        SxmpSession session = new SxmpSession(processor, SxmpParser.VERSION_1_0);
 
         // this should actually not throw an error and should be an error response
         ErrorResponse response = (ErrorResponse)session.process(is);
@@ -287,7 +287,7 @@ public class SxmpSessionTest {
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
 
         MockSxmpRequestProcessor processor = new MockSxmpRequestProcessor();
-        SxmpSession session = new SxmpSession(processor);
+        SxmpSession session = new SxmpSession(processor, SxmpParser.VERSION_1_0);
 
         // this should actually not throw an error and should be an error response
         SubmitResponse response = (SubmitResponse)session.process(is);

@@ -79,7 +79,7 @@ public class SxmpServletProcessor {
         //logger.debug("Parsed API Version: " + version);
 
         // check if the version is supported
-        if (!version.equals("1.0")) {
+        if (!version.equals(SxmpParser.VERSION_1_0) && !version.equals(SxmpParser.VERSION_1_1)) {
             throw new HttpStatusCodeException(HttpServletResponse.SC_BAD_REQUEST, "Unsupported API version in URL");
         }
 
@@ -95,7 +95,7 @@ public class SxmpServletProcessor {
         }
 
         // create a new session tied to this processor
-        SxmpSession session = new SxmpSession(processor);
+        SxmpSession session = new SxmpSession(processor, version);
 
         Response response = null;
         try {

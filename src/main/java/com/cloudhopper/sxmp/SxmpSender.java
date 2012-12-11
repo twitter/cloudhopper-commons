@@ -108,7 +108,7 @@ public class SxmpSender {
             return null;
         } else {
             // convert response xml into an object
-            SxmpParser parser = new SxmpParser();
+            SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
             ByteArrayInputStream bais = new ByteArrayInputStream(responseXml.getBytes("ISO-8859-1"));
             Operation op = parser.parse(bais);
 

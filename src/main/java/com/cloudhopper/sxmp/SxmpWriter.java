@@ -19,6 +19,8 @@ import com.cloudhopper.commons.util.StringUtil;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -205,6 +207,15 @@ public class SxmpWriter {
                     out.write("\">");
                     out.write(HexUtil.toHexString(messageRequest.getText().getBytes(charset)));
                     out.write("</text>\n");
+                }
+
+                // this is a v1.1 option; should allow selective writing?
+                if (messageRequest.getOptionalParams() != null) {
+                    //String charset = messageRequest.getTextEncoding().getCharset();
+                    out.write("  <optionalParams>");
+                    JSONObject jsonObj = new JSONObject(messageRequest.getOptionalParams());
+                    out.write(jsonObj.toString());
+                    out.write("</optionalParams>\n");
                 }
             }
 

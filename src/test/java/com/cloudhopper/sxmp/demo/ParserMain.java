@@ -70,7 +70,7 @@ public class ParserMain {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser();
+        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
 
         //try {
             Operation operation = parser.parse(is);

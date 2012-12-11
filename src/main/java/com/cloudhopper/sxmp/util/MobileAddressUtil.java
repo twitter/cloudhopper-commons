@@ -37,6 +37,8 @@ public class MobileAddressUtil {
             return MobileAddress.Type.ALPHANUMERIC;
         } else if (type.equalsIgnoreCase("international")) {
             return MobileAddress.Type.INTERNATIONAL;
+        } else if (type.equalsIgnoreCase("push_destination")) {
+            return MobileAddress.Type.PUSH_DESTINATION;
         } else {
             return null;
         }

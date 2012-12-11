@@ -19,17 +19,23 @@ import com.cloudhopper.sxmp.util.MobileAddressUtil;
 import com.cloudhopper.commons.util.StringUtil;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
+import org.json.JSONObject;
+import org.json.JSONException;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -45,6 +51,22 @@ public class SxmpParser {
     private static final Logger logger = Logger.getLogger(SxmpParser.class);
 
     static protected DateTimeFormatter dateTimeFormat = ISODateTimeFormat.dateTime().withZone(DateTimeZone.UTC);
+    
+    public static final String VERSION_1_0 = "1.0";
+    public static final String VERSION_1_1 = "1.1";
+    
+    private final String version;
+    
+    // for backwards compatibility
+    /*
+    public SxmpParser() {
+        this.version = VERSION_1_0;
+    }
+    */
+    
+    public SxmpParser(final String version) {
+        this.version = version;
+    }
     
     /**
     public Node parse(InputSource source) throws IOException, SAXException {
@@ -663,6 +685,34 @@ public class SxmpParser {
                         ((MessageRequest)operation).setText(text, te);
                     } else {
                         throw new SxmpParsingException(SxmpErrorCode.UNSUPPORTED_ELEMENT, "The [text] element is not supported for this operation type", this.operation);
+                    }
+                } else if (tag.equals("optionalParams") && version.equals(VERSION_1_1)) {
+                    String encodedText = parseCharacterData(tag, false);
+
+                    // TODO: do we need to support character encodings here?
+                    
+                    if (!StringUtils.isBlank(encodedText)) {
+                        try {
+                            JSONObject jsonObj = new JSONObject(encodedText);
+                            Map<Character, Object> optionalParams = new HashMap<Character, Object>();
+                            Iterator<String> nameItr = jsonObj.keys();
+                            while(nameItr.hasNext()) {
+                                String name = nameItr.next();
+                                if (name.length() != 1)
+                                    throw new SxmpParsingException(SxmpErrorCode.INVALID_VALUE, "Optional param with key > 1 char", this.operation);
+                                Object o = jsonObj.get(name);
+                                // make sure we were only passed a valid type...
+                                if (o instanceof String || o instanceof Integer || o instanceof Long || o instanceof Double) {
+                                    optionalParams.put(name.charAt(0), o);
+                                } else {
+                                     throw new SxmpParsingException(SxmpErrorCode.INVALID_VALUE, "Optional param of invalid type: "+o.getClass().toString(), this.operation);
+                                }
+                            }
+                            ((MessageRequest)operation).setOptionalParams(optionalParams);
+
+                        } catch (JSONException e) {
+                            throw new SxmpParsingException(SxmpErrorCode.UNABLE_TO_CONVERT_VALUE, "Unable to decode json data", this.operation);
+                        }
                     }
                 } else {
                     throw new SxmpParsingException(SxmpErrorCode.UNSUPPORTED_ELEMENT, "Unsupported [" + tag + "] element found at depth [" + depth + "]", this.operation);

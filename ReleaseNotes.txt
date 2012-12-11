@@ -2,6 +2,11 @@ Cloudhopper, Inc.
 http://www.cloudhopper.com/
 SXMP Library
 --------------------------------------------------------------------------------
+1.4.2 - 2012-11-20
+  * Update API version to also support v1.1
+  * Add support for optional parameter map (encoded in JSON), if version == 1.1
+  * Add support for new PUSH_DESTINATION address type, alphanumeric, length <= 100
+
 1.4.1 - 2012-01-31
   * Added junit test to ensure secure processing of XML is enabled. An example
     Denial of Service attack is now included as part of unit tests.  Only is 

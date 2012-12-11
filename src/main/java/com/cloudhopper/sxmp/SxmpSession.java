@@ -28,9 +28,18 @@ public class SxmpSession {
     private static final Logger logger = Logger.getLogger(SxmpSession.class);
 
     private final SxmpProcessor processor;
+    private final String version;
 
+    // backwards-compatible version
+    /*
     public SxmpSession(final SxmpProcessor processor) {
         this.processor = processor;
+        this.version = SxmpParser.VERSION_1_0;
+    }
+    */
+    public SxmpSession(final SxmpProcessor processor, final String version) {
+        this.processor = processor;
+        this.version = version;
     }
 
     /**
@@ -47,7 +56,7 @@ public class SxmpSession {
      */
     public Response process(InputStream is) throws IOException, SAXException, ParserConfigurationException {
         // create a new XML parser
-        SxmpParser parser = new SxmpParser();
+        SxmpParser parser = new SxmpParser(version);
 
         // an instance of an operation we'll be processing as a request
         Operation operation = null;
