@@ -88,11 +88,11 @@ public abstract class MessageRequest<E extends Response> extends Request<E> {
     public String getText() {
         return this.text;
     }
-    
+
     public void setOptionalParams(Map<Character, Object> optionalParams) {
         this.optionalParams = optionalParams;
     }
-    
+
     public Map<Character, Object> getOptionalParams() {
         return optionalParams;
     }

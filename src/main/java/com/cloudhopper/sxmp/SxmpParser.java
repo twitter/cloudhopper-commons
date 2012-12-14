@@ -51,23 +51,23 @@ public class SxmpParser {
     private static final Logger logger = Logger.getLogger(SxmpParser.class);
 
     static protected DateTimeFormatter dateTimeFormat = ISODateTimeFormat.dateTime().withZone(DateTimeZone.UTC);
-    
+
     public static final String VERSION_1_0 = "1.0";
     public static final String VERSION_1_1 = "1.1";
-    
+
     private final String version;
-    
+
     // for backwards compatibility
     /*
     public SxmpParser() {
         this.version = VERSION_1_0;
     }
     */
-    
+
     public SxmpParser(final String version) {
         this.version = version;
     }
-    
+
     /**
     public Node parse(InputSource source) throws IOException, SAXException {
 //        _dtd=null;
@@ -115,7 +115,7 @@ public class SxmpParser {
         // create a new SAX parser
         SAXParserFactory factory = SAXParserFactory.newInstance();
         //factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-        
+
         //try {
 
             SAXParser parser = factory.newSAXParser();
@@ -415,7 +415,7 @@ public class SxmpParser {
             // Element(s): account, submitRequest
             //
             } else if (depth == 1) {
-                
+
                 if (tag.equals("account")) {
                     // should only occur once
                     if (elements.contains(tag)) {
@@ -423,7 +423,7 @@ public class SxmpParser {
                     }
 
                     elements.add(tag);
-                    
+
                     // should have two attributes, username and password
                     String username = getRequiredAttributeValue("account", attrs, "username");
                     String password = getRequiredAttributeValue("account", attrs, "password");
@@ -479,7 +479,7 @@ public class SxmpParser {
             // get the tag stripped of any namespace
             //
             String tag = (StringUtil.isEmpty(uri)) ? qName : localName;
-            
+
 //            logger.trace("endElement: uri=" + uri + ", localName=" + localName + ", qName=" + qName);
 
             if (depth == 1) {
@@ -612,7 +612,7 @@ public class SxmpParser {
                 } else if (tag.equals("sourceAddress")) {
                     // parse the character data, check for duplicates
                     String addrString = parseCharacterData(tag, true);
-                    
+
                     // a type attribute is required
                     String addrTypeString = getRequiredAttributeValue(tag, currentAttrs, "type");
 
@@ -690,7 +690,7 @@ public class SxmpParser {
                     String encodedText = parseCharacterData(tag, false);
 
                     // TODO: do we need to support character encodings here?
-                    
+
                     if (!StringUtils.isBlank(encodedText)) {
                         try {
                             JSONObject jsonObj = new JSONObject(encodedText);

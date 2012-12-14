@@ -56,13 +56,13 @@ public class SxmpWriter {
     static private void writeRequestResponseStartTag(Writer out, Operation operation) throws IOException {
         out.write(" <");
         writeRequestResponseTag(out, operation);
-        
+
         if (operation.getReferenceId() != null) {
             out.write(" referenceId=\"");
             out.write(operation.getReferenceId());
             out.write("\"");
         }
-        
+
         out.write(">\n");
     }
 
@@ -105,11 +105,11 @@ public class SxmpWriter {
 
         // let's validate this operation is valid
         operation.validate();
-        
+
         if (operation instanceof ErrorResponse) {
             // write out just an ErrorResponse
             writeErrorElement(out, (ErrorResponse)operation);
-            
+
         } else if (operation instanceof Request) {
             // any request requires an account to be printed out
             Request request = (Request)operation;
@@ -236,7 +236,7 @@ public class SxmpWriter {
 
             writeRequestResponseEndTag(out, operation);
         }
-        
+
         writeOperationEndTag(out);
     }
 }

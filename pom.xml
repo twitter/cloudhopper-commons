@@ -93,7 +93,7 @@
     </dependency>
 
     <!-- runtime scope -->
-    
+
     <!-- testing scope -->
     <dependency>
       <groupId>junit</groupId>

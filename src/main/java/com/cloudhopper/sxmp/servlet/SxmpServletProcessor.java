@@ -30,7 +30,7 @@ import com.cloudhopper.sxmp.*;
  * SXMP processor used with servlets for delegating responsibility of handling
  * a request.  This processor automatically handles any version of an incoming
  * SXMP request.
- * 
+ *
  * @author joelauer
  */
 public class SxmpServletProcessor {
@@ -48,7 +48,7 @@ public class SxmpServletProcessor {
 
             // process it -- if no exception thrown, then xml was already written to outputstream
             doProcess(processor, request.getInputStream(), out, request.getRequestURI(), request.getMethod(), request.getContentType());
-            
+
             // if we get here, then return HTTP OK status
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (HttpStatusCodeException e) {

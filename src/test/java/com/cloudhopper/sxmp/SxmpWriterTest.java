@@ -30,7 +30,7 @@ import org.joda.time.DateTimeZone;
 // my imports
 
 /**
- * 
+ *
  * @author joelauer
  */
 public class SxmpWriterTest {
@@ -353,14 +353,14 @@ public class SxmpWriterTest {
             .append(" </deliveryReportRequest>\n")
             .append("</operation>\n")
             .append("");
-        
+
         // compare to actual correct submit response
         XMLUnit.setIgnoreWhitespace(true);
         Diff myDiff = new Diff(expectedXML.toString(), sw.toString());
         DetailedDiff myDetailedDiff = new DetailedDiff(myDiff);
         Assert.assertTrue("XML are similar " + myDetailedDiff, myDetailedDiff.similar());
     }
-    
+
     @Test
     public void writeDeliveryReportRequestWithCreateFinalMessageErrorCode() throws Exception {
         DeliveryReportRequest request = new DeliveryReportRequest();
@@ -391,13 +391,13 @@ public class SxmpWriterTest {
             .append(" </deliveryReportRequest>\n")
             .append("</operation>\n")
             .append("");
-        
+
         // compare to actual correct submit response
         XMLUnit.setIgnoreWhitespace(true);
         Diff myDiff = new Diff(expectedXML.toString(), sw.toString());
         DetailedDiff myDetailedDiff = new DetailedDiff(myDiff);
         Assert.assertTrue("XML are similar " + myDetailedDiff, myDetailedDiff.similar());
-    }   
+    }
 
     @Test
     public void writeSubmitRequestWithAlphanumeric() throws Exception {

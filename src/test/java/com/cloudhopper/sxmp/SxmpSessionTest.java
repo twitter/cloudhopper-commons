@@ -24,7 +24,7 @@ import org.xml.sax.SAXParseException;
 // my imports
 
 /**
- * 
+ *
  * @author joelauer
  */
 public class SxmpSessionTest {
@@ -165,7 +165,7 @@ public class SxmpSessionTest {
                 return null;
             }
         };
-        
+
         SxmpSession session = new SxmpSession(processor, SxmpParser.VERSION_1_0);
 
         // this should actually not throw an error and should be an error response

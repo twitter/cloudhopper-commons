@@ -9,7 +9,7 @@ SXMP Library
 
 1.4.1 - 2012-01-31
   * Added junit test to ensure secure processing of XML is enabled. An example
-    Denial of Service attack is now included as part of unit tests.  Only is 
+    Denial of Service attack is now included as part of unit tests.  Only is
     passed if running on a JDK >= 1.6.0_29.
 
 1.4.0 - 2012-01-19

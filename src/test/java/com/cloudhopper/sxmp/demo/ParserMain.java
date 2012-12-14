@@ -83,7 +83,7 @@ public class ParserMain {
          //   PartialOperation partial = (PartialOperation)e.getOperation();
             //Assert.assertEquals(Operation.Type.SUBMIT, partial.getType());
         //}
-            
+
         logger.debug("done!");
     }
 }

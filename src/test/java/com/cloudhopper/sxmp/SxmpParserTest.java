@@ -26,7 +26,7 @@ import org.xml.sax.SAXParseException;
 // my imports
 
 /**
- * 
+ *
  * @author joelauer
  */
 public class SxmpParserTest {
@@ -54,7 +54,7 @@ public class SxmpParserTest {
         }
     }
 
-    
+
     @Test
     public void parseUnsupportedOperationType() throws Exception {
         StringBuilder string0 = new StringBuilder(200)
@@ -1178,7 +1178,7 @@ public class SxmpParserTest {
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
         SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
-        
+
         Operation operation = parser.parse(is);
 
         logger.debug(operation);
@@ -1540,7 +1540,7 @@ public class SxmpParserTest {
         Assert.assertEquals(new DateTime(2010,5,30,9,30,10,0, DateTimeZone.UTC), reportReq.getCreateDate());
         Assert.assertEquals(new DateTime(2010,5,30,9,30,15,314, DateTimeZone.UTC), reportReq.getFinalDate());
     }
-    
+
     @Test
     public void parseEntityExpansionAttack() throws Exception {
         StringBuilder string0 = new StringBuilder(200)
@@ -1590,7 +1590,7 @@ public class SxmpParserTest {
             // otherwise an OutOfMemoryException is thrown
         }
     }
-    
+
     @Test
     public void parseSubmitRequestWithPushDestination() throws Exception {
         StringBuilder string0 = new StringBuilder(200)
@@ -1628,7 +1628,7 @@ public class SxmpParserTest {
         Assert.assertEquals("abcd01234fghij", submitReq.getDestinationAddress().getAddress());
         Assert.assertEquals("Hello World", submitReq.getText());
     }
-    
+
     @Test
     public void parseSubmitRequestWithOptionalParamsV11() throws Exception {
         StringBuilder string0 = new StringBuilder(200)
@@ -1674,8 +1674,8 @@ public class SxmpParserTest {
         Assert.assertEquals(opts.get('f'), new Double(3.14159));
         Assert.assertEquals(opts.get('g'), new Integer(33445566));
         Assert.assertEquals(opts.get('h'), new Long(123456789123456l));
-    }    
-    
+    }
+
     @Test
     public void parseSubmitRequestWithBadOptionalParamsV11() throws Exception {
         StringBuilder string0 = new StringBuilder(200)
@@ -1705,7 +1705,7 @@ public class SxmpParserTest {
             SubmitRequest submitRequest = (SubmitRequest)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, submitRequest.getType());
         }
-    }    
+    }
 
     @Test
     public void parseSubmitRequestWithInvalidOptionalParamsV11() throws Exception {
@@ -1736,7 +1736,7 @@ public class SxmpParserTest {
             SubmitRequest submitRequest = (SubmitRequest)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, submitRequest.getType());
         }
-    }    
+    }
 
     @Test
     public void parseSubmitRequestWithEmptyOptionalParamsV11() throws Exception {
@@ -1776,7 +1776,7 @@ public class SxmpParserTest {
         Assert.assertEquals("abcd01234fghij", submitReq.getDestinationAddress().getAddress());
         Assert.assertEquals("Hello World", submitReq.getText());
         Assert.assertNull(submitReq.getOptionalParams());
-    }    
+    }
 
     @Test
     public void parseSubmitRequestWithOptionalParamsV10() throws Exception {
@@ -1809,6 +1809,6 @@ public class SxmpParserTest {
             Assert.assertEquals(Operation.Type.SUBMIT, submitRequest.getType());
         }
 
-    }    
+    }
 
 }

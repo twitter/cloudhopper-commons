@@ -31,7 +31,7 @@ import org.xml.sax.SAXException;
 
 /**
  * Utility class for a simple way of sending a request and returning a response.
- * 
+ *
  * @author joelauer
  */
 public class SxmpSender {
