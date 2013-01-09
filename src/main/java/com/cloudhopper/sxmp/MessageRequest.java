@@ -13,6 +13,7 @@
  */
 package com.cloudhopper.sxmp;
 
+import com.cloudhopper.stratus.type.OptionalParamMap;
 import com.cloudhopper.sxmp.util.ToStringUtil;
 import java.util.Map;
 
@@ -29,7 +30,7 @@ public abstract class MessageRequest<E extends Response> extends Request<E> {
     // for "text" messages
     private TextEncoding textEncoding;
     private String text;
-    private Map<Character, Object> optionalParams;
+    private OptionalParamMap optionalParams;
     // for "data" messages ->  <data udh="true|false" coding="00">ffffff</data>
     //private Boolean hasUserDataHeader;
     //private Byte dataCoding;
@@ -89,11 +90,11 @@ public abstract class MessageRequest<E extends Response> extends Request<E> {
         return this.text;
     }
 
-    public void setOptionalParams(Map<Character, Object> optionalParams) {
+    public void setOptionalParams(OptionalParamMap optionalParams) {
         this.optionalParams = optionalParams;
     }
 
-    public Map<Character, Object> getOptionalParams() {
+    public OptionalParamMap getOptionalParams() {
         return optionalParams;
     }
 

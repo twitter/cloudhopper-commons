@@ -68,8 +68,9 @@ public class SxmpSession {
             // major issue parsing the request into something valid -- this
             // exception may contain a partially parsed operation -- if it does
             // then we want to return valid XML back to the caller of this session
+            // don't dump stack trace; instead just log error message and what of the operation we parsed
             if (e.getOperation() != null && e.getOperation().getType() != null) {
-                logger.warn("Unable to fully parse XML into a request, returning ErrorResponse", e);
+                logger.warn("Unable to fully parse XML into a request, returning ErrorResponse; error: "+e.getMessage()+", parsed: "+e.getOperation());
                 // we'll actually return a generic ErrorResponse back
                 return new ErrorResponse(e.getOperation().getType(), e.getErrorCode().getIntValue(), e.getErrorMessage());
             } else {

@@ -52,7 +52,8 @@ public abstract class Operation {
     private final boolean isRequest;
     private String referenceId;
     private String ticketId;
-    
+    protected String version = SxmpParser.VERSION_1_0;  // default version
+
     public Operation(Type value, boolean isRequest) {
         this.type = value;
         this.isRequest = isRequest;
@@ -70,7 +71,11 @@ public abstract class Operation {
         return !this.isRequest;
     }
 
-    public void setReferenceId(String value) throws SxmpErrorException {
+    public String getVersion() {
+        return this.version;
+    }
+
+   public void setReferenceId(String value) throws SxmpErrorException {
         // only check if its a valid reference id here
         if (value != null) {
             // validate the value contains only safe chars

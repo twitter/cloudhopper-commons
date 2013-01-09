@@ -17,6 +17,7 @@ package com.cloudhopper.sxmp;
 import com.cloudhopper.commons.util.HexUtil;
 import com.cloudhopper.sxmp.util.MobileAddressUtil;
 import com.cloudhopper.commons.util.StringUtil;
+import com.cloudhopper.stratus.type.OptionalParamMap;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -36,11 +38,8 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONObject;
 import org.json.JSONException;
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.XMLReader;
+import org.xml.sax.*;
+import org.xml.sax.ext.Locator2;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
@@ -55,14 +54,12 @@ public class SxmpParser {
     public static final String VERSION_1_0 = "1.0";
     public static final String VERSION_1_1 = "1.1";
 
-    private final String version;
+    protected final String version;
 
     // for backwards compatibility
-    /*
     public SxmpParser() {
         this.version = VERSION_1_0;
     }
-    */
 
     public SxmpParser(final String version) {
         this.version = version;
@@ -138,7 +135,11 @@ public class SxmpParser {
         reader.setEntityResolver(handler);
 
         // try parsing (may throw an SxmpParsingException in the handler)
-        parser.parse(new InputSource(in), handler);
+        try {
+            parser.parse(new InputSource(in), handler);
+        } catch (com.sun.org.apache.xerces.internal.impl.io.MalformedByteSequenceException e) {
+            throw new SxmpParsingException(SxmpErrorCode.INVALID_XML, "XML encoding mismatch", null);
+        }
 
         // check if there was an error
         if (handler.error != null) {
@@ -173,6 +174,23 @@ public class SxmpParser {
         Operation operation;
         // we'll use this hashmap for duplicate element checks
         HashSet<String> elements;
+
+        private String encoding = "unknown";
+        private Locator2 locator;
+
+        /*
+         * Per http://xerces.apache.org/xerces2-j/javadocs/api/org/xml/sax/ContentHandler.html#setDocumentLocator%28org.xml.sax.Locator%29
+         * Note that the locator will return correct information only during the
+         * invocation SAX event callbacks after startDocument returns and before
+         * endDocument is called. The application should not attempt to use it
+         * at any other time.
+         */
+        @Override
+        public void setDocumentLocator(Locator locator) {
+            if (locator instanceof Locator2) {
+                this.locator = (Locator2) locator;
+            }
+        }
 
         // utility class to hold error code and message
         private class ErrorCodeMessage {
@@ -397,6 +415,16 @@ public class SxmpParser {
             // Element(s): operation
             //
             if (depth == 0) {
+                // make sure our encoding is valid
+                if (this.locator != null) {
+                    this.encoding = this.locator.getEncoding();
+                }
+                if (version.equals(VERSION_1_1)) {
+                    if (!this.encoding.toLowerCase().equals("utf-8")) {
+                        throw new SxmpParsingException(SxmpErrorCode.UNSUPPORTED_TEXT_ENCODING, "Invalid encoding: "+encoding, null);
+                    }
+                }
+
                 if (!tag.equals("operation")) {
                     throw new SxmpParsingException(SxmpErrorCode.INVALID_XML, "Root element must be an [operation]", null);
                 }
@@ -441,7 +469,7 @@ public class SxmpParser {
                     ErrorResponse errorResponse = new ErrorResponse(this.operationType, ecm.code, ecm.message);
                     this.operation = errorResponse;
                 } else if (tag.equals("submitRequest")) {
-                    parseRequestElement(tag, new SubmitRequest(), attrs);
+                    parseRequestElement(tag, new SubmitRequest(version), attrs);
                 } else if (tag.equals("deliverRequest")) {
                     parseRequestElement(tag, new DeliverRequest(), attrs);
                 } else if (tag.equals("deliveryReportRequest")) {
@@ -636,6 +664,11 @@ public class SxmpParser {
                     String addrTypeString = getRequiredAttributeValue(tag, currentAttrs, "type");
 
                     try {
+                        // dest address is XML-escaped for push
+                        if (MobileAddressUtil.parseType(addrTypeString) == MobileAddress.Type.PUSH_DESTINATION) {
+       // TODO: CHANGE TO STRINGUTIL.UNESCAPE MAKE FCN
+                            addrString = StringEscapeUtils.unescapeXml(addrString);
+                        }
                         // parse and create address
                         MobileAddress destAddr = MobileAddressUtil.parseAddress(addrTypeString, addrString);
 
@@ -689,29 +722,27 @@ public class SxmpParser {
                 } else if (tag.equals("optionalParams") && version.equals(VERSION_1_1)) {
                     String encodedText = parseCharacterData(tag, false);
 
-                    // TODO: do we need to support character encodings here?
+                    // optionalParams are XML-escaped
+                    encodedText = StringEscapeUtils.unescapeXml(encodedText);
 
                     if (!StringUtils.isBlank(encodedText)) {
+                        //logger.debug("*** Encoded text: '"+encodedText+"'");
                         try {
                             JSONObject jsonObj = new JSONObject(encodedText);
-                            Map<Character, Object> optionalParams = new HashMap<Character, Object>();
+                            OptionalParamMap optionalParams = new OptionalParamMap(OptionalParamMap.HASH_MAP);
                             Iterator<String> nameItr = jsonObj.keys();
                             while(nameItr.hasNext()) {
                                 String name = nameItr.next();
-                                if (name.length() != 1)
-                                    throw new SxmpParsingException(SxmpErrorCode.INVALID_VALUE, "Optional param with key > 1 char", this.operation);
                                 Object o = jsonObj.get(name);
-                                // make sure we were only passed a valid type...
-                                if (o instanceof String || o instanceof Integer || o instanceof Long || o instanceof Double) {
-                                    optionalParams.put(name.charAt(0), o);
-                                } else {
-                                     throw new SxmpParsingException(SxmpErrorCode.INVALID_VALUE, "Optional param of invalid type: "+o.getClass().toString(), this.operation);
-                                }
+                                optionalParams.put(name, o);
                             }
                             ((MessageRequest)operation).setOptionalParams(optionalParams);
 
                         } catch (JSONException e) {
+                            logger.warn(e);
                             throw new SxmpParsingException(SxmpErrorCode.UNABLE_TO_CONVERT_VALUE, "Unable to decode json data", this.operation);
+                        } catch (IllegalArgumentException e) {
+                            throw new SxmpParsingException(SxmpErrorCode.INVALID_VALUE, "Invalid optional parameters", this.operation);
                         }
                     }
                 } else {

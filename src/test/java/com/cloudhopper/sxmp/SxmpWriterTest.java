@@ -15,6 +15,7 @@ package com.cloudhopper.sxmp;
 
 // third party imports
 import com.cloudhopper.commons.util.HexUtil;
+import com.cloudhopper.stratus.type.OptionalParamMap;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -435,11 +436,11 @@ public class SxmpWriterTest {
     }
 
     @Test
-    public void writeSubmitRequestWithPushDestination() throws Exception {
-        SubmitRequest request = new SubmitRequest();
+    public void writeSubmitRequestWithLongPushDestination() throws Exception {
+        SubmitRequest request = new SubmitRequest(SxmpParser.VERSION_1_1);
         request.setAccount(new Account("customer1", "test1"));
         request.setOperatorId(20);
-        request.setDestinationAddress(new MobileAddress(MobileAddress.Type.PUSH_DESTINATION, "abcd1234fghi"));
+        request.setDestinationAddress(new MobileAddress(MobileAddress.Type.PUSH_DESTINATION, "abcd1234fghi 012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"));
         request.setText("Hello World");
 
         StringWriter sw = new StringWriter();
@@ -448,13 +449,13 @@ public class SxmpWriterTest {
         logger.debug(sw.toString());
 
         StringBuilder expectedXML = new StringBuilder(200)
-            .append("<?xml version=\"1.0\"?>\n")
+            .append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
             .append("<operation type=\"submit\">\n")
             .append(" <account username=\"customer1\" password=\"test1\"/>\n")
             .append(" <submitRequest>\n")
             .append("  <operatorId>20</operatorId>\n")
             .append("  <deliveryReport>false</deliveryReport>\n")
-            .append("  <destinationAddress type=\"push_destination\">abcd1234fghi</destinationAddress>\n")
+            .append("  <destinationAddress type=\"push_destination\">abcd1234fghi 012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789</destinationAddress>\n")
             .append("  <text encoding=\"UTF-8\">48656C6C6F20576F726C64</text>\n")
             .append(" </submitRequest>\n")
             .append("</operation>\n")
@@ -470,30 +471,65 @@ public class SxmpWriterTest {
     }
 
     @Test
+    public void writeSubmitRequestWithUTF8PushDestination() throws Exception {
+        SubmitRequest request = new SubmitRequest(SxmpParser.VERSION_1_1);
+        request.setAccount(new Account("customer1", "test1"));
+        request.setOperatorId(20);
+        request.setDestinationAddress(new MobileAddress(MobileAddress.Type.PUSH_DESTINATION, "abcd\n1234\rfghi-€£æ_\u20AC\u0623\u0647\u0644"));
+        request.setText("Hello World");
+
+        StringWriter sw = new StringWriter();
+        SxmpWriter.write(sw, request);
+
+        logger.debug("UTF8 PUSH DEST: "+sw.toString());
+
+        StringBuilder expectedXML = new StringBuilder(200)
+            .append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+            .append("<operation type=\"submit\">\n")
+            .append(" <account username=\"customer1\" password=\"test1\"/>\n")
+            .append(" <submitRequest>\n")
+            .append("  <operatorId>20</operatorId>\n")
+            .append("  <deliveryReport>false</deliveryReport>\n")
+            .append("  <destinationAddress type=\"push_destination\">abcd&#10;1234&#13;fghi-€£æ_\u20AC\u0623\u0647\u0644</destinationAddress>\n")
+            .append("  <text encoding=\"UTF-8\">48656C6C6F20576F726C64</text>\n")
+            .append(" </submitRequest>\n")
+            .append("</operation>\n")
+            .append("");
+
+        // compare to actual correct submit response
+        XMLUnit.setIgnoreWhitespace(true);
+        Diff myDiff = new Diff(expectedXML.toString(), sw.toString());
+        DetailedDiff myDetailedDiff = new DetailedDiff(myDiff);
+        Assert.assertTrue("XML are similar " + myDetailedDiff, myDetailedDiff.similar());
+        // verify there's no optionalParams entry
+        Assert.assertTrue(!expectedXML.toString().contains("optionalParams"));
+    }
+
+    @Test
     public void writeSubmitRequestWithOptionalParams() throws Exception {
-        SubmitRequest request = new SubmitRequest();
+        SubmitRequest request = new SubmitRequest(SxmpParser.VERSION_1_1);
         request.setAccount(new Account("customer1", "test1"));
         request.setOperatorId(20);
         request.setDestinationAddress(new MobileAddress(MobileAddress.Type.PUSH_DESTINATION, "abcd1234fghi"));
         request.setText("Hello World");
         // use a tree map to get guaranteed key order
-        Map<Character, Object> optParams = new TreeMap<Character,Object>();
-        optParams.put('A', new Integer(42));
-        optParams.put('b', "value");
-        optParams.put('c', "'sample'");
-        optParams.put('e', new Integer(-42));
-        optParams.put('f', new Double(3.14159));
-        optParams.put('g', new Integer(33445566));
-        optParams.put('h', new Long(123456789123456l));
+        OptionalParamMap optParams = new OptionalParamMap(OptionalParamMap.TREE_MAP);
+        optParams.put("A", new Integer(42));
+        optParams.put("b", "value with unicode and UTF8 extended chars: € £ æ - \u20AC \u0623 \u0647 \u0644 ");
+        optParams.put("c", "'sample' with XML-excaping: \n&\r<>'\"");
+        optParams.put("e", new Integer(-42));
+        optParams.put("f", new Double(3.14159));
+        optParams.put("g", new Integer(33445566));
+        optParams.put("h", new Long(123456789123456l));
         request.setOptionalParams(optParams);
 
         StringWriter sw = new StringWriter();
         SxmpWriter.write(sw, request);
 
-        logger.debug(sw.toString());
+        logger.debug("UTF8 OPTIONAL PARAMS: "+sw.toString());
 
         StringBuilder expectedXML = new StringBuilder(200)
-            .append("<?xml version=\"1.0\"?>\n")
+            .append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
             .append("<operation type=\"submit\">\n")
             .append(" <account username=\"customer1\" password=\"test1\"/>\n")
             .append(" <submitRequest>\n")
@@ -501,7 +537,8 @@ public class SxmpWriterTest {
             .append("  <deliveryReport>false</deliveryReport>\n")
             .append("  <destinationAddress type=\"push_destination\">abcd1234fghi</destinationAddress>\n")
             .append("  <text encoding=\"UTF-8\">48656C6C6F20576F726C64</text>\n")
-            .append("  <optionalParams>{\"A\":42,\"b\":\"value\",\"c\":\"'sample'\",\"e\":-42,\"f\":3.14159,\"g\":33445566,\"h\":123456789123456}</optionalParams>")
+            // for some unknown reason, JSONObject writes the unicode-encoding of € (\u20ac), but keeps the others as single unicode chars
+            .append("  <optionalParams>{\"A\":42,\"b\":\"value with unicode and UTF8 extended chars: \\u20ac £ æ - \\u20ac \u0623 \u0647 \u0644 \",\"c\":\"'sample' with XML-excaping: \\n&amp;\\r&lt;&gt;'\\\"\",\"e\":-42,\"f\":3.14159,\"g\":33445566,\"h\":123456789123456}</optionalParams>")
             .append(" </submitRequest>\n")
             .append("</operation>\n")
             .append("");

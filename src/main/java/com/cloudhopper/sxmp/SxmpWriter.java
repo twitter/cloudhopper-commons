@@ -16,9 +16,11 @@ package com.cloudhopper.sxmp;
 
 import com.cloudhopper.commons.util.HexUtil;
 import com.cloudhopper.commons.util.StringUtil;
+import com.cloudhopper.sxmp.util.XmlEscapeUtil;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,8 +30,12 @@ import org.json.JSONObject;
  */
 public class SxmpWriter {
 
-    static private void writeXmlHeader(Writer out) throws IOException {
-        out.write("<?xml version=\"1.0\"?>\n");
+    static private void writeXmlHeader(Writer out, Operation operation) throws IOException {
+        // v1.1 needs to be UTF-8; v1.0 was unspecified
+        if (operation.getVersion().equals(SxmpParser.VERSION_1_0))
+            out.write("<?xml version=\"1.0\"?>\n");
+        else
+            out.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
     }
 
     static private void writeOperationStartTag(Writer out, Operation.Type type) throws IOException {
@@ -100,7 +106,7 @@ public class SxmpWriter {
     }
 
     static public void write(Writer out, Operation operation) throws SxmpErrorException, IOException {
-        writeXmlHeader(out);
+        writeXmlHeader(out, operation);
         writeOperationStartTag(out, operation.getType());
 
         // let's validate this operation is valid
@@ -196,7 +202,13 @@ public class SxmpWriter {
                     out.write("  <destinationAddress type=\"");
                     out.write(messageRequest.getDestinationAddress().getType().toString().toLowerCase());
                     out.write("\">");
-                    out.write(messageRequest.getDestinationAddress().getAddress());
+                    // push dest address is not guaranteed to be XML-safe
+                    // do minimum-necessary escaping? or better to stay standardized & escape everything?
+                    if (messageRequest.getDestinationAddress().getType() == MobileAddress.Type.PUSH_DESTINATION) {
+                        out.write(XmlEscapeUtil.escapeTextXml(messageRequest.getDestinationAddress().getAddress()));
+                    } else {
+                        out.write(messageRequest.getDestinationAddress().getAddress());
+                    }
                     out.write("</destinationAddress>\n");
                 }
 
@@ -214,7 +226,10 @@ public class SxmpWriter {
                     //String charset = messageRequest.getTextEncoding().getCharset();
                     out.write("  <optionalParams>");
                     JSONObject jsonObj = new JSONObject(messageRequest.getOptionalParams());
-                    out.write(jsonObj.toString());
+                    // JSON encoding is not XML-safe
+                    // do minimum-necessary escaping? or better to stay standardized & escape everything?
+                    // tradeoff: all " and ' become &quot; and &apos; and all json strings are quoted.
+                    out.write(XmlEscapeUtil.escapeTextXml(jsonObj.toString()));
                     out.write("</optionalParams>\n");
                 }
             }

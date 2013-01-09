@@ -41,6 +41,21 @@
       <artifactId>ch-commons-util</artifactId>
       <version>[2.5,)</version>
     </dependency>
+    <dependency>
+      <groupId>cloudhopper</groupId>
+      <artifactId>ch-stratus-commons</artifactId>
+      <version>[1.1.1,)</version>
+      <exclusions>
+        <exclusion>
+          <groupId>cloudhopper</groupId>
+          <artifactId>ch-commons-gsm</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>cloudhopper</groupId>
+          <artifactId>ch-mq</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
 
     <!-- provided scope -->
     <dependency>

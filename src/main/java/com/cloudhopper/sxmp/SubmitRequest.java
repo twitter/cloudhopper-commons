@@ -26,6 +26,12 @@ public class SubmitRequest extends MessageRequest<SubmitResponse> {
         this.deliveryReport = Boolean.FALSE;
     }
 
+    public SubmitRequest(String version) {
+        super(Operation.Type.SUBMIT);
+        this.deliveryReport = Boolean.FALSE;
+        this.version = version;
+    }
+
     public SubmitResponse createResponse() throws SxmpErrorException {
         SubmitResponse submitResp = new SubmitResponse();
         submitResp.setReferenceId(this.getReferenceId());

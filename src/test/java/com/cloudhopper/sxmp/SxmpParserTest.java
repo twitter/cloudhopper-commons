@@ -41,7 +41,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -64,7 +64,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -88,7 +88,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -116,7 +116,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -143,7 +143,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -169,7 +169,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -195,7 +195,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -221,7 +221,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -246,7 +246,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -278,7 +278,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -310,7 +310,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -338,7 +338,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -371,7 +371,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -403,7 +403,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -435,7 +435,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -467,7 +467,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -501,7 +501,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -536,7 +536,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -571,7 +571,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -608,7 +608,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -646,7 +646,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -684,7 +684,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -725,7 +725,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -756,7 +756,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -785,7 +785,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -813,7 +813,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -843,7 +843,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -874,7 +874,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -906,7 +906,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
         Operation operation = parser.parse(is);
 
         logger.debug(operation);
@@ -944,7 +944,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
         Operation operation = parser.parse(is);
 
         logger.debug(operation);
@@ -1010,7 +1010,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
         Operation operation = parser.parse(is);
 
         logger.debug(operation);
@@ -1047,7 +1047,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
         Operation operation = parser.parse(is);
 
         logger.debug(operation);
@@ -1085,7 +1085,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
         Operation operation = parser.parse(is);
 
         logger.debug(operation);
@@ -1119,7 +1119,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -1148,7 +1148,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -1177,7 +1177,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         Operation operation = parser.parse(is);
 
@@ -1204,7 +1204,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         Operation operation = parser.parse(is);
 
@@ -1228,7 +1228,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         Operation operation = parser.parse(is);
 
@@ -1256,7 +1256,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -1284,7 +1284,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         Operation operation = parser.parse(is);
 
@@ -1306,7 +1306,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         Operation operation = parser.parse(is);
 
@@ -1335,7 +1335,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(xml.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
         Operation operation = parser.parse(is);
 
         logger.debug(operation);
@@ -1373,7 +1373,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
         Operation operation = parser.parse(is);
 
         logger.debug(operation);
@@ -1412,7 +1412,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
         Operation operation = parser.parse(is);
 
         logger.debug(operation);
@@ -1450,7 +1450,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
         Operation operation = parser.parse(is);
 
         logger.debug(operation);
@@ -1486,7 +1486,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         Operation operation = parser.parse(is);
 
@@ -1521,7 +1521,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         Operation operation = parser.parse(is);
 
@@ -1580,7 +1580,7 @@ public class SxmpParserTest {
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);
@@ -1594,21 +1594,19 @@ public class SxmpParserTest {
     @Test
     public void parseSubmitRequestWithPushDestination() throws Exception {
         StringBuilder string0 = new StringBuilder(200)
-            .append("<?xml version=\"1.0\"?>\n")
+            .append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
             .append("<operation type=\"submit\">\n")
             .append(" <account username=\"customer1\" password=\"test1\"/>\n")
             .append(" <submitRequest referenceId=\"MYREF102020022\">\n")
             .append("  <operatorId>10</operatorId>\n")
-            .append("  <deliveryReport>true</deliveryReport>\n")
-            .append("  <sourceAddress type=\"network\">40404</sourceAddress>\n")
             .append("  <destinationAddress type=\"push_destination\">abcd01234fghij</destinationAddress>\n")
             .append("  <text encoding=\"ISO-8859-1\">48656c6c6f20576f726c64</text>\n")
             .append(" </submitRequest>\n")
             .append("</operation>\n")
             .append("");
 
-        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes("UTF-8"));
+        SxmpParser parser = new SxmpParser();
         Operation operation = parser.parse(is);
 
         logger.debug(operation);
@@ -1621,32 +1619,101 @@ public class SxmpParserTest {
         Assert.assertNull(submitReq.getApplication());
         Assert.assertEquals("MYREF102020022", submitReq.getReferenceId());
         Assert.assertEquals(new Integer(10), submitReq.getOperatorId());
-        Assert.assertEquals(new Boolean(true), submitReq.getDeliveryReport());
-        Assert.assertEquals(MobileAddress.Type.NETWORK, submitReq.getSourceAddress().getType());
-        Assert.assertEquals("40404", submitReq.getSourceAddress().getAddress());
+        Assert.assertEquals(new Boolean(false), submitReq.getDeliveryReport());
+        Assert.assertEquals(null, submitReq.getSourceAddress());
         Assert.assertEquals(MobileAddress.Type.PUSH_DESTINATION, submitReq.getDestinationAddress().getType());
         Assert.assertEquals("abcd01234fghij", submitReq.getDestinationAddress().getAddress());
         Assert.assertEquals("Hello World", submitReq.getText());
     }
 
     @Test
-    public void parseSubmitRequestWithOptionalParamsV11() throws Exception {
+    public void parseSubmitRequestWithUTF8XMLEscapedLongPushDestination() throws Exception {
+        StringBuilder string0 = new StringBuilder(200)
+            .append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+            .append("<operation type=\"submit\">\n")
+            .append(" <account username=\"customer1\" password=\"test1\"/>\n")
+            .append(" <submitRequest referenceId=\"MYREF102020022\">\n")
+            .append("  <operatorId>10</operatorId>\n")
+            .append("  <destinationAddress type=\"push_destination\">abcd01234fghij-&lt;&amp;-€£æ-\u20AC\u0623\u0647\u0644 012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789</destinationAddress>\n")
+            .append("  <text encoding=\"ISO-8859-1\">48656c6c6f20576f726c64</text>\n")
+            .append(" </submitRequest>\n")
+            .append("</operation>\n")
+            .append("");
+
+        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes("UTF-8"));
+        SxmpParser parser = new SxmpParser();
+        Operation operation = parser.parse(is);
+
+        logger.debug(operation);
+
+        Assert.assertEquals(Operation.Type.SUBMIT, operation.getType());
+        Assert.assertEquals(true, operation.isRequest());
+        SubmitRequest submitReq = (SubmitRequest)operation;
+        Assert.assertEquals("customer1", submitReq.getAccount().getUsername());
+        Assert.assertEquals("test1", submitReq.getAccount().getPassword());
+        Assert.assertNull(submitReq.getApplication());
+        Assert.assertEquals("MYREF102020022", submitReq.getReferenceId());
+        Assert.assertEquals(new Integer(10), submitReq.getOperatorId());
+        Assert.assertEquals(new Boolean(false), submitReq.getDeliveryReport());
+        Assert.assertEquals(null, submitReq.getSourceAddress());
+        Assert.assertEquals(MobileAddress.Type.PUSH_DESTINATION, submitReq.getDestinationAddress().getType());
+        Assert.assertEquals("abcd01234fghij-<&-€£æ-\u20AC\u0623\u0647\u0644 012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789", submitReq.getDestinationAddress().getAddress());
+        Assert.assertEquals("Hello World", submitReq.getText());
+    }
+
+    @Test
+    // unspecified encoding defaults to UTF-8
+    public void parseSubmitRequestWithUTF8XMLEscapedPushDestinationDefaultEncoding() throws Exception {
         StringBuilder string0 = new StringBuilder(200)
             .append("<?xml version=\"1.0\"?>\n")
             .append("<operation type=\"submit\">\n")
             .append(" <account username=\"customer1\" password=\"test1\"/>\n")
             .append(" <submitRequest referenceId=\"MYREF102020022\">\n")
             .append("  <operatorId>10</operatorId>\n")
-            .append("  <deliveryReport>true</deliveryReport>\n")
-            .append("  <sourceAddress type=\"network\">40404</sourceAddress>\n")
-            .append("  <destinationAddress type=\"push_destination\">abcd01234fghij</destinationAddress>\n")
+            .append("  <destinationAddress type=\"push_destination\">abcd&#10;01234&#13;fghij'&lt;&amp;_€£æ-\u20AC\u0623\u0647\u0644</destinationAddress>\n")
             .append("  <text encoding=\"ISO-8859-1\">48656c6c6f20576f726c64</text>\n")
-            .append("  <optionalParams>{\"A\":42,\"b\":\"value\",\"c\":\"'sample'\",\"e\":-42,\"f\":3.14159,\"g\":33445566,\"h\":123456789123456}</optionalParams>")
             .append(" </submitRequest>\n")
             .append("</operation>\n")
             .append("");
 
-        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
+        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes("UTF-8"));
+        SxmpParser parser = new SxmpParser();
+        Operation operation = parser.parse(is);
+
+        logger.debug(operation);
+
+        Assert.assertEquals(Operation.Type.SUBMIT, operation.getType());
+        Assert.assertEquals(true, operation.isRequest());
+        SubmitRequest submitReq = (SubmitRequest)operation;
+        Assert.assertEquals("customer1", submitReq.getAccount().getUsername());
+        Assert.assertEquals("test1", submitReq.getAccount().getPassword());
+        Assert.assertNull(submitReq.getApplication());
+        Assert.assertEquals("MYREF102020022", submitReq.getReferenceId());
+        Assert.assertEquals(new Integer(10), submitReq.getOperatorId());
+        Assert.assertEquals(new Boolean(false), submitReq.getDeliveryReport());
+        Assert.assertEquals(null, submitReq.getSourceAddress());
+        Assert.assertEquals(MobileAddress.Type.PUSH_DESTINATION, submitReq.getDestinationAddress().getType());
+        Assert.assertEquals("abcd\n01234\rfghij'<&_€£æ-\u20AC\u0623\u0647\u0644", submitReq.getDestinationAddress().getAddress());
+        Assert.assertEquals("Hello World", submitReq.getText());
+    }
+
+    @Test
+    public void parseSubmitRequestWithOptionalParamsV11() throws Exception {
+        StringBuilder string0 = new StringBuilder(200)
+            .append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+            .append("<operation type=\"submit\">\n")
+            .append(" <account username=\"customer1\" password=\"test1\"/>\n")
+            .append(" <submitRequest referenceId=\"MYREF102020022\">\n")
+            .append("  <operatorId>10</operatorId>\n")
+            .append("  <destinationAddress type=\"push_destination\">abcd01234fghij</destinationAddress>\n")
+            .append("  <text encoding=\"ISO-8859-1\">48656c6c6f20576f726c64</text>\n")
+            // JSONObject encodes € to its full unicode encoding, but leaves other unicode chars; make sure it decodes also
+            .append("  <optionalParams>{\"A\":42,\"b\":\"\\u20ac\",\"c\":\"'sample'\",\"e\":-42,\"f\":3.14159,\"g\":33445566,\"h\":123456789123456}</optionalParams>\n")
+            .append(" </submitRequest>\n")
+            .append("</operation>\n")
+            .append("");
+
+        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes("UTF-8"));
         SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_1);
         Operation operation = parser.parse(is);
 
@@ -1660,40 +1727,173 @@ public class SxmpParserTest {
         Assert.assertNull(submitReq.getApplication());
         Assert.assertEquals("MYREF102020022", submitReq.getReferenceId());
         Assert.assertEquals(new Integer(10), submitReq.getOperatorId());
-        Assert.assertEquals(new Boolean(true), submitReq.getDeliveryReport());
-        Assert.assertEquals(MobileAddress.Type.NETWORK, submitReq.getSourceAddress().getType());
-        Assert.assertEquals("40404", submitReq.getSourceAddress().getAddress());
+        Assert.assertEquals(new Boolean(false), submitReq.getDeliveryReport());
+        Assert.assertEquals(null, submitReq.getSourceAddress());
         Assert.assertEquals(MobileAddress.Type.PUSH_DESTINATION, submitReq.getDestinationAddress().getType());
         Assert.assertEquals("abcd01234fghij", submitReq.getDestinationAddress().getAddress());
         Assert.assertEquals("Hello World", submitReq.getText());
-        Map<Character, Object> opts = submitReq.getOptionalParams();
-        Assert.assertEquals(opts.get('A'), new Integer(42));
-        Assert.assertEquals(opts.get('b'), "value");
-        Assert.assertEquals(opts.get('c'), "'sample'");
-        Assert.assertEquals(opts.get('e'), new Integer(-42));
-        Assert.assertEquals(opts.get('f'), new Double(3.14159));
-        Assert.assertEquals(opts.get('g'), new Integer(33445566));
-        Assert.assertEquals(opts.get('h'), new Long(123456789123456l));
+        Map<String, Object> opts = submitReq.getOptionalParams();
+        Assert.assertEquals(opts.get("A"), new Integer(42));
+        Assert.assertEquals(opts.get("b"), "€");
+        Assert.assertEquals(opts.get("c"), "'sample'");
+        Assert.assertEquals(opts.get("e"), new Integer(-42));
+        Assert.assertEquals(opts.get("f"), new Double(3.14159));
+        Assert.assertEquals(opts.get("g"), new Integer(33445566));
+        Assert.assertEquals(opts.get("h"), new Long(123456789123456l));
     }
 
     @Test
-    public void parseSubmitRequestWithBadOptionalParamsV11() throws Exception {
+    public void parseSubmitRequestWithXMLEncodedOptionalParamsV11() throws Exception {
+        StringBuilder string0 = new StringBuilder(200)
+            .append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+            .append("<operation type=\"submit\">\n")
+            .append(" <account username=\"customer1\" password=\"test1\"/>\n")
+            .append(" <submitRequest referenceId=\"MYREF102020022\">\n")
+            .append("  <operatorId>10</operatorId>\n")
+            .append("  <destinationAddress type=\"push_destination\">abcd01234fghij</destinationAddress>\n")
+            .append("  <text encoding=\"ISO-8859-1\">48656c6c6f20576f726c64</text>\n")
+            .append("  <optionalParams>{\"A\":42,\"b\":\"&gt;\\r&lt;\\n&amp;\\\"'\"}</optionalParams>\n")
+            .append(" </submitRequest>\n")
+            .append("</operation>\n")
+            .append("");
+
+        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes("UTF-8"));
+        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_1);
+        Operation operation = parser.parse(is);
+
+        logger.debug(operation);
+
+        Assert.assertEquals(Operation.Type.SUBMIT, operation.getType());
+        Assert.assertEquals(true, operation.isRequest());
+        SubmitRequest submitReq = (SubmitRequest)operation;
+        Assert.assertEquals("customer1", submitReq.getAccount().getUsername());
+        Assert.assertEquals("test1", submitReq.getAccount().getPassword());
+        Assert.assertNull(submitReq.getApplication());
+        Assert.assertEquals("MYREF102020022", submitReq.getReferenceId());
+        Assert.assertEquals(new Integer(10), submitReq.getOperatorId());
+        Assert.assertEquals(new Boolean(false), submitReq.getDeliveryReport());
+        Assert.assertEquals(null, submitReq.getSourceAddress());
+        Assert.assertEquals(MobileAddress.Type.PUSH_DESTINATION, submitReq.getDestinationAddress().getType());
+        Assert.assertEquals("abcd01234fghij", submitReq.getDestinationAddress().getAddress());
+        Assert.assertEquals("Hello World", submitReq.getText());
+        Map<String, Object> opts = submitReq.getOptionalParams();
+        Assert.assertEquals(opts.get("A"), new Integer(42));
+        Assert.assertEquals(opts.get("b"), ">\r<\n&\"'");
+    }
+
+    @Test
+    public void parseSubmitRequestWithUTF8andUnicodeOptionalParamsV11() throws Exception {
+        StringBuilder string0 = new StringBuilder(200)
+            .append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+            .append("<operation type=\"submit\">\n")
+            .append(" <account username=\"customer1\" password=\"test1\"/>\n")
+            .append(" <submitRequest referenceId=\"MYREF102020022\">\n")
+            .append("  <operatorId>10</operatorId>\n")
+            .append("  <destinationAddress type=\"push_destination\">abcd01234fghij</destinationAddress>\n")
+            .append("  <text encoding=\"ISO-8859-1\">48656c6c6f20576f726c64</text>\n")
+            .append("  <optionalParams>{\"A\":42,\"b\":\"€£æ-\u20AC\u0623\u0647\u0644\u0627\u0020\"}</optionalParams>\n")
+            .append(" </submitRequest>\n")
+            .append("</operation>\n")
+            .append("");
+
+        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes("UTF-8"));
+        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_1);
+        Operation operation = parser.parse(is);
+
+        logger.debug(operation);
+
+        Assert.assertEquals(Operation.Type.SUBMIT, operation.getType());
+        Assert.assertEquals(true, operation.isRequest());
+        SubmitRequest submitReq = (SubmitRequest)operation;
+        Assert.assertEquals("customer1", submitReq.getAccount().getUsername());
+        Assert.assertEquals("test1", submitReq.getAccount().getPassword());
+        Assert.assertNull(submitReq.getApplication());
+        Assert.assertEquals("MYREF102020022", submitReq.getReferenceId());
+        Assert.assertEquals(new Integer(10), submitReq.getOperatorId());
+        Assert.assertEquals(new Boolean(false), submitReq.getDeliveryReport());
+        Assert.assertEquals(null, submitReq.getSourceAddress());
+        Assert.assertEquals(MobileAddress.Type.PUSH_DESTINATION, submitReq.getDestinationAddress().getType());
+        Assert.assertEquals("abcd01234fghij", submitReq.getDestinationAddress().getAddress());
+        Assert.assertEquals("Hello World", submitReq.getText());
+        Map<String, Object> opts = submitReq.getOptionalParams();
+        Assert.assertEquals(opts.get("A"), new Integer(42));
+        Assert.assertEquals(opts.get("b"), "€£æ-\u20AC\u0623\u0647\u0644\u0627\u0020");
+    }
+
+    @Test
+    // no encoding specified defaults to UTF-8 by XML spec; fail if actually 8859-1 encoded
+    public void parseInvalidSubmitRequestWithV11IncorrectNoEncoding() throws Exception {
         StringBuilder string0 = new StringBuilder(200)
             .append("<?xml version=\"1.0\"?>\n")
             .append("<operation type=\"submit\">\n")
             .append(" <account username=\"customer1\" password=\"test1\"/>\n")
             .append(" <submitRequest referenceId=\"MYREF102020022\">\n")
             .append("  <operatorId>10</operatorId>\n")
-            .append("  <deliveryReport>true</deliveryReport>\n")
-            .append("  <sourceAddress type=\"network\">40404</sourceAddress>\n")
             .append("  <destinationAddress type=\"push_destination\">abcd01234fghij</destinationAddress>\n")
             .append("  <text encoding=\"ISO-8859-1\">48656c6c6f20576f726c64</text>\n")
-            .append("  <optionalParams>{\"A sample\"}</optionalParams>")
+            .append("  <optionalParams>{\"A\":42,\"b\":\"ä\"}</optionalParams>\n")
             .append(" </submitRequest>\n")
             .append("</operation>\n")
             .append("");
 
-        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
+        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes("ISO-8859-1"));
+        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_1);
+        try {
+            Operation operation = parser.parse(is);
+            Assert.fail();
+        } catch (SxmpParsingException e) {
+             // correct behavior
+            Assert.assertEquals(SxmpErrorCode.INVALID_XML, e.getErrorCode());
+            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("XML encoding mismatch"));
+        }
+    }
+
+    @Test
+    public void parseInvalidSubmitRequestWithV11NonUTF8Encoding() throws Exception {
+        StringBuilder string0 = new StringBuilder(200)
+            .append("<?xml version='1.0' encoding='iso-8859-1'?>\n")
+            .append("<operation type=\"submit\">\n")
+            .append(" <account username=\"customer1\" password=\"test1\"/>\n")
+            .append(" <submitRequest referenceId=\"MYREF102020022\">\n")
+            .append("  <operatorId>10</operatorId>\n")
+            .append("  <destinationAddress type=\"push_destination\">abcd01234fghij</destinationAddress>\n")
+            .append("  <text encoding=\"ISO-8859-1\">48656c6c6f20576f726c64</text>\n")
+            .append("  <optionalParams>{\"A\":42,\"b\":\"ä\"}</optionalParams>\n")
+            .append(" </submitRequest>\n")
+            .append("</operation>\n")
+            .append("");
+
+        byte[] b0 = string0.toString().getBytes("iso-8859-1");
+
+        ByteArrayInputStream is = new ByteArrayInputStream(b0);
+        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_1);
+        try {
+            Operation operation = parser.parse(is);
+            Assert.fail();
+        } catch (SxmpParsingException e) {
+             // correct behavior
+            Assert.assertEquals(SxmpErrorCode.UNSUPPORTED_TEXT_ENCODING, e.getErrorCode());
+            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Invalid encoding"));
+        }
+    }
+
+    // we may not validate push address here?
+    @Test
+    public void parseSubmitRequestWithBadOptionalParamsV11() throws Exception {
+        StringBuilder string0 = new StringBuilder(200)
+            .append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+            .append("<operation type=\"submit\">\n")
+            .append(" <account username=\"customer1\" password=\"test1\"/>\n")
+            .append(" <submitRequest referenceId=\"MYREF102020022\">\n")
+            .append("  <operatorId>10</operatorId>\n")
+            .append("  <destinationAddress type=\"push_destination\">abcd01234fghij</destinationAddress>\n")
+            .append("  <text encoding=\"ISO-8859-1\">48656c6c6f20576f726c64</text>\n")
+            .append("  <optionalParams>{\"A sample\"}</optionalParams>\n")
+            .append(" </submitRequest>\n")
+            .append("</operation>\n")
+            .append("");
+
+        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes("UTF-8"));
         SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_1);
         try {
             Operation operation = parser.parse(is);
@@ -1708,31 +1908,64 @@ public class SxmpParserTest {
     }
 
     @Test
-    public void parseSubmitRequestWithInvalidOptionalParamsV11() throws Exception {
+    public void parseSubmitRequestWithInvalidOptionalParamsV11KeyTooLong() throws Exception {
         StringBuilder string0 = new StringBuilder(200)
-            .append("<?xml version=\"1.0\"?>\n")
+            .append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
             .append("<operation type=\"submit\">\n")
             .append(" <account username=\"customer1\" password=\"test1\"/>\n")
             .append(" <submitRequest referenceId=\"MYREF102020022\">\n")
             .append("  <operatorId>10</operatorId>\n")
-            .append("  <deliveryReport>true</deliveryReport>\n")
-            .append("  <sourceAddress type=\"network\">40404</sourceAddress>\n")
             .append("  <destinationAddress type=\"push_destination\">abcd01234fghij</destinationAddress>\n")
             .append("  <text encoding=\"ISO-8859-1\">48656c6c6f20576f726c64</text>\n")
-            .append("  <optionalParams>{\"A\":42;\"too-long\":\"value\";\"c\":\"sample\"}</optionalParams>")
+            .append("  <optionalParams>{\"A\":42;\"1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456\":\"value\";\"c\":\"sample\"}</optionalParams>\n")
             .append(" </submitRequest>\n")
             .append("</operation>\n")
             .append("");
 
-        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
+        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes("UTF-8"));
         SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_1);
         try {
             Operation operation = parser.parse(is);
             Assert.fail();
         } catch (SxmpParsingException e) {
+            logger.error("error message: "+e.getMessage());
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.INVALID_VALUE, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Optional param with key > 1 char"));
+            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Invalid optional parameters"));
+            SubmitRequest submitRequest = (SubmitRequest)e.getOperation();
+            Assert.assertEquals(Operation.Type.SUBMIT, submitRequest.getType());
+        }
+    }
+
+    @Test
+    public void parseSubmitRequestWithInvalidOptionalParamsV11TooMany() throws Exception {
+        StringBuilder string0 = new StringBuilder(200)
+            .append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+            .append("<operation type=\"submit\">\n")
+            .append(" <account username=\"customer1\" password=\"test1\"/>\n")
+            .append(" <submitRequest referenceId=\"MYREF102020022\">\n")
+            .append("  <operatorId>10</operatorId>\n")
+            .append("  <destinationAddress type=\"push_destination\">abcd01234fghij</destinationAddress>\n")
+            .append("  <text encoding=\"ISO-8859-1\">48656c6c6f20576f726c64</text>\n")
+            .append("  <optionalParams>{");
+        for (int i=0; i < 255; i++)
+            string0.append("\"").append(i).append("\":1,");
+        string0.append("\"#256\":1");
+        string0.append("}</optionalParams>\n")
+            .append(" </submitRequest>\n")
+            .append("</operation>\n")
+            .append("");
+
+        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes("UTF-8"));
+        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_1);
+        try {
+            Operation operation = parser.parse(is);
+            Assert.fail();
+        } catch (SxmpParsingException e) {
+            logger.error("error message: "+e.getMessage());
+             // correct behavior
+            Assert.assertEquals(SxmpErrorCode.INVALID_VALUE, e.getErrorCode());
+            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Invalid optional parameters"));
             SubmitRequest submitRequest = (SubmitRequest)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, submitRequest.getType());
         }
@@ -1741,21 +1974,19 @@ public class SxmpParserTest {
     @Test
     public void parseSubmitRequestWithEmptyOptionalParamsV11() throws Exception {
         StringBuilder string0 = new StringBuilder(200)
-            .append("<?xml version=\"1.0\"?>\n")
+            .append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
             .append("<operation type=\"submit\">\n")
             .append(" <account username=\"customer1\" password=\"test1\"/>\n")
             .append(" <submitRequest referenceId=\"MYREF102020022\">\n")
             .append("  <operatorId>10</operatorId>\n")
-            .append("  <deliveryReport>true</deliveryReport>\n")
-            .append("  <sourceAddress type=\"network\">40404</sourceAddress>\n")
             .append("  <destinationAddress type=\"push_destination\">abcd01234fghij</destinationAddress>\n")
             .append("  <text encoding=\"ISO-8859-1\">48656c6c6f20576f726c64</text>\n")
-            .append("  <optionalParams></optionalParams>")
+            .append("  <optionalParams></optionalParams>\n")
             .append(" </submitRequest>\n")
             .append("</operation>\n")
             .append("");
 
-        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
+        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes("UTF-8"));
         SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_1);
         Operation operation = parser.parse(is);
 
@@ -1769,9 +2000,8 @@ public class SxmpParserTest {
         Assert.assertNull(submitReq.getApplication());
         Assert.assertEquals("MYREF102020022", submitReq.getReferenceId());
         Assert.assertEquals(new Integer(10), submitReq.getOperatorId());
-        Assert.assertEquals(new Boolean(true), submitReq.getDeliveryReport());
-        Assert.assertEquals(MobileAddress.Type.NETWORK, submitReq.getSourceAddress().getType());
-        Assert.assertEquals("40404", submitReq.getSourceAddress().getAddress());
+        Assert.assertEquals(new Boolean(false), submitReq.getDeliveryReport());
+        Assert.assertEquals(null, submitReq.getSourceAddress());
         Assert.assertEquals(MobileAddress.Type.PUSH_DESTINATION, submitReq.getDestinationAddress().getType());
         Assert.assertEquals("abcd01234fghij", submitReq.getDestinationAddress().getAddress());
         Assert.assertEquals("Hello World", submitReq.getText());
@@ -1786,17 +2016,15 @@ public class SxmpParserTest {
             .append(" <account username=\"customer1\" password=\"test1\"/>\n")
             .append(" <submitRequest referenceId=\"MYREF102020022\">\n")
             .append("  <operatorId>10</operatorId>\n")
-            .append("  <deliveryReport>true</deliveryReport>\n")
-            .append("  <sourceAddress type=\"network\">40404</sourceAddress>\n")
             .append("  <destinationAddress type=\"push_destination\">abcd01234fghij</destinationAddress>\n")
             .append("  <text encoding=\"ISO-8859-1\">48656c6c6f20576f726c64</text>\n")
-            .append("  <optionalParams></optionalParams>")
+            .append("  <optionalParams></optionalParams>\n")
             .append(" </submitRequest>\n")
             .append("</operation>\n")
             .append("");
 
         ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
-        SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+        SxmpParser parser = new SxmpParser();
 
         try {
             Operation operation = parser.parse(is);

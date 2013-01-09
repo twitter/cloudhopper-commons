@@ -44,6 +44,7 @@ public class SxmpServletProcessor {
         PrintWriter out = response.getWriter();
         try {
             // first, we will assume the response will be correct and will be text/xml
+            // responses are sent in SXMP v1.0, which is still ISO-8859-1
             response.setContentType("text/xml; charset=\"iso-8859-1\"");
 
             // process it -- if no exception thrown, then xml was already written to outputstream

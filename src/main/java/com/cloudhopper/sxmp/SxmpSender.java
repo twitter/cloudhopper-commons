@@ -85,7 +85,16 @@ public class SxmpSender {
         try {
             HttpPost post = new HttpPost(url);
             StringEntity entity = new StringEntity(requestXml);
-            entity.setContentType("text/xml; charset=\"iso-8859-1\"");
+            // write old or new encoding?
+            if (request.getVersion().equals(SxmpParser.VERSION_1_1)) {
+                // v1.1 is utf-8
+                entity.setContentType("text/xml; charset=\"utf-8\"");
+            } else {
+                // v1.0 was 8859-1, though that's technically wrong
+                // unspecified XML must be encoded in UTF-8
+                // maintained this way for backward compatibility
+                entity.setContentType("text/xml; charset=\"iso-8859-1\"");
+            }
             post.setEntity(entity);
 
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
@@ -109,6 +118,7 @@ public class SxmpSender {
         } else {
             // convert response xml into an object
             SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_0);
+            // v1.0 data remains in ISO-8859-1, and responses are v1.0
             ByteArrayInputStream bais = new ByteArrayInputStream(responseXml.getBytes("ISO-8859-1"));
             Operation op = parser.parse(bais);
 
