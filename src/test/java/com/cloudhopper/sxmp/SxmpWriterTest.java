@@ -551,6 +551,49 @@ public class SxmpWriterTest {
     }
 
     @Test
+    public void write10SubmitRequestWithoutIncludingOptionalParams() throws Exception {
+        SubmitRequest request = new SubmitRequest(SxmpParser.VERSION_1_0);
+        request.setAccount(new Account("customer1", "test1"));
+        request.setOperatorId(20);
+        request.setDestinationAddress(new MobileAddress(MobileAddress.Type.PUSH_DESTINATION, "abcd1234fghi"));
+        request.setText("Hello World");
+        // use a tree map to get guaranteed key order
+        OptionalParamMap optParams = new OptionalParamMap(OptionalParamMap.TREE_MAP);
+        optParams.put("A", new Integer(42));
+        optParams.put("b", "value with unicode and UTF8 extended chars: € £ æ - \u20AC \u0623 \u0647 \u0644 ");
+        optParams.put("c", "'sample' with XML-excaping: \n&\r<>'\"");
+        optParams.put("e", new Integer(-42));
+        optParams.put("f", new Double(3.14159));
+        optParams.put("g", new Integer(33445566));
+        optParams.put("h", new Long(123456789123456l));
+        request.setOptionalParams(optParams);
+
+        StringWriter sw = new StringWriter();
+        SxmpWriter.write(sw, request);
+
+        logger.debug("UTF8 OPTIONAL PARAMS: "+sw.toString());
+
+        StringBuilder expectedXML = new StringBuilder(200)
+            .append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+            .append("<operation type=\"submit\">\n")
+            .append(" <account username=\"customer1\" password=\"test1\"/>\n")
+            .append(" <submitRequest>\n")
+            .append("  <operatorId>20</operatorId>\n")
+            .append("  <deliveryReport>false</deliveryReport>\n")
+            .append("  <destinationAddress type=\"push_destination\">abcd1234fghi</destinationAddress>\n")
+            .append("  <text encoding=\"UTF-8\">48656C6C6F20576F726C64</text>\n")
+            .append(" </submitRequest>\n")
+            .append("</operation>\n")
+            .append("");
+
+        // compare to actual correct submit response
+        XMLUnit.setIgnoreWhitespace(true);
+        Diff myDiff = new Diff(expectedXML.toString(), sw.toString());
+        DetailedDiff myDetailedDiff = new DetailedDiff(myDiff);
+        Assert.assertTrue("XML are similar " + myDetailedDiff, myDetailedDiff.similar());
+    }
+
+    @Test
     public void writeDeliverRequestWithAlphanumeric() throws Exception {
         DeliverRequest request = new DeliverRequest();
         request.setAccount(new Account("customer1", "test1"));

@@ -221,8 +221,10 @@ public class SxmpWriter {
                     out.write("</text>\n");
                 }
 
-                // this is a v1.1 option; should allow selective writing?
-                if (messageRequest.getOptionalParams() != null) {
+                // this is a v1.1 option; only write if version == 1.1
+                if (messageRequest.getOptionalParams() != null &&
+                        messageRequest.getVersion().equals(SxmpParser.VERSION_1_1)) {
+
                     //String charset = messageRequest.getTextEncoding().getCharset();
                     out.write("  <optionalParams>");
                     JSONObject jsonObj = new JSONObject(messageRequest.getOptionalParams());
