@@ -490,7 +490,7 @@ public class SxmpWriterTest {
             .append(" <submitRequest>\n")
             .append("  <operatorId>20</operatorId>\n")
             .append("  <deliveryReport>false</deliveryReport>\n")
-            .append("  <destinationAddress type=\"push_destination\">abcd&#10;1234&#13;fghi-€£æ_\u20AC\u0623\u0647\u0644</destinationAddress>\n")
+            .append("  <destinationAddress type=\"push_destination\">abcd\n1234\rfghi-€£æ_\u20AC\u0623\u0647\u0644</destinationAddress>\n")
             .append("  <text encoding=\"UTF-8\">48656C6C6F20576F726C64</text>\n")
             .append(" </submitRequest>\n")
             .append("</operation>\n")

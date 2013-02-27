@@ -24,9 +24,11 @@ public class XmlEscapeUtil {
     private static final String[][] XML_TEXT_CHARS = {
         { "&", "&amp;"},
         { "<", "&lt;"},
-        { ">", "&gt;"},
+        { ">", "&gt;"}
+     /* why escape these?
         { "\n", "&#10;"},
         { "\r", "&#13;"},
+      */
     };
 
     // (gt, lt, quot, amp, apos) and then newline, carriage return
@@ -35,9 +37,11 @@ public class XmlEscapeUtil {
         { "<", "&lt;"},
         { ">", "&gt;"},
         { "\"", "&quot;"},
-        { "'", "&apos;"},
+        { "'", "&apos;"}
+     /* why escape these?
         { "\n", "&#10;"},
         { "\r", "&#13;"},
+      */
     };
 
     /**
@@ -45,7 +49,7 @@ public class XmlEscapeUtil {
      * For example: a&b < c > d => a&amp;b &lt; c &gt; d
      *
      * Supports only XML entities which must be escaped in non-attribute
-     * text (gt, lt, amp), also newline & carriage return
+     * text (gt, lt, amp)
      *
      * @param value The string to escape
      * @return The escaped String that can be used in an XML document.
@@ -58,9 +62,7 @@ public class XmlEscapeUtil {
      * Escapes the characters in a String using XML entities.
      * For example: "bread" & "butter'ed" => &quot;bread&quot; &amp; &quot;butter&apos;ed&quot;
      *
-     * Supports the five basic XML entities (gt, lt, quot, amp, apos) and also
-     * supports a newline and carriage return character.  A newline is escaped
-     * to &#10; and a carriage return to &#13;
+     * Supports the five basic XML entities (gt, lt, quot, amp, apos)
      *
      * @param value The string to escape
      * @return The escaped String that can be used in an XML document.
