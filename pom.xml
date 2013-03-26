@@ -4,7 +4,7 @@
   <groupId>cloudhopper</groupId>
   <artifactId>ch-sxmp</artifactId>
   <packaging>jar</packaging>
-  <version>1.4.2-SNAPSHOT</version>
+  <version>1.4.2</version>
   <name>ch-sxmp</name>
 
   <parent>
@@ -15,7 +15,7 @@
 
   <scm>
     <connection>scm:git:https://git.twitter.biz/cloudhopper-sxmp</connection>
-    <tag>add_push_support</tag>
+    <tag>version-1.4.2</tag>
   </scm>
 
   <repositories>
