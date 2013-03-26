@@ -4,13 +4,13 @@
   <groupId>cloudhopper</groupId>
   <artifactId>ch-sxmp</artifactId>
   <packaging>jar</packaging>
-  <version>1.4.3-SNAPSHOT</version>
+  <version>1.4.2-SNAPSHOT</version>
   <name>ch-sxmp</name>
 
   <parent>
     <groupId>cloudhopper</groupId>
     <artifactId>ch-maven-parent-public</artifactId>
-    <version>1.6</version>
+    <version>1.7</version>
   </parent>
 
   <scm>
