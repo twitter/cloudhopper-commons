@@ -8,7 +8,8 @@ SXMP Library
   * Add support for new PUSH_DESTINATION address type, alphanumeric, length <= 32767
   * Added support for parsing utf-8 formatted XML input, and v1.1 output is now utf-8
     instead of ISO-8859-1
-  * Updated parent pom to 1.7
+  * Updated parent pom to 1.7, adding release-plugin support
+  * Removed Version.java, replaced with new auto-generated version
 
 1.4.1 - 2012-01-31
   * Added junit test to ensure secure processing of XML is enabled. An example
