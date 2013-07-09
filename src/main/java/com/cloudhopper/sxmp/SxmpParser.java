@@ -53,6 +53,7 @@ public class SxmpParser {
 
     public static final String VERSION_1_0 = "1.0";
     public static final String VERSION_1_1 = "1.1";
+    public static final String VERSION_1_2 = "1.2";
 
     protected final String version;
 
@@ -532,6 +533,22 @@ public class SxmpParser {
                         }
                     } catch (SxmpErrorException e) {
                         throw new SxmpParsingException(e.getErrorCode(), e.getErrorMessage(), this.operation);
+                    }
+		} else if (tag.equals("priority")) {
+                    // parse the character data, check for duplicates
+                    String priorityText = parseCharacterData(tag, true);
+
+                    // convert to an integer
+                    Integer priorityFlag = parseIntegerValue(tag, priorityText);
+
+                    try {
+                        if (operation instanceof MessageRequest) {
+                            ((MessageRequest)operation).setPriority(Priority.fromPriorityFlag(priorityFlag));
+                        } else {
+                            throw new SxmpParsingException(SxmpErrorCode.UNSUPPORTED_ELEMENT, "The [priority] element is not supported for this operation type", this.operation);
+                        }
+                    } catch (IllegalArgumentException e) {
+                        throw new SxmpParsingException(SxmpErrorCode.INVALID_VALUE, e.getMessage(), this.operation);
                     }
                 } else if (tag.equals("error")) {
                     // parse the error element

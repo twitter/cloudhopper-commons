@@ -925,6 +925,80 @@ public class SxmpParserTest {
         Assert.assertEquals(MobileAddress.Type.INTERNATIONAL, submitReq.getDestinationAddress().getType());
         Assert.assertEquals("+12065551212", submitReq.getDestinationAddress().getAddress());
         Assert.assertEquals("Hello World", submitReq.getText());
+	Assert.assertEquals(Priority.NORMAL, submitReq.getPriority());
+    }
+
+    @Test
+    public void parseSubmitRequestWithUrgentPriority() throws Exception {
+        StringBuilder string0 = new StringBuilder(200)
+            .append("<?xml version=\"1.0\"?>\n")
+            .append("<operation type=\"submit\">\n")
+            .append(" <account username=\"customer1\" password=\"test1\"/>\n")
+            .append(" <submitRequest referenceId=\"MYREF102020022\">\n")
+            .append("  <operatorId>10</operatorId>\n")
+            .append("  <priority>2</priority>\n")
+            .append("  <deliveryReport>true</deliveryReport>\n")
+            .append("  <sourceAddress type=\"network\">40404</sourceAddress>\n")
+            .append("  <destinationAddress type=\"international\">+12065551212</destinationAddress>\n")
+            .append("  <text encoding=\"ISO-8859-1\">48656c6c6f20576f726c64</text>\n")
+            .append(" </submitRequest>\n")
+            .append("</operation>\n")
+            .append("");
+
+        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
+        SxmpParser parser = new SxmpParser();
+        Operation operation = parser.parse(is);
+
+        logger.debug(operation);
+
+        Assert.assertEquals(Operation.Type.SUBMIT, operation.getType());
+        Assert.assertEquals(true, operation.isRequest());
+        SubmitRequest submitReq = (SubmitRequest)operation;
+        Assert.assertEquals("customer1", submitReq.getAccount().getUsername());
+        Assert.assertEquals("test1", submitReq.getAccount().getPassword());
+        Assert.assertNull(submitReq.getApplication());
+        Assert.assertEquals("MYREF102020022", submitReq.getReferenceId());
+        Assert.assertEquals(new Integer(10), submitReq.getOperatorId());
+        Assert.assertEquals(new Boolean(true), submitReq.getDeliveryReport());
+        Assert.assertEquals(MobileAddress.Type.NETWORK, submitReq.getSourceAddress().getType());
+        Assert.assertEquals("40404", submitReq.getSourceAddress().getAddress());
+        Assert.assertEquals(MobileAddress.Type.INTERNATIONAL, submitReq.getDestinationAddress().getType());
+        Assert.assertEquals("+12065551212", submitReq.getDestinationAddress().getAddress());
+        Assert.assertEquals("Hello World", submitReq.getText());
+	Assert.assertEquals(Priority.URGENT, submitReq.getPriority());
+    }
+
+    @Test
+    public void parseSubmitRequestWithInvalidPriority() throws Exception {
+        StringBuilder string0 = new StringBuilder(200)
+            .append("<?xml version=\"1.0\"?>\n")
+            .append("<operation type=\"submit\">\n")
+            .append(" <account username=\"customer1\" password=\"test1\"/>\n")
+            .append(" <submitRequest referenceId=\"MYREF102020022\">\n")
+            .append("  <operatorId>10</operatorId>\n")
+            .append("  <priority>22</priority>\n")
+            .append("  <deliveryReport>true</deliveryReport>\n")
+            .append("  <sourceAddress type=\"network\">40404</sourceAddress>\n")
+            .append("  <destinationAddress type=\"international\">+12065551212</destinationAddress>\n")
+            .append("  <text encoding=\"ISO-8859-1\">48656c6c6f20576f726c64</text>\n")
+            .append(" </submitRequest>\n")
+            .append("</operation>\n")
+            .append("");
+
+        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
+        SxmpParser parser = new SxmpParser();
+
+        try {
+            Operation operation = parser.parse(is);
+            Assert.fail();
+        } catch (SxmpParsingException e) {
+             // correct behavior
+            Assert.assertEquals(SxmpErrorCode.INVALID_VALUE, e.getErrorCode());
+            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("priority_flag must be between 0 and 3"));
+            Assert.assertNotNull(e.getOperation());
+            SubmitRequest submitRequest = (SubmitRequest)e.getOperation();
+            Assert.assertEquals(Operation.Type.SUBMIT, submitRequest.getType());
+        }
     }
 
     @Test
@@ -1028,6 +1102,7 @@ public class SxmpParserTest {
         Assert.assertEquals(null, deliverReq.getSourceAddress());
         Assert.assertEquals("Hello World", deliverReq.getText());
         Assert.assertEquals(null, deliverReq.getTicketId());
+	Assert.assertEquals(Priority.NORMAL, deliverReq.getPriority());
     }
 
     @Test
@@ -1065,6 +1140,77 @@ public class SxmpParserTest {
         Assert.assertEquals("+12065551212", deliverReq.getSourceAddress().getAddress());
         Assert.assertEquals("Hello World", deliverReq.getText());
         Assert.assertEquals(null, deliverReq.getTicketId());
+    }
+
+    @Test
+    public void parseDeliverRequestWithUrgentPriority() throws Exception {
+        StringBuilder string0 = new StringBuilder(200)
+            .append("<?xml version=\"1.0\"?>\n")
+            .append("<operation type=\"deliver\">\n")
+            .append(" <account username=\"customer1\" password=\"test1\"/>\n")
+            .append(" <deliverRequest referenceId=\"MYREF102020022\">\n")
+            .append("  <operatorId>10</operatorId>\n")
+            .append("  <priority>2</priority>\n")
+            .append("  <sourceAddress type=\"international\">+12065551212</sourceAddress>\n")
+            .append("  <destinationAddress type=\"network\">40404</destinationAddress>\n")
+            .append("  <text encoding=\"ISO-8859-1\">48656c6c6f20576f726c64</text>\n")
+            .append(" </deliverRequest>\n")
+            .append("</operation>\n")
+            .append("");
+
+        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
+        SxmpParser parser = new SxmpParser();
+        Operation operation = parser.parse(is);
+
+        logger.debug(operation);
+
+        Assert.assertEquals(Operation.Type.DELIVER, operation.getType());
+        Assert.assertEquals(true, operation.isRequest());
+        DeliverRequest deliverReq = (DeliverRequest)operation;
+        Assert.assertEquals("customer1", deliverReq.getAccount().getUsername());
+        Assert.assertEquals("test1", deliverReq.getAccount().getPassword());
+        Assert.assertEquals("MYREF102020022", deliverReq.getReferenceId());
+        Assert.assertEquals(new Integer(10), deliverReq.getOperatorId());
+        Assert.assertEquals(MobileAddress.Type.NETWORK, deliverReq.getDestinationAddress().getType());
+        Assert.assertEquals("40404", deliverReq.getDestinationAddress().getAddress());
+        Assert.assertEquals(MobileAddress.Type.INTERNATIONAL, deliverReq.getSourceAddress().getType());
+        Assert.assertEquals("+12065551212", deliverReq.getSourceAddress().getAddress());
+        Assert.assertEquals("Hello World", deliverReq.getText());
+        Assert.assertEquals(null, deliverReq.getTicketId());
+	Assert.assertEquals(Priority.URGENT, deliverReq.getPriority());
+    }
+
+    @Test
+    public void parseDeliverRequestWithInvalidPriority() throws Exception {
+        StringBuilder string0 = new StringBuilder(200)
+            .append("<?xml version=\"1.0\"?>\n")
+            .append("<operation type=\"deliver\">\n")
+            .append(" <account username=\"customer1\" password=\"test1\"/>\n")
+            .append(" <deliverRequest referenceId=\"MYREF102020022\">\n")
+            .append("  <operatorId>10</operatorId>\n")
+            .append("  <priority>44</priority>\n")
+            .append("  <sourceAddress type=\"international\">+12065551212</sourceAddress>\n")
+            .append("  <destinationAddress type=\"network\">40404</destinationAddress>\n")
+            .append("  <text encoding=\"ISO-8859-1\">48656c6c6f20576f726c64</text>\n")
+            .append(" </deliverRequest>\n")
+            .append("</operation>\n")
+            .append("");
+
+        ByteArrayInputStream is = new ByteArrayInputStream(string0.toString().getBytes());
+        SxmpParser parser = new SxmpParser();
+
+        try {
+            Operation operation = parser.parse(is);
+            Assert.fail();
+        } catch (SxmpParsingException e) {
+             // correct behavior
+            Assert.assertEquals(SxmpErrorCode.INVALID_VALUE, e.getErrorCode());
+            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("priority_flag must be between 0 and 3"));
+            Assert.assertNotNull(e.getOperation());
+            DeliverRequest deliverRequest = (DeliverRequest)e.getOperation();
+            Assert.assertEquals(Operation.Type.DELIVER, deliverRequest.getType());
+        }
+
     }
 
     @Test

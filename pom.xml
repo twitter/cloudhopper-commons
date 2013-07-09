@@ -15,7 +15,7 @@
 
   <scm>
     <connection>scm:git:https://git.twitter.biz/cloudhopper-sxmp</connection>
-    <tag>add_push_support</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <repositories>
@@ -28,8 +28,8 @@
   </repositories>
 
   <!--
-    I prefer jars managed out of the Cloudhopper Maven Repo with more consistent
-    versioning.  I apologize for not using more common Maven repos
+      I prefer jars managed out of the Cloudhopper Maven Repo with more consistent
+      versioning.  I apologize for not using more common Maven repos
   -->
   <dependencies>
     <!-- compile scope -->
@@ -119,10 +119,10 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>junit</groupId>
-        <artifactId>xmlunit</artifactId>
-        <version>1.3</version>
-        <scope>test</scope>
+      <groupId>junit</groupId>
+      <artifactId>xmlunit</artifactId>
+      <version>1.3</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>logback</groupId>

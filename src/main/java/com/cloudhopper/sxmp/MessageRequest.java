@@ -35,11 +35,14 @@ public abstract class MessageRequest<E extends Response> extends Request<E> {
     //private Boolean hasUserDataHeader;
     //private Byte dataCoding;
     //private byte[] data;
+    private Priority priority;
 
     public MessageRequest(Operation.Type type) {
         super(type);
         // default charset is UTF-8
         this.textEncoding = TextEncoding.UTF_8;
+	// default priority is NORMAL
+	this.priority = Priority.NORMAL;
     }
 
     public void setOperatorId(Integer value) throws SxmpErrorException {
@@ -88,6 +91,14 @@ public abstract class MessageRequest<E extends Response> extends Request<E> {
 
     public String getText() {
         return this.text;
+    }
+
+    public void setPriority(Priority priority) {
+	this.priority = priority;
+    }
+
+    public Priority getPriority() {
+	return this.priority;
     }
 
     public void setOptionalParams(OptionalParamMap optionalParams) {

@@ -181,6 +181,12 @@ public class SxmpWriter {
                     out.write("</operatorId>\n");
                 }
 
+                if (messageRequest.getPriority() != null) {
+                    out.write("  <priority>");
+                    out.write(messageRequest.getPriority().getPriorityFlag().toString());
+                    out.write("</priority>\n");
+                }
+
                 if (operation instanceof SubmitRequest) {
                     SubmitRequest submitRequest = (SubmitRequest)operation;
                     if (submitRequest.getDeliveryReport() != null) {

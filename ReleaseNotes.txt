@@ -2,6 +2,10 @@ Cloudhopper, Inc.
 http://www.cloudhopper.com/
 SXMP Library
 --------------------------------------------------------------------------------
+1.4.3 - 2013-07-09
+  * Update API version to v1.2
+  * Add support for priority. Defaults to NORMAL(0). Backwards compatible.
+
 1.4.2 - 2013-3-25
   * Update API version to also support v1.1
   * Add support for optional parameter map (encoded in JSON), if version == 1.1
