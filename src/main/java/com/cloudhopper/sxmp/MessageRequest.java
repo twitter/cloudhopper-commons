@@ -42,7 +42,7 @@ public abstract class MessageRequest<E extends Response> extends Request<E> {
         // default charset is UTF-8
         this.textEncoding = TextEncoding.UTF_8;
 	// default priority is NORMAL
-	this.priority = Priority.NORMAL;
+	//this.priority = Priority.NORMAL;
     }
 
     public void setOperatorId(Integer value) throws SxmpErrorException {
@@ -139,6 +139,8 @@ public abstract class MessageRequest<E extends Response> extends Request<E> {
             .append(ToStringUtil.nullSafe(this.text))
             .append("] optParams [")
             .append(ToStringUtil.nullSafe(this.optionalParams))
+            .append("] priority [")
+            .append(ToStringUtil.nullSafe(this.priority))
             .append("])")
             .toString();
     }

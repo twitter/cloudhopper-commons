@@ -2,6 +2,9 @@ Cloudhopper, Inc.
 http://www.cloudhopper.com/
 SXMP Library
 --------------------------------------------------------------------------------
+1.4.4 - 2013-09-27
+  * Added priority to MessageRequest toString().
+
 1.4.3 - 2013-07-09
   * Update API version to v1.2
   * Add support for priority. Defaults to NORMAL(0). Backwards compatible.

@@ -925,7 +925,6 @@ public class SxmpParserTest {
         Assert.assertEquals(MobileAddress.Type.INTERNATIONAL, submitReq.getDestinationAddress().getType());
         Assert.assertEquals("+12065551212", submitReq.getDestinationAddress().getAddress());
         Assert.assertEquals("Hello World", submitReq.getText());
-	Assert.assertEquals(Priority.NORMAL, submitReq.getPriority());
     }
 
     @Test
@@ -1102,7 +1101,6 @@ public class SxmpParserTest {
         Assert.assertEquals(null, deliverReq.getSourceAddress());
         Assert.assertEquals("Hello World", deliverReq.getText());
         Assert.assertEquals(null, deliverReq.getTicketId());
-	Assert.assertEquals(Priority.NORMAL, deliverReq.getPriority());
     }
 
     @Test

@@ -5,17 +5,23 @@ The following files have been resolved:
    apache:commons-lang:jar:2.4:provided
    apache:httpclient:jar:4.0.1:provided
    apache:httpcore:jar:4.0.1:provided
-   cloudhopper:ch-commons-charset:jar:2.3.2:compile
    cloudhopper:ch-commons-util:jar:5.1.2:compile
-   cloudhopper:ch-stratus-commons:jar:1.1.1:compile
+   cloudhopper:ch-stratus-commons:jar:1.1.3:compile
+   com.cloudhopper:ch-commons-charset:jar:3.0.0:compile
+   com.cloudhopper:ch-commons-gsm:jar:3.0.0:compile
+   com.cloudhopper:ch-commons-util:jar:6.0.1:compile
+   com.cloudhopper:ch-mq:jar:3.0.0:compile
+   com.codahale.metrics:metrics-core:jar:3.0.1:compile
    javax:servlet-api:jar:2.5:provided
    joda:joda-time:jar:1.6.2:compile
+   joda-time:joda-time:jar:2.3:compile
    junit:junit:jar:4.11:test
    junit:xmlunit:jar:1.3:test
    logback:logback-classic:jar:1.0.1:test
    logback:logback-core:jar:1.0.1:test
    org.hamcrest:hamcrest-core:jar:1.3:test
    org.json:json:jar:20090211:compile
+   org.slf4j:slf4j-api:jar:1.7.5:compile
    slf4j:jcl-over-slf4j:jar:1.6.4:provided
    slf4j:log4j-over-slf4j:jar:1.6.4:provided
    slf4j:slf4j-api:jar:1.6.4:compile

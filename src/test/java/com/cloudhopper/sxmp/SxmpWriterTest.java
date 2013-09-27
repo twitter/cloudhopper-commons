@@ -166,7 +166,44 @@ public class SxmpWriterTest {
             .append(" <account username=\"customer1\" password=\"test1\"/>\n")
             .append(" <submitRequest referenceId=\"TESTREF\">\n")
             .append("  <operatorId>20</operatorId>\n")
-            .append("  <priority>0</priority>\n")
+            .append("  <deliveryReport>false</deliveryReport>\n")
+            .append("  <sourceAddress type=\"network\">40404</sourceAddress>\n")
+            .append("  <destinationAddress type=\"international\">+13135551212</destinationAddress>\n")
+            .append("  <text encoding=\"UTF-8\">48656C6C6F20576F726C64</text>\n")
+            .append(" </submitRequest>\n")
+            .append("</operation>\n")
+            .append("");
+
+        // compare to actual correct submit response
+        XMLUnit.setIgnoreWhitespace(true);
+        Diff myDiff = new Diff(expectedXML.toString(), sw.toString());
+        DetailedDiff myDetailedDiff = new DetailedDiff(myDiff);
+        Assert.assertTrue("XML are similar " + myDetailedDiff, myDetailedDiff.similar());
+    }
+
+    @Test
+    public void writeSubmitRequestWithPriority() throws Exception {
+        SubmitRequest request = new SubmitRequest();
+        request.setAccount(new Account("customer1", "test1"));
+        request.setOperatorId(20);
+        request.setReferenceId("TESTREF");
+        request.setSourceAddress(new MobileAddress(MobileAddress.Type.NETWORK, "40404"));
+        request.setDestinationAddress(new MobileAddress(MobileAddress.Type.INTERNATIONAL, "+13135551212"));
+        request.setText("Hello World");
+	request.setPriority(Priority.NORMAL);
+
+        StringWriter sw = new StringWriter();
+        SxmpWriter.write(sw, request);
+
+        logger.debug(sw.toString());
+
+        StringBuilder expectedXML = new StringBuilder(200)
+            .append("<?xml version=\"1.0\"?>\n")
+            .append("<operation type=\"submit\">\n")
+            .append(" <account username=\"customer1\" password=\"test1\"/>\n")
+            .append(" <submitRequest referenceId=\"TESTREF\">\n")
+            .append("  <operatorId>20</operatorId>\n")
+	    .append("  <priority>0</priority>\n")
             .append("  <deliveryReport>false</deliveryReport>\n")
             .append("  <sourceAddress type=\"network\">40404</sourceAddress>\n")
             .append("  <destinationAddress type=\"international\">+13135551212</destinationAddress>\n")
@@ -203,7 +240,6 @@ public class SxmpWriterTest {
             .append(" <account username=\"customer1\" password=\"test1\"/>\n")
             .append(" <submitRequest referenceId=\"TESTREF\">\n")
             .append("  <operatorId>20</operatorId>\n")
-            .append("  <priority>0</priority>\n")
             .append("  <deliveryReport>false</deliveryReport>\n")
             .append("  <sourceAddress type=\"network\">40404</sourceAddress>\n")
             .append("  <destinationAddress type=\"international\">+13135551212</destinationAddress>\n")
@@ -242,7 +278,6 @@ public class SxmpWriterTest {
             .append(" <account username=\"customer1\" password=\"test1\"/>\n")
             .append(" <submitRequest referenceId=\"TESTREF\">\n")
             .append("  <operatorId>20</operatorId>\n")
-            .append("  <priority>0</priority>\n")
             .append("  <deliveryReport>false</deliveryReport>\n")
             .append("  <sourceAddress type=\"network\">40404</sourceAddress>\n")
             .append("  <destinationAddress type=\"international\">+13135551212</destinationAddress>\n")
@@ -279,7 +314,6 @@ public class SxmpWriterTest {
             .append(" <account username=\"customer1\" password=\"test1\"/>\n")
             .append(" <deliverRequest referenceId=\"TESTREF\">\n")
             .append("  <operatorId>20</operatorId>\n")
-            .append("  <priority>0</priority>\n")
             .append("  <sourceAddress type=\"network\">40404</sourceAddress>\n")
             .append("  <destinationAddress type=\"international\">+13135551212</destinationAddress>\n")
             .append("  <text encoding=\"UTF-8\">48656C6C6F20576F726C64</text>\n")
@@ -317,7 +351,6 @@ public class SxmpWriterTest {
             .append(" <deliverRequest referenceId=\"TESTREF\">\n")
             .append("  <ticketId>THISISATESTTICKETID</ticketId>")
             .append("  <operatorId>20</operatorId>\n")
-            .append("  <priority>0</priority>\n")
             .append("  <sourceAddress type=\"network\">40404</sourceAddress>\n")
             .append("  <destinationAddress type=\"international\">+13135551212</destinationAddress>\n")
             .append("  <text encoding=\"UTF-8\">48656C6C6F20576F726C64</text>\n")
@@ -425,7 +458,6 @@ public class SxmpWriterTest {
             .append(" <account username=\"customer1\" password=\"test1\"/>\n")
             .append(" <submitRequest>\n")
             .append("  <operatorId>20</operatorId>\n")
-            .append("  <priority>0</priority>\n")
             .append("  <deliveryReport>false</deliveryReport>\n")
             .append("  <sourceAddress type=\"alphanumeric\">TestAlpha</sourceAddress>\n")
             .append("  <destinationAddress type=\"international\">+13135551212</destinationAddress>\n")
@@ -460,7 +492,6 @@ public class SxmpWriterTest {
             .append(" <account username=\"customer1\" password=\"test1\"/>\n")
             .append(" <submitRequest>\n")
             .append("  <operatorId>20</operatorId>\n")
-            .append("  <priority>0</priority>\n")
             .append("  <deliveryReport>false</deliveryReport>\n")
             .append("  <destinationAddress type=\"push_destination\">abcd1234fghi 012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789</destinationAddress>\n")
             .append("  <text encoding=\"UTF-8\">48656C6C6F20576F726C64</text>\n")
@@ -496,7 +527,6 @@ public class SxmpWriterTest {
             .append(" <account username=\"customer1\" password=\"test1\"/>\n")
             .append(" <submitRequest>\n")
             .append("  <operatorId>20</operatorId>\n")
-            .append("  <priority>0</priority>\n")
             .append("  <deliveryReport>false</deliveryReport>\n")
             .append("  <destinationAddress type=\"push_destination\">abcd\n1234\rfghi-€£æ_\u20AC\u0623\u0647\u0644</destinationAddress>\n")
             .append("  <text encoding=\"UTF-8\">48656C6C6F20576F726C64</text>\n")
@@ -542,7 +572,6 @@ public class SxmpWriterTest {
             .append(" <account username=\"customer1\" password=\"test1\"/>\n")
             .append(" <submitRequest>\n")
             .append("  <operatorId>20</operatorId>\n")
-            .append("  <priority>0</priority>\n")
             .append("  <deliveryReport>false</deliveryReport>\n")
             .append("  <destinationAddress type=\"push_destination\">abcd1234fghi</destinationAddress>\n")
             .append("  <text encoding=\"UTF-8\">48656C6C6F20576F726C64</text>\n")
@@ -588,7 +617,6 @@ public class SxmpWriterTest {
             .append(" <account username=\"customer1\" password=\"test1\"/>\n")
             .append(" <submitRequest>\n")
             .append("  <operatorId>20</operatorId>\n")
-            .append("  <priority>0</priority>\n")
             .append("  <deliveryReport>false</deliveryReport>\n")
             .append("  <destinationAddress type=\"push_destination\">abcd1234fghi</destinationAddress>\n")
             .append("  <text encoding=\"UTF-8\">48656C6C6F20576F726C64</text>\n")
@@ -623,7 +651,6 @@ public class SxmpWriterTest {
             .append(" <account username=\"customer1\" password=\"test1\"/>\n")
             .append(" <deliverRequest>\n")
             .append("  <operatorId>20</operatorId>\n")
-            .append("  <priority>0</priority>\n")
             .append("  <sourceAddress type=\"international\">+13135551212</sourceAddress>\n")
             .append("  <destinationAddress type=\"alphanumeric\">TestAlpha</destinationAddress>\n")
             .append("  <text encoding=\"UTF-8\">48656C6C6F20576F726C64</text>\n")
@@ -660,7 +687,6 @@ public class SxmpWriterTest {
             .append(" <application>TestApp</application>\n")
             .append(" <submitRequest>\n")
             .append("  <operatorId>20</operatorId>\n")
-            .append("  <priority>0</priority>\n")
             .append("  <deliveryReport>false</deliveryReport>\n")
             .append("  <sourceAddress type=\"national\">0123456789</sourceAddress>\n")
             .append("  <destinationAddress type=\"international\">+13135551212</destinationAddress>\n")
@@ -698,7 +724,6 @@ public class SxmpWriterTest {
             .append(" <application>TestApp</application>\n")
             .append(" <deliverRequest>\n")
             .append("  <operatorId>20</operatorId>\n")
-            .append("  <priority>0</priority>\n")
             .append("  <sourceAddress type=\"national\">0123456789</sourceAddress>\n")
             .append("  <destinationAddress type=\"alphanumeric\">TestAlpha</destinationAddress>\n")
             .append("  <text encoding=\"UTF-8\">48656C6C6F20576F726C64</text>\n")
