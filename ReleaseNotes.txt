@@ -2,6 +2,10 @@ Cloudhopper, Inc.
 http://www.cloudhopper.com/
 SXMP Library
 --------------------------------------------------------------------------------
+1.4.5 - 2013-10-17
+  * Fixed reversion where priority was not being included in submit/deliver if it 
+    was not set. Defaults to NORMAL(0) again.
+
 1.4.4 - 2013-09-27
   * Added priority to MessageRequest toString().
 
