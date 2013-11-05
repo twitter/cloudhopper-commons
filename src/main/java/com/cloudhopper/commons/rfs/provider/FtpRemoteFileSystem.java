@@ -14,6 +14,26 @@
 
 package com.cloudhopper.commons.rfs.provider;
 
+/*
+ * #%L
+ * ch-commons-rfs
+ * %%
+ * Copyright (C) 2012 - 2013 Cloudhopper by Twitter
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 
 import com.cloudhopper.commons.rfs.*;
 import com.cloudhopper.commons.util.StringUtil;
@@ -27,7 +47,8 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 import org.apache.commons.net.ftp.FTPSClient;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * FTP and FTPS remote filesystem.
@@ -35,7 +56,7 @@ import org.apache.log4j.Logger;
  * @author joelauer
  */
 public class FtpRemoteFileSystem extends BaseRemoteFileSystem {
-    private static final Logger logger = Logger.getLogger(FtpRemoteFileSystem.class);
+    private static final Logger logger = LoggerFactory.getLogger(FtpRemoteFileSystem.class);
 
     public enum Mode {
         PASSIVE,
@@ -109,7 +130,7 @@ public class FtpRemoteFileSystem extends BaseRemoteFileSystem {
         if (getProtocol() == Protocol.FTPS) {
             try {
                 ftp = new FTPSClient();
-            } catch (NoSuchAlgorithmException e) {
+            } catch (Exception e) {  //} catch (NoSuchAlgorithmException e) {
                 throw new FileSystemException("Unable to create FTPS client: " + e.getMessage(), e);
             }
         } else {
@@ -282,7 +303,7 @@ public class FtpRemoteFileSystem extends BaseRemoteFileSystem {
             try {
                 ftp.disconnect();
             } catch (Exception e) {
-                logger.warn(e);
+                logger.warn("", e);
             }
             ftp = null;
         }

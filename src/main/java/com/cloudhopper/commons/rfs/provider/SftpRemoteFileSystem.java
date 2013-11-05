@@ -14,6 +14,26 @@
 
 package com.cloudhopper.commons.rfs.provider;
 
+/*
+ * #%L
+ * ch-commons-rfs
+ * %%
+ * Copyright (C) 2012 - 2013 Cloudhopper by Twitter
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import com.jcraft.jsch.Session;
 
 import com.cloudhopper.commons.rfs.*;
@@ -26,7 +46,8 @@ import com.jcraft.jsch.UserInfo;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * SFTP remote filesystem.
@@ -41,7 +62,7 @@ import org.apache.log4j.Logger;
  * @author joelauer
  */
 public class SftpRemoteFileSystem extends BaseRemoteFileSystem {
-    private static final Logger logger = Logger.getLogger(SftpRemoteFileSystem.class);
+    private static final Logger logger = LoggerFactory.getLogger(SftpRemoteFileSystem.class);
 
     private JSch jsch;
     private Session session;
@@ -231,7 +252,7 @@ public class SftpRemoteFileSystem extends BaseRemoteFileSystem {
             try {
                 channel.disconnect();
             } catch (Exception e) {
-                logger.warn(e);
+                logger.warn("", e);
             }
             channel = null;
         }
@@ -240,7 +261,7 @@ public class SftpRemoteFileSystem extends BaseRemoteFileSystem {
             try {
                 session.disconnect();
             } catch (Exception e) {
-                logger.warn(e);
+                logger.warn("", e);
             }
             session = null;
         }
