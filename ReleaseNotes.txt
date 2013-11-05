@@ -2,6 +2,11 @@ Cloudhopper, Inc.
 http://www.cloudhopper.com/
 Commons Locale Library
 --------------------------------------------------------------------------------
+1.5.0 - 2013-11-06
+  * Upgrade parent pom from public 1.5 to oss 1.4
+  * Upgrade ch-commons-util dependency to 6.0.0
+  * Ported from log4j to slf4j
+
 1.4.2 - 2012-02-17
   * Updated country codes for Yugoslavia and a few other countries.
 

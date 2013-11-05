@@ -4,42 +4,33 @@
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>cloudhopper</groupId>
+  <groupId>com.cloudhopper</groupId>
   <artifactId>ch-commons-locale</artifactId>
   <packaging>jar</packaging>
-  <version>1.4.2</version>
+  <version>1.5.0-SNAPSHOT</version>
   <name>ch-commons-locale</name>
 
   <parent>
-    <groupId>cloudhopper</groupId>
-    <artifactId>ch-maven-parent-public</artifactId>
-    <version>1.6</version>
+    <groupId>com.cloudhopper</groupId>
+    <artifactId>ch-maven-parent-oss</artifactId>
+    <version>1.4</version>
   </parent>
 
-  <repositories>
-    <repository>
-      <id>cloudhopper-public</id>
-      <name>Cloudhopper Public Maven Repository</name>
-      <layout>default</layout>
-      <url>http://maven.cloudhopper.com/repos/third-party</url>
-    </repository>
-  </repositories>
+  <scm>
+    <connection>scm:git:https://git.twitter.biz/cloudhopper-commons-locale</connection>
+  </scm>
 
-  <!--
-    I prefer jars managed out of the Cloudhopper Maven Repo with more consistent
-    versioning.  I apologize for not using more common Maven repos
-  -->
   <dependencies>
     <!-- compile scope -->
     <dependency>
-      <groupId>slf4j</groupId>
+      <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>${slf4j.version}</version>
     </dependency>
     <dependency>
-      <groupId>cloudhopper</groupId>
+      <groupId>com.cloudhopper</groupId>
       <artifactId>ch-commons-util</artifactId>
-      <version>[2.0,)</version>
+      <version>[6.0.0,)</version>
     </dependency>
     <!-- provided scope -->
     <!-- runtime scope -->
@@ -51,18 +42,13 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>slf4j</groupId>
-      <artifactId>log4j-over-slf4j</artifactId>
-      <version>${slf4j.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>logback</groupId>
+      <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
       <version>${logback.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>logback</groupId>
+      <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <version>${logback.version}</version>
       <scope>test</scope>
