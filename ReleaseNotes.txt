@@ -1,6 +1,10 @@
 Cloudhopper
 Commons IO Library
 --------------------------------------------------------------------------------
+2.3.0 - 2013-11-06
+  * Upgrade parent pom from public 1.5 to oss 1.4
+  * Upgrade ch-commons-util dependency to 6.0.0
+
 2.2.2 - 2011-09-01
   * Upgrade parent pom from 1.0 to 1.5
   * New Version class now added with upgrade parent pom
