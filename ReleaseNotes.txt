@@ -2,6 +2,12 @@ Cloudhopper, Inc.
 http://www.cloudhopper.com/
 Apache Jakarta HttpClient 4.x Utility Library
 --------------------------------------------------------------------------------
+1.3.0 - 2013-11-06
+  * Upgrade parent pom from public to oss 1.4
+  * Upgrade to Maven Central version of httpclient
+  * Upgrade to Maven Central version of grizzly-server
+  * Added a runtime dependency to org.slf4j.jcl-over-slf4j for httpclient
+
 1.4.1 - 2011-09-18
   * Updated build process.
 

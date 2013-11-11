@@ -4,71 +4,48 @@
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>cloudhopper</groupId>
+  <groupId>com.cloudhopper</groupId>
   <artifactId>ch-httpclient-util</artifactId>
   <packaging>jar</packaging>
-  <version>1.4.1</version>
+  <version>1.5.0-SNAPSHOT</version>
   <name>ch-httpclient-util</name>
 
   <parent>
-    <groupId>cloudhopper</groupId>
-    <artifactId>ch-maven-parent-public</artifactId>
-    <version>1.5</version>
+    <groupId>com.cloudhopper</groupId>
+    <artifactId>ch-maven-parent-oss</artifactId>
+    <version>1.4</version>
   </parent>
 
-  <repositories>
-    <repository>
-      <id>cloudhopper-public</id>
-      <name>Cloudhopper Public Maven Repository</name>
-      <layout>default</layout>
-      <url>http://maven.cloudhopper.com/repos/third-party</url>
-    </repository>
-  </repositories>
+  <scm>
+    <connection>scm:git:https://git.twitter.biz/cloudhopper-httpclient-util</connection>
+  </scm>
 
-  <!--
-    I prefer jars managed out of the Cloudhopper Maven Repo with more consistent
-    versioning.  I apologize for not using more common Maven repos
-  -->
   <dependencies>
     <!-- compile scope -->
     <dependency>
-      <groupId>slf4j</groupId>
+      <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>${slf4j.version}</version>
     </dependency>
     <dependency>
-        <groupId>apache</groupId>
-        <artifactId>httpcore</artifactId>
-        <version>[4.0.1,)</version>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>4.0.1</version>
+      <exclusions>
+	<exclusion>
+	  <groupId>commons-logging</groupId>
+	  <artifactId>commons-logging</artifactId>
+	</exclusion>
+      </exclusions>
     </dependency>
-    <dependency>
-        <groupId>apache</groupId>
-        <artifactId>httpclient</artifactId>
-        <version>[4.0,)</version>
-    </dependency>
-
     <!-- provided scope -->
-
     <!-- runtime scope -->
     <dependency>
-        <groupId>apache</groupId>
-        <artifactId>commons-collections</artifactId>
-        <version>[3.2,)</version>
-        <scope>runtime</scope>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>runtime</scope>
     </dependency>
-    <dependency>
-        <groupId>apache</groupId>
-        <artifactId>commons-logging</artifactId>
-        <version>[1.1,)</version>
-        <scope>runtime</scope>
-    </dependency>
-    <dependency>
-        <groupId>apache</groupId>
-        <artifactId>commons-codec</artifactId>
-        <version>[1.3,)</version>
-        <scope>runtime</scope>
-    </dependency>
-
     <!-- testing scope -->
     <dependency>
       <groupId>junit</groupId>
@@ -77,19 +54,19 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>sun</groupId>
-        <artifactId>grizzly-webserver</artifactId>
-        <version>1.9.18</version>
-        <scope>test</scope>
+      <groupId>com.sun.grizzly</groupId>
+      <artifactId>grizzly-webserver</artifactId>
+      <version>[1.9.19,)</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>logback</groupId>
+      <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
       <version>${logback.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>logback</groupId>
+      <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <version>${logback.version}</version>
       <scope>test</scope>

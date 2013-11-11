@@ -1,3 +1,7 @@
+Cloudhopper, Inc.
+http://www.cloudhopper.com/
+Apache Jakarta HttpClient 4.x Utility Library
+--------------------------------------------------------------------------------
 
 To generate a keystore:
 
