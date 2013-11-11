@@ -4,57 +4,62 @@
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>cloudhopper</groupId>
+  <groupId>com.cloudhopper</groupId>
   <artifactId>ch-commons-sql</artifactId>
   <packaging>jar</packaging>
-  <version>1.2.0</version>
+  <version>1.3.0-SNAPSHOT</version>
   <name>ch-commons-sql</name>
 
   <parent>
-    <groupId>cloudhopper</groupId>
-    <artifactId>ch-maven-parent-public</artifactId>
-    <version>1.5</version>
+    <groupId>com.cloudhopper</groupId>
+    <artifactId>ch-maven-parent-oss</artifactId>
+    <version>1.4</version>
   </parent>
 
-  <repositories>
-    <repository>
-      <id>cloudhopper-public</id>
-      <name>Cloudhopper Public Maven Repository</name>
-      <layout>default</layout>
-      <url>http://maven.cloudhopper.com/repos/third-party</url>
-    </repository>
-  </repositories>
+  <scm>
+    <connection>scm:git:https://git.twitter.biz/cloudhopper-commons-sql</connection>
+  </scm>
 
-  <!--
-    I prefer jars managed out of the Cloudhopper Maven Repo with more consistent
-    versioning.  I apologize for not using more common Maven repos
-  -->
   <dependencies>
     <!-- compile scope -->
     <dependency>
-      <groupId>slf4j</groupId>
+      <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>${slf4j.version}</version>
     </dependency>
     <dependency>
-        <groupId>cloudhopper</groupId>
-        <artifactId>ch-commons-util</artifactId>
-        <version>[2.1,)</version>
-    </dependency>
-    
-    <dependency>
-        <groupId>c3p0</groupId>
-        <artifactId>c3p0</artifactId>
-        <version>0.9.1.2</version>
-        <scope>provided</scope>
+      <groupId>com.cloudhopper</groupId>
+      <artifactId>ch-commons-util</artifactId>
+      <version>[6.0.0,)</version>
     </dependency>
     <dependency>
-        <groupId>proxool</groupId>
-        <artifactId>proxool</artifactId>
-        <version>[0.9.1,)</version>
-        <scope>provided</scope>
+      <groupId>c3p0</groupId>
+      <artifactId>c3p0</artifactId>
+      <version>0.9.1.2</version>
     </dependency>
-
+    <dependency>
+      <groupId>com.cloudhopper.proxool</groupId>
+      <artifactId>proxool</artifactId>
+      <version>[0.9.1,)</version>
+      <exclusions>
+	<exclusion>
+	  <groupId>commons-logging</groupId>
+	  <artifactId>commons-logging</artifactId>
+	</exclusion>
+	<exclusion>
+	  <groupId>avalon-framework</groupId>
+	  <artifactId>avalon-framework-api</artifactId>
+	</exclusion>
+      </exclusions>
+    </dependency>
+    <!-- provided scope -->
+    <!-- runtime scope -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>runtime</scope>
+    </dependency>
     <!-- testing scope -->
     <dependency>
       <groupId>junit</groupId>
@@ -63,39 +68,28 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>slf4j</groupId>
-      <artifactId>log4j-over-slf4j</artifactId>
-      <version>${slf4j.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>logback</groupId>
+      <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
       <version>${logback.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>logback</groupId>
+      <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <version>${logback.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>cloudhopper</groupId>
-        <artifactId>ch-commons-xml</artifactId>
-        <version>1.0-SNAPSHOT</version>
-        <scope>test</scope>
+      <groupId>com.cloudhopper</groupId>
+      <artifactId>ch-commons-xbean</artifactId>
+      <version>[3.0.0,)</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>cloudhopper</groupId>
-        <artifactId>ch-commons-xbean</artifactId>
-        <version>1.0-SNAPSHOT</version>
-        <scope>test</scope>
-    </dependency>
-    <dependency>
-        <groupId>mysql</groupId>
-        <artifactId>mysql-connector</artifactId>
-        <version>[5.1,)</version>
-        <scope>test</scope>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>[5.1,)</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
