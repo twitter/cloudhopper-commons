@@ -1,19 +1,25 @@
-/**
- * Copyright (C) 2011 Twitter, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed
- * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
- * CONDITIONS OF ANY KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations under the License.
- */
 package com.cloudhopper.sxmp.servlet;
 
-// third party imports
+/*
+ * #%L
+ * ch-sxmp
+ * %%
+ * Copyright (C) 2012 - 2013 Cloudhopper by Twitter
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import com.cloudhopper.sxmp.Account;
 import com.cloudhopper.sxmp.DeliverRequest;
 import com.cloudhopper.sxmp.DeliverResponse;
@@ -28,23 +34,22 @@ import java.io.ByteArrayInputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import org.apache.http.HttpStatus;
-import org.junit.*;
-import org.apache.log4j.Logger;
 import org.custommonkey.xmlunit.DetailedDiff;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.hamcrest.Matcher;
+import org.junit.*;
 import org.junit.matchers.JUnitMatchers;
 import org.junit.rules.ExpectedException;
-
-// my imports
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
  * @author joelauer
  */
 public class SxmpServletProcessorTest {
-    private static final Logger logger = Logger.getLogger(SxmpServletProcessorTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(SxmpServletProcessorTest.class);
 
     @Rule
     public ExpectedException thrown= ExpectedException.none();

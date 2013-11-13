@@ -1,36 +1,41 @@
-/**
- * Copyright (C) 2011 Twitter, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed
- * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
- * CONDITIONS OF ANY KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations under the License.
- */
 package com.cloudhopper.sxmp;
 
-// third party imports
+/*
+ * #%L
+ * ch-sxmp
+ * %%
+ * Copyright (C) 2012 - 2013 Cloudhopper by Twitter
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import java.io.ByteArrayInputStream;
 import java.util.Map;
-import org.junit.*;
-import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.junit.*;
 import org.junit.matchers.JUnitMatchers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXParseException;
-
-// my imports
 
 /**
  *
  * @author joelauer
  */
 public class SxmpParserTest {
-    private static final Logger logger = Logger.getLogger(SxmpParserTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(SxmpParserTest.class);
 
     @Test
     public void parseInvalidRootElement() throws Exception {
@@ -909,7 +914,7 @@ public class SxmpParserTest {
         SxmpParser parser = new SxmpParser();
         Operation operation = parser.parse(is);
 
-        logger.debug(operation);
+        logger.debug("{}", operation);
 
         Assert.assertEquals(Operation.Type.SUBMIT, operation.getType());
         Assert.assertEquals(true, operation.isRequest());
@@ -948,7 +953,7 @@ public class SxmpParserTest {
         SxmpParser parser = new SxmpParser();
         Operation operation = parser.parse(is);
 
-        logger.debug(operation);
+        logger.debug("{}", operation);
 
         Assert.assertEquals(Operation.Type.SUBMIT, operation.getType());
         Assert.assertEquals(true, operation.isRequest());
@@ -1020,7 +1025,7 @@ public class SxmpParserTest {
         SxmpParser parser = new SxmpParser();
         Operation operation = parser.parse(is);
 
-        logger.debug(operation);
+        logger.debug("{}", operation);
 
         Assert.assertEquals(Operation.Type.SUBMIT, operation.getType());
         Assert.assertEquals(true, operation.isRequest());
@@ -1086,7 +1091,7 @@ public class SxmpParserTest {
         SxmpParser parser = new SxmpParser();
         Operation operation = parser.parse(is);
 
-        logger.debug(operation);
+        logger.debug("{}", operation);
 
         Assert.assertEquals(Operation.Type.DELIVER, operation.getType());
         Assert.assertEquals(true, operation.isRequest());
@@ -1123,7 +1128,7 @@ public class SxmpParserTest {
         SxmpParser parser = new SxmpParser();
         Operation operation = parser.parse(is);
 
-        logger.debug(operation);
+        logger.debug("{}", operation);
 
         Assert.assertEquals(Operation.Type.DELIVER, operation.getType());
         Assert.assertEquals(true, operation.isRequest());
@@ -1160,7 +1165,7 @@ public class SxmpParserTest {
         SxmpParser parser = new SxmpParser();
         Operation operation = parser.parse(is);
 
-        logger.debug(operation);
+        logger.debug("{}", operation);
 
         Assert.assertEquals(Operation.Type.DELIVER, operation.getType());
         Assert.assertEquals(true, operation.isRequest());
@@ -1232,7 +1237,7 @@ public class SxmpParserTest {
         SxmpParser parser = new SxmpParser();
         Operation operation = parser.parse(is);
 
-        logger.debug(operation);
+        logger.debug("{}", operation);
 
         Assert.assertEquals(Operation.Type.DELIVER, operation.getType());
         Assert.assertEquals(true, operation.isRequest());
@@ -1325,7 +1330,7 @@ public class SxmpParserTest {
 
         Operation operation = parser.parse(is);
 
-        logger.debug(operation);
+        logger.debug("{}", operation);
 
         Assert.assertEquals(Operation.Type.DELIVERY_REPORT, operation.getType());
         Assert.assertEquals(true, operation.isRequest());
@@ -1376,7 +1381,7 @@ public class SxmpParserTest {
 
         Operation operation = parser.parse(is);
 
-        //logger.debug(operation);
+        //logger.debug("{}", operation);
 
         Assert.assertEquals(Operation.Type.SUBMIT, operation.getType());
         Assert.assertEquals(true, operation.isResponse());
@@ -1482,7 +1487,7 @@ public class SxmpParserTest {
         SxmpParser parser = new SxmpParser();
         Operation operation = parser.parse(is);
 
-        logger.debug(operation);
+        logger.debug("{}", operation);
 
         Assert.assertEquals(Operation.Type.SUBMIT, operation.getType());
         Assert.assertEquals(true, operation.isRequest());
@@ -1520,7 +1525,7 @@ public class SxmpParserTest {
         SxmpParser parser = new SxmpParser();
         Operation operation = parser.parse(is);
 
-        logger.debug(operation);
+        logger.debug("{}", operation);
 
         Assert.assertEquals(Operation.Type.SUBMIT, operation.getType());
         Assert.assertEquals(true, operation.isRequest());
@@ -1559,7 +1564,7 @@ public class SxmpParserTest {
         SxmpParser parser = new SxmpParser();
         Operation operation = parser.parse(is);
 
-        logger.debug(operation);
+        logger.debug("{}", operation);
 
         Assert.assertEquals(Operation.Type.SUBMIT, operation.getType());
         Assert.assertEquals(true, operation.isRequest());
@@ -1597,7 +1602,7 @@ public class SxmpParserTest {
         SxmpParser parser = new SxmpParser();
         Operation operation = parser.parse(is);
 
-        logger.debug(operation);
+        logger.debug("{}", operation);
 
         Assert.assertEquals(Operation.Type.DELIVER, operation.getType());
         Assert.assertEquals(true, operation.isRequest());
@@ -1634,7 +1639,7 @@ public class SxmpParserTest {
 
         Operation operation = parser.parse(is);
 
-        logger.debug(operation);
+        logger.debug("{}", operation);
 
         Assert.assertEquals(Operation.Type.DELIVERY_REPORT, operation.getType());
         Assert.assertEquals(true, operation.isRequest());
@@ -1669,7 +1674,7 @@ public class SxmpParserTest {
 
         Operation operation = parser.parse(is);
 
-        logger.debug(operation);
+        logger.debug("{}", operation);
 
         Assert.assertEquals(Operation.Type.DELIVERY_REPORT, operation.getType());
         Assert.assertEquals(true, operation.isRequest());
@@ -1753,7 +1758,7 @@ public class SxmpParserTest {
         SxmpParser parser = new SxmpParser();
         Operation operation = parser.parse(is);
 
-        logger.debug(operation);
+        logger.debug("{}", operation);
 
         Assert.assertEquals(Operation.Type.SUBMIT, operation.getType());
         Assert.assertEquals(true, operation.isRequest());
@@ -1788,7 +1793,7 @@ public class SxmpParserTest {
         SxmpParser parser = new SxmpParser();
         Operation operation = parser.parse(is);
 
-        logger.debug(operation);
+        logger.debug("{}", operation);
 
         Assert.assertEquals(Operation.Type.SUBMIT, operation.getType());
         Assert.assertEquals(true, operation.isRequest());
@@ -1824,7 +1829,7 @@ public class SxmpParserTest {
         SxmpParser parser = new SxmpParser();
         Operation operation = parser.parse(is);
 
-        logger.debug(operation);
+        logger.debug("{}", operation);
 
         Assert.assertEquals(Operation.Type.SUBMIT, operation.getType());
         Assert.assertEquals(true, operation.isRequest());
@@ -1861,7 +1866,7 @@ public class SxmpParserTest {
         SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_1);
         Operation operation = parser.parse(is);
 
-        logger.debug(operation);
+        logger.debug("{}", operation);
 
         Assert.assertEquals(Operation.Type.SUBMIT, operation.getType());
         Assert.assertEquals(true, operation.isRequest());
@@ -1905,7 +1910,7 @@ public class SxmpParserTest {
         SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_1);
         Operation operation = parser.parse(is);
 
-        logger.debug(operation);
+        logger.debug("{}", operation);
 
         Assert.assertEquals(Operation.Type.SUBMIT, operation.getType());
         Assert.assertEquals(true, operation.isRequest());
@@ -1944,7 +1949,7 @@ public class SxmpParserTest {
         SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_1);
         Operation operation = parser.parse(is);
 
-        logger.debug(operation);
+        logger.debug("{}", operation);
 
         Assert.assertEquals(Operation.Type.SUBMIT, operation.getType());
         Assert.assertEquals(true, operation.isRequest());
@@ -2134,7 +2139,7 @@ public class SxmpParserTest {
         SxmpParser parser = new SxmpParser(SxmpParser.VERSION_1_1);
         Operation operation = parser.parse(is);
 
-        logger.debug(operation);
+        logger.debug("{}", operation);
 
         Assert.assertEquals(Operation.Type.SUBMIT, operation.getType());
         Assert.assertEquals(true, operation.isRequest());

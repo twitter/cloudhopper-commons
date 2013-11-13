@@ -1,41 +1,45 @@
-/**
- * Copyright (C) 2011 Twitter, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed
- * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
- * CONDITIONS OF ANY KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations under the License.
- */
 package com.cloudhopper.sxmp;
 
-// third party imports
+/*
+ * #%L
+ * ch-sxmp
+ * %%
+ * Copyright (C) 2012 - 2013 Cloudhopper by Twitter
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import com.cloudhopper.commons.util.HexUtil;
-import com.cloudhopper.stratus.type.OptionalParamMap;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
-import org.junit.*;
-import org.apache.log4j.Logger;
 import org.custommonkey.xmlunit.DetailedDiff;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-
-// my imports
+import org.junit.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author joelauer
  */
 public class SxmpWriterTest {
-    private static final Logger logger = Logger.getLogger(SxmpWriterTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(SxmpWriterTest.class);
 
     @Test(expected=NullPointerException.class)
     public void writeNullOperation() throws Exception {

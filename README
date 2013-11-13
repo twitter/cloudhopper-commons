@@ -1,9 +1,3 @@
-Twitter Mobile Team
-
-2012-08-23: added auto-test to jenkins
-2012-08-23: cloudhopper-sxmp project added to gerrit
-
-from:
 Cloudhopper, Inc.
 http://www.cloudhopper.com/
 SXMP Library
@@ -24,3 +18,17 @@ Error Codes:
 1009 : Element "XXXXX" must contain a value
 1010 : Unable to convert "XXXX" to a number
 1011 : An address element must contain a type attribute value
+
+To do:
+
+* Support for binary messages
+* Provide a better common implementation of a "sender" framework similar to
+  how a servlet implementation was provided.
+* Provide a simulator servlet that can have various options turned on/off at
+  runtime to mimic error scenarios.
+* Some additional unit tests -- perhaps a test suite for customer implementations
+  of our protocol?
+* Add an "enquire_link" implementation.  Calling it a PingRequest or KeepAliveRequest
+  is probably what I'm going after.
+* Load tester/simulator app?  Perhaps combine together with various tools above
+  into the same package.

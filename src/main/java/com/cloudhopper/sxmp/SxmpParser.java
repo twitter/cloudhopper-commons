@@ -1,23 +1,28 @@
-/**
- * Copyright (C) 2011 Twitter, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed
- * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
- * CONDITIONS OF ANY KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations under the License.
- */
-
 package com.cloudhopper.sxmp;
+
+/*
+ * #%L
+ * ch-sxmp
+ * %%
+ * Copyright (C) 2012 - 2013 Cloudhopper by Twitter
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 
 import com.cloudhopper.commons.util.HexUtil;
 import com.cloudhopper.sxmp.util.MobileAddressUtil;
 import com.cloudhopper.commons.util.StringUtil;
-import com.cloudhopper.stratus.type.OptionalParamMap;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -30,7 +35,8 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
@@ -47,7 +53,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author joelauer
  */
 public class SxmpParser {
-    private static final Logger logger = Logger.getLogger(SxmpParser.class);
+    private static final Logger logger = LoggerFactory.getLogger(SxmpParser.class);
 
     static protected DateTimeFormatter dateTimeFormat = ISODateTimeFormat.dateTime().withZone(DateTimeZone.UTC);
 
@@ -114,19 +120,11 @@ public class SxmpParser {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         //factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 
-        //try {
-
-            SAXParser parser = factory.newSAXParser();
-            //_parser.getXMLReader().setFeature("http://xml.org/sax/features/validation", validating);
-            parser.getXMLReader().setFeature("http://xml.org/sax/features/namespaces", true);
-            parser.getXMLReader().setFeature("http://xml.org/sax/features/namespace-prefixes", true);
-            parser.getXMLReader().setFeature("http://javax.xml.XMLConstants/feature/secure-processing", true);
-
-        //} catch (Exception e) {
-        //    logger.warn(e);
-        //    throw new Error(e.toString());
-        //}
-
+	SAXParser parser = factory.newSAXParser();
+	//_parser.getXMLReader().setFeature("http://xml.org/sax/features/validation", validating);
+	parser.getXMLReader().setFeature("http://xml.org/sax/features/namespaces", true);
+	parser.getXMLReader().setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+	parser.getXMLReader().setFeature("http://javax.xml.XMLConstants/feature/secure-processing", true);
 
         //_dtd=null;
         Handler handler = new Handler();
@@ -756,7 +754,7 @@ public class SxmpParser {
                             ((MessageRequest)operation).setOptionalParams(optionalParams);
 
                         } catch (JSONException e) {
-                            logger.warn(e);
+                            logger.warn("", e);
                             throw new SxmpParsingException(SxmpErrorCode.UNABLE_TO_CONVERT_VALUE, "Unable to decode json data", this.operation);
                         } catch (IllegalArgumentException e) {
                             throw new SxmpParsingException(SxmpErrorCode.INVALID_VALUE, "Invalid optional parameters", this.operation);
@@ -795,7 +793,7 @@ public class SxmpParser {
 
         @Override
         public void warning(SAXParseException ex) {
-            logger.warn(ex);
+            logger.warn("", ex);
             logger.warn("WARNING @ " + getLocationString(ex) + " : " + ex.toString());
         }
 

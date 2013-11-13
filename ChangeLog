@@ -2,6 +2,19 @@ Cloudhopper, Inc.
 http://www.cloudhopper.com/
 SXMP Library
 --------------------------------------------------------------------------------
+1.5.0 - 2013-11-??
+  * 
+
+  * Upgrade parent pom from public 1.7 to oss 1.4
+  * Upgrade ch-commons-util dependency to 6.0.0
+  * Added ch-commons-charset 3.0.0 dependency
+
+  * Upgrade ch-commons-xbean dependency to 3.0.0
+  * Ported from log4j to slf4j
+  * Switched to CH distribution of proxool 0.9.1 in Maven Central 
+  * Added a runtime dependency to org.slf4j.jcl-over-slf4j for proxool
+
+
 1.4.5 - 2013-10-17
   * Fixed reversion where priority was not being included in submit/deliver if it 
     was not set. Defaults to NORMAL(0) again.
