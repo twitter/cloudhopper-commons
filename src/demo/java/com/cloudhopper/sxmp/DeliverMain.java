@@ -43,14 +43,9 @@ public class DeliverMain {
         // create a deliver request
         DeliverRequest deliver = new DeliverRequest();
 
-        //deliver.setAccount(new Account("customer1", "password1"));
-        deliver.setAccount(new Account("customer2", "password2"));
-        //submit.setAccount(new Account("twitter", "4jd6781uy"));
-        //deliver.setAccount(new Account("chdev", "aeljjl99"));
+        deliver.setAccount(new Account("customer1", "password1"));
         
         deliver.setOperatorId(2);
-//        submit.setDeliveryReport(Boolean.TRUE);
-//        submit.setReferenceId("TESTREF");
 
         MobileAddress sourceAddr = new MobileAddress();
         sourceAddr.setAddress(MobileAddress.Type.INTERNATIONAL, "+13135551212");

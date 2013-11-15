@@ -41,7 +41,6 @@ public class PostUTF8MO {
 
         String URL = "https://sms-staging.twitter.com/receive/cloudhopper";
         
-        
         // this is a Euro currency symbol
         //String text = "\u20AC";
 
@@ -65,9 +64,8 @@ public class PostUTF8MO {
 
         StringBuilder string0 = new StringBuilder(200)
             .append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n")
-            //.append("<?xml version=\"1.0\"?>\n")
             .append("<operation type=\"deliver\">\n")
-            .append(" <account username=\"twitter\" password=\"4jd6781uy\"/>\n")
+            .append(" <account username=\"customer1\" password=\"password1\"/>\n")
             .append(" <deliverRequest>\n")
             .append("  <ticketId>" + ticketId + "</ticketId>\n")
             .append("  <operatorId>" + operatorId + "</operatorId>\n")
@@ -78,13 +76,6 @@ public class PostUTF8MO {
             .append("</operation>\n")
             .append("");
         
-        // Get target URL
-        //String strURL = "http://68.64.54.17/api/sxmp/1.0";
-
-        // Get file to be posted
-        //String strXMLFilename = args[1];
-        //File input = new File(strXMLFilename);
-
         HttpClient client = new DefaultHttpClient();
         client.getParams().setBooleanParameter("http.protocol.expect-continue", false);
 

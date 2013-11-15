@@ -43,7 +43,7 @@ public class SubmitMain {
     static public void main(String[] args) throws Exception {
 
 	String url = "http://127.0.0.1:8080/api/sxmp/1.0";
-	String phone = "+13134434272";
+	String phone = "+14155551212";
 	int operator = 1;
 	if (args.length > 0) url = args[0];
 	if (args.length > 1) phone = args[1];
@@ -51,9 +51,7 @@ public class SubmitMain {
 
         // create a submit request
         SubmitRequest submit = new SubmitRequest();
-        submit.setAccount(new Account("twitter", "4jd6781uy"));
-        //submit.setAccount(new  Account("chdev", "aeljjl99"));
-        //submit.setApplication(new Application("TestApp1"));
+        submit.setAccount(new Account("customer1", "password1"));
         submit.setDeliveryReport(Boolean.TRUE);
         
         MobileAddress sourceAddr = new MobileAddress();

@@ -32,44 +32,13 @@ public class SenderMain {
 
     static public void main(String[] args) throws Exception {
 
-
-        /**
-        String url = "http://lyn-twtr-gw.cloudhopper.com/api/sxmp/1.0";
-
-        SubmitRequest request = new SubmitRequest();
-
-        request.setAccount(new Account("twitter", "4jd6781uy"));
-        request.setDeliveryReport(Boolean.TRUE);
-        request.setReferenceId("TESTREF");
-        
-        MobileAddress sourceAddr = new MobileAddress(MobileAddress.Type.NETWORK, "40404");
-        request.setSourceAddress(sourceAddr);
-
-        MobileAddress destAddr = new MobileAddress(MobileAddress.Type.INTERNATIONAL, "+16502931589");
-        request.setDestinationAddress(destAddr);
-
-        request.setOperatorId(20);
-
-        request.setText("Hello World2");
-        //submit.setText("Test from Twitter 2");
-
-        logger.debug("Request: " + request);
-
-        SubmitResponse response = SxmpSender.submit(url, request);
-
-        logger.debug("Response: " + response);
-         */
-
         String url = "https://sms.twitter.com/receive/cloudhopper";
 
         DeliverRequest request = new DeliverRequest();
-
-        request.setAccount(new Account("twitter", "4jd6781uy"));
-
-        //request.setReferenceId("TESTREF");
+        request.setAccount(new Account("customer1", "password1"));
         request.setTicketId(System.currentTimeMillis()+"");
 
-        MobileAddress sourceAddr = new MobileAddress(MobileAddress.Type.INTERNATIONAL, "+14159129228");
+        MobileAddress sourceAddr = new MobileAddress(MobileAddress.Type.INTERNATIONAL, "+14155551212");
         request.setSourceAddress(sourceAddr);
 
         MobileAddress destAddr = new MobileAddress(MobileAddress.Type.NETWORK, "40404");
@@ -78,7 +47,6 @@ public class SenderMain {
         request.setOperatorId(23);
 
         request.setText("Hello 2");
-        //submit.setText("Test from Twitter 2");
 
         logger.debug("Request: " + request);
 

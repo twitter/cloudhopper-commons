@@ -37,38 +37,14 @@ public class PostReport {
         String ticketId = "testticket";
 
         StringBuilder string0 = new StringBuilder(200)
-            //.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n")
             .append("<?xml version=\"1.0\"?>\n")
             .append("<operation type=\"deliver\">\n")
-            .append(" <account username=\"twitter\" password=\"4jd6781uy\"/>\n")
+            .append(" <account username=\"customer1\" password=\"password1\"/>\n")
             .append(" <deliveryReportRequest>\n")
             .append("  <ticketId>" + ticketId + "</ticketId>\n")
             .append(" </deliveryReportRequest>\n")
             .append("</operation>\n")
             .append("");
-
-            /**
-            //.append("<!DOCTYPE chapter PUBLIC \"-//OASIS//DTD DocBook XML//EN\" \"../dtds/docbookx.dtd\">")
-            //.append("<!DOCTYPE chapter PUBLIC \"-//OASIS//DTD DocBook XML//EN\">")
-            .append("<submitRequest sequenceId=\"1000\">\n")
-            .append("   <!-- this is a comment -->\n")
-            .append("   <account username=\"testaccount\" password=\"testpassword\"/>\n")
-            .append("   <option />\n")
-            .append("   <messageRequest referenceId=\"MYMESSREF\">\n")
-            //.append("       <sourceAddress>+13135551212</sourceAddress>\n")
-            .append("       <destinationAddress>+13135551200</destinationAddress>\n")
-            .append("       <text><![CDATA[Hello World]]></text>\n")
-            .append("   </messageRequest>\n")
-            .append("</submitRequest>")
-            .append("");
-             */
-        
-        // Get target URL
-        //String strURL = "http://68.64.54.17/api/sxmp/1.0";
-
-        // Get file to be posted
-        //String strXMLFilename = args[1];
-        //File input = new File(strXMLFilename);
 
         /**
         // Prepare HTTP post

@@ -43,18 +43,15 @@ public class Post {
 	//String message = "Tell Twitter what you're doing!\nStd msg charges apply. Send 'stop' to quit.\nVisit twitter.com or email help@twitter.com for help.";
 
         StringBuilder string0 = new StringBuilder(200)
-            //.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n")
             .append("<?xml version=\"1.0\"?>\n")
             .append("<operation type=\"submit\">\n")
-            .append(" <account username=\"twitter\" password=\"4jd6781uy\"/>\n")
+            .append(" <account username=\"customer1\" password=\"password1\"/>\n")
             .append(" <submitRequest referenceId=\"MYREF102020022\">\n")
-            //.append(" <submitRequest>\n")
             .append("  <operatorId>75</operatorId>\n")
             .append("  <deliveryReport>true</deliveryReport>\n")
             .append("  <sourceAddress type=\"network\">40404</sourceAddress>\n")
-            .append("  <destinationAddress type=\"international\">+131344434272</destinationAddress>\n")
+            .append("  <destinationAddress type=\"international\">+13135551234</destinationAddress>\n")
             .append("  <text encoding=\"ISO-8859-1\">" + HexUtil.toHexString(message.getBytes("ISO-8859-1")) + "</text>\n")
-            //.append("  <text encoding=\"ISO-8859-1\">48656c6c6f20576f726c6448656c6c6f20576f726c6448656c6c6f20576f726c6448656c6c6f20576f726c6448656c6c6f20576f726c6448656c6c6f20576f726c6448656c6c6f20576f726c6448656c6c6f20576f726c6448656c6c6f20576f726c6448656c6c6f20576f726c6448656c6c6f20576f726c6448656c6c6f20576f726c6448656c6c6f20576f726c6448656c6c6f20576f726c6448656c6c6f20576f726c6448656c6c6f20576f726c6448656c6c6f20576f726c6448656c6c6f20576f726c6448656c6c6f20576f726c6448656c6c6f20576f726c64</text>\n")
             .append(" </submitRequest>\n")
             .append("</operation>\n")
             .append("");
@@ -76,12 +73,7 @@ public class Post {
              */
         
         // Get target URL
-        //String strURL = "http://localhost:9080/api/sxmp/1.0";
-        //String strURL = "http://68.64.54.17/api/sxmp/1.0";
-        //String strURL = "http://localhost:9080/api/sxmp/1.0";
-        //String strURL = "http://lyn-stratus-001/api/sxmp/1.0";
-        //String strURL = "http://sfd-twtr-gw.cloudhopper.com/api/sxmp/1.0";
-        String strURL = "http://lyn-twtr-gw.cloudhopper.com/api/sxmp/1.0";
+        String strURL = "http://localhost:9080/api/sxmp/1.0";
 
         // Get file to be posted
         //String strXMLFilename = args[1];
