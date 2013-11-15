@@ -1,17 +1,3 @@
-/**
- * Copyright (C) 2011 Twitter, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed
- * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
- * CONDITIONS OF ANY KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations under the License.
- */
-
 package com.cloudhopper.commons.sql.c3p0;
 
 /*
@@ -34,14 +20,11 @@ package com.cloudhopper.commons.sql.c3p0;
  * #L%
  */
 
-// java imports
-import java.lang.management.*;
-import javax.management.*;
-
-// third party imports
-import com.mchange.v2.log.*;
 import com.mchange.v2.c3p0.*;
 import com.mchange.v2.c3p0.management.*;
+import com.mchange.v2.log.*;
+import java.lang.management.*;
+import javax.management.*;
 
 /**
  * Class copied directly from c3p0 source code from the ActiveManagementCoordinator.java
