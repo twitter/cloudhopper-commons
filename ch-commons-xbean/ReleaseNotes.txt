@@ -1,0 +1,115 @@
+Cloudhopper by Twitter
+Commons XBean Library
+--------------------------------------------------------------------------------
+
+3.0.0 - 2012-10-31
+  * Upgraded parent maven POM.
+  * Merged com.cloudhopper.commons.xml into this project.
+
+2.0.1 - 2012-02-17
+  * Added support for TimeUnit extensions for any "long" or "Long" property.
+    In the XML, the following would actually set a long value of 30000 on the
+    interval property.
+
+      <interval>30.seconds</interval>
+
+    The assumption is that either a long or Long could represent a unit of
+    time in milliseconds.  There is built-in support for milliseconds, seconds,
+    minutes, hours, and days.
+  * Added support for registering custom TypeConverters in TypeConverterUtil. 
+
+2.0.0 - 2012-02-16
+  * Upgrade parent POM to 1.6
+  * Moved compile dependency of slf4j-api to test
+  * Added support for Collections.  Any class implementing the Collection
+    interface can have items/elements added automatically with child elements.
+    The underlying generic parameterized type is reflected from the specific
+    Collection object to automatically determine what types of values to add.
+    For example, assuming you have a field such as:
+      
+      ArrayList<String> hosts;
+
+    This can easily be configured with the following XML snippet:
+
+      <hosts value="host">
+        <host>www.twitter.com</host>
+        <host>www.google.com</host>
+      </hosts>
+   
+  * Added support for Maps.  Any class implementing the Map
+    interface can have items/elements put automatically with child elements.
+    The underlying generic parameterized types are reflected from the specific
+    Map object to automatically determine what types of keys and values to put.
+    For example, assuming you have a field such as:
+      
+      HashMap<Integer,String> hosts;
+
+    This can easily be configured with the following XML snippet:
+
+      <hosts value="host">
+        <host key="0">www.twitter.com</host>
+        <host key="1">www.google.com</host>
+      </hosts>
+
+    Maps also have support for using the value from a property of the value
+    itself as the key.  A new attribute can be included on the Map element
+    to specify the property name of the key.  For example, assuming a class
+    of the following:
+      
+      public class Host {
+        public String name;
+        public String ip;
+      }
+
+    This could be configured using the name of the host as a key as follows:
+   
+      <hosts value="host" key="name">
+        <host>
+          <name>www.google.com</name>
+          <ip>10.1.1.1</ip>
+        </host>
+        <host>
+          <name>www.twitter.com</name>
+          <ip>10.1.1.2</ip>
+        </host>
+      </hosts>
+
+  * Added new annotation XmlBeanProperty for defining in source code what 
+    element names are expected for either values or keys.  For example:
+
+      @XmlBeanProperty(value="host")
+      ArrayList<String> hosts; 
+
+      @XmlBeanProperty(value="host", key="name")
+      HashMap<Integer,Host> hosts;
+
+    If these are defined, then specifying the key or value attributes on the
+    Collection or Map element within the XML becomes unnecessary.
+  * PropertyConverter and impl classes all renamed to TypeConverter
+  * Added support for "type" attribute on any property. Allows specific types
+    of objects to be created rather than only instances of of the property itself.
+    Useful for configuring objects with properties of a superclass or interface
+    so that creating specific concrete instances is easy.  For example, assuming
+    a property is of type Number, specific instances of a Number could be created:
+       
+      <property type="java.lang.Integer">1</property>
+      
+  * Hex format is now permitted for any byte, short, int, or long.  The number
+    starts with 0x or 0X and is not permitted to be negative.  For example:
+ 
+      <property>0xFF</property>
+ 
+  * Cleaned up converter source code by adding source annotations for overrides. 
+  * All demo code moved to src/test/com/cloudhopper/xbean/demo
+  * Added support for Double, double, Float, float, URL, and File types.
+
+1.2.0 - 2011-09-18
+  * Updated license to match Twitter's common opensource one.
+  * Updated build process to maven.
+  * Switched to SLF4J from Log4J
+
+1.1 - 2010-02-15
+  * Fixed type issue with Bytes that were incorrectly created as Shorts.
+
+1.0 - 2009-06-29
+  * Initial release
