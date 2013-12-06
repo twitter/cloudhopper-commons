@@ -6,17 +6,14 @@
   <packaging>jar</packaging>
   <version>1.3.1-SNAPSHOT</version>
   <name>ch-commons-sql</name>
+  <description>SQL and JDBC utilties</description>
+  <url>https://github.com/twitter/cloudhopper-commons</url>
 
   <parent>
     <groupId>com.cloudhopper</groupId>
-    <artifactId>ch-maven-parent-oss</artifactId>
-    <version>1.4</version>
+    <artifactId>ch-commons</artifactId>
+    <version>1.0</version>
   </parent>
-
-  <scm>
-    <connection>scm:git:https://git.twitter.biz/cloudhopper-commons-sql</connection>
-    <tag>HEAD</tag>
-  </scm>
 
   <dependencies>
     <!-- compile scope -->

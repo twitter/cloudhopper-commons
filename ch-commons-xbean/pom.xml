@@ -7,16 +7,13 @@
   <version>3.0.0</version>
   <name>ch-commons-xbean</name>
   <description>Utility Java classes for configuring objects from xml</description>
+  <url>https://github.com/twitter/cloudhopper-commons</url>
   <inceptionYear>2012</inceptionYear>
-
-  <scm>
-    <connection>scm:git:https://git.twitter.biz/cloudhopper-commons-xbean</connection>
-  </scm>
 
   <parent>
     <groupId>com.cloudhopper</groupId>
-    <artifactId>ch-maven-parent-oss</artifactId>
-    <version>1.4</version>
+    <artifactId>ch-commons</artifactId>
+    <version>1.0</version>
   </parent>
 
   <dependencies>

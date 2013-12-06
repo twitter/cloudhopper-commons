@@ -35,24 +35,30 @@ public class CharSequenceAccessorTest {
     public void usage() throws Exception {
         String s0 = "test";
         CharArrayWrapper wrapper = CharSequenceAccessor.access(s0);
-        Assert.assertEquals(0, wrapper.offset);
-        Assert.assertEquals(4, wrapper.length);
-        Assert.assertArrayEquals(new char[] { 't','e','s','t' }, wrapper.value);
-        
+	if (wrapper != null) {
+	    Assert.assertEquals(0, wrapper.offset);
+	    Assert.assertEquals(4, wrapper.length);
+	    Assert.assertArrayEquals(new char[] { 't','e','s','t' }, wrapper.value);
+        }
+
         // this usually retains same char[] but adjusts offset (may differ between JVMs)
         String s1 = s0.substring(1);
         wrapper = CharSequenceAccessor.access(s1);
-        Assert.assertEquals(1, wrapper.offset);
-        Assert.assertEquals(3, wrapper.length);
-        Assert.assertArrayEquals(new char[] { 't','e','s','t' }, wrapper.value);
-        
+	if (wrapper != null) {
+	    Assert.assertEquals(1, wrapper.offset);
+	    Assert.assertEquals(3, wrapper.length);
+	    Assert.assertArrayEquals(new char[] { 't','e','s','t' }, wrapper.value);
+        }
+
         StringBuilder sb = new StringBuilder("test");
         wrapper = CharSequenceAccessor.access(sb);
-        Assert.assertEquals(0, wrapper.offset);
-        Assert.assertEquals(4, wrapper.length);
-        // appears JVM actually creates a default size of 20 -- more than 4 -- only compare first 4 chars
-        Assert.assertArrayEquals(new char[] { 't','e','s','t' }, Arrays.copyOf(wrapper.value, 4));
-        
+	if (wrapper != null) {
+	    Assert.assertEquals(0, wrapper.offset);
+	    Assert.assertEquals(4, wrapper.length);
+	    // appears JVM actually creates a default size of 20 -- more than 4 -- only compare first 4 chars
+	    Assert.assertArrayEquals(new char[] { 't','e','s','t' }, Arrays.copyOf(wrapper.value, 4));
+        }
+
         // stringbuffer isn't supported -- should return null
         StringBuffer sbf = new StringBuffer("test");
         wrapper = CharSequenceAccessor.access(sbf);

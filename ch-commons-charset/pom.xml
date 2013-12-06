@@ -7,19 +7,13 @@
   <version>3.0.1-SNAPSHOT</version>
   <name>ch-commons-charset</name>
   <description>Utility classes for converting between charsets (mostly "mobile" in nature) such as Unicode to GSM and vice versa</description>
-  <url>https://github.com/twitter/cloudhopper-commons-charset</url>
+  <url>https://github.com/twitter/cloudhopper-commons</url>
   <inceptionYear>2012</inceptionYear>
-
-  <scm>
-      <url>https://github.com/twitter/cloudhopper-commons-charset</url>
-      <connection>scm:git:https://github.com/twitter/cloudhopper-commons-charset.git</connection>
-    <tag>HEAD</tag>
-  </scm>
 
   <parent>
     <groupId>com.cloudhopper</groupId>
-    <artifactId>ch-maven-parent-oss</artifactId>
-    <version>1.3</version>
+    <artifactId>ch-commons</artifactId>
+    <version>1.0</version>
   </parent>
 
   <dependencies>

@@ -7,19 +7,13 @@
   <version>6.0.2-SNAPSHOT</version>
   <name>ch-commons-util</name>
   <description>Common Java utility classes used across Cloudhopper-based projects</description>
-  <url>https://github.com/twitter/cloudhopper-commons-util</url>
+  <url>https://github.com/twitter/cloudhopper-commons</url>
   <inceptionYear>2012</inceptionYear>
     
-  <scm>
-      <url>https://github.com/twitter/cloudhopper-commons-util</url>
-      <connection>scm:git:https://github.com/twitter/cloudhopper-commons-util.git</connection>
-    <tag>HEAD</tag>
-  </scm>
-  
   <parent>
     <groupId>com.cloudhopper</groupId>
-    <artifactId>ch-maven-parent-oss</artifactId>
-    <version>1.3</version>
+    <artifactId>ch-commons</artifactId>
+    <version>1.0</version>
   </parent>
 
   <dependencies>

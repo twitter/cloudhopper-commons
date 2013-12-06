@@ -3,7 +3,7 @@ http://www.cloudhopper.com/
 SXMP Library
 --------------------------------------------------------------------------------
 
-Library implementing the SXMP protocol.
+Library implementing the SXMP protocol. SXMP is like SMPP, but as readable XML.
 
 Error Codes:
 
