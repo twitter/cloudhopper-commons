@@ -1,0 +1,34 @@
+Cloudhopper, Inc.
+http://www.cloudhopper.com/
+SXMP Library
+--------------------------------------------------------------------------------
+
+Library implementing the SXMP protocol.
+
+Error Codes:
+
+1001 : Only one "XXXX" element supported
+1002 : Account element must contain a username attribute and value
+1003 : Account element must contain a password attribute and value
+1004 : Only one submitRequest element supported
+1005 : One or more characters in the referenceId value are not allowed
+1006 : The operatorId must be greater than 0
+1007 : Mismatch between operation type and embedded request element
+1008 : Unsupported child element "XXXXX" found
+1009 : Element "XXXXX" must contain a value
+1010 : Unable to convert "XXXX" to a number
+1011 : An address element must contain a type attribute value
+
+To do:
+
+* Support for binary messages
+* Provide a better common implementation of a "sender" framework similar to
+  how a servlet implementation was provided.
+* Provide a simulator servlet that can have various options turned on/off at
+  runtime to mimic error scenarios.
+* Some additional unit tests -- perhaps a test suite for customer implementations
+  of our protocol?
+* Add an "enquire_link" implementation.  Calling it a PingRequest or KeepAliveRequest
+  is probably what I'm going after.
+* Load tester/simulator app?  Perhaps combine together with various tools above
+  into the same package.

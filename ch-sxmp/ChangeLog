@@ -1,0 +1,59 @@
+Cloudhopper, Inc.
+http://www.cloudhopper.com/
+SXMP Library
+--------------------------------------------------------------------------------
+1.5.0 - 2013-11-15
+  * OptionalParamMap is now local and does not require cloudhopper-stratus-commons.
+    However, this may break compatiblity if you are auto upgrading to this version.
+  * Upgrade parent pom from public 1.7 to oss 1.4
+  * Upgrade ch-commons-util dependency to 6.0.0
+  * Added ch-commons-charset 3.0.0 dependency
+
+1.4.5 - 2013-10-17
+  * Fixed reversion where priority was not being included in submit/deliver if it 
+    was not set. Defaults to NORMAL(0) again.
+
+1.4.4 - 2013-09-27
+  * Added priority to MessageRequest toString().
+
+1.4.3 - 2013-07-09
+  * Update API version to v1.2
+  * Add support for priority. Defaults to NORMAL(0). Backwards compatible.
+
+1.4.2 - 2013-3-25
+  * Update API version to also support v1.1
+  * Add support for optional parameter map (encoded in JSON), if version == 1.1
+  * Add support for new PUSH_DESTINATION address type, alphanumeric, length <= 32767
+  * Added support for parsing utf-8 formatted XML input, and v1.1 output is now utf-8
+    instead of ISO-8859-1
+  * Updated parent pom to 1.7, adding release-plugin support
+  * Removed Version.java, replaced with new auto-generated version
+
+1.4.1 - 2012-01-31
+  * Added junit test to ensure secure processing of XML is enabled. An example
+    Denial of Service attack is now included as part of unit tests.  Only is
+    passed if running on a JDK >= 1.6.0_29.
+
+1.4.0 - 2012-01-19
+  * Refactored build process.
+
+1.3 - 2010-08-23
+  * Refactored SXMP error codes and added additional ones.
+
+1.2 - 2010-06-06
+  * Added support for additional address types: NATIONAL and ALPHANUMERIC.
+  * Added support for application name property in all request types
+    including submit, deliver, and delivery report. Allows support for multiple
+    applications per account.
+  * Changed default text encoding from ISO-8859-1 to UTF-8.
+  * Added support for extra fields in a delivery report: createDate, finalDate,
+    and messageError.
+
+1.1 - 2010-05-11
+  * Fixed all unit test cases to properly run with updated commons-util lib.
+  * Fixed compiler warnings on all exception classes missing a serial number.
+  * Added support for UTF-8 text encoding for message text.
+  * Added simple SxmpSender class for sending requests and parsing responses.
+
+1.0 - 2010-01-31
+  * Initial release
