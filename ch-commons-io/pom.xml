@@ -1,0 +1,64 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.cloudhopper</groupId>
+  <artifactId>ch-commons-io</artifactId>
+  <packaging>jar</packaging>
+  <version>2.3.1-SNAPSHOT</version>
+  <name>ch-commons-io</name>
+
+  <parent>
+    <groupId>com.cloudhopper</groupId>
+    <artifactId>ch-maven-parent-oss</artifactId>
+    <version>1.4</version>
+  </parent>
+
+  <scm>
+    <connection>scm:git:https://git.twitter.biz/cloudhopper-commons-io</connection>
+    <tag>HEAD</tag>
+  </scm>
+
+  <dependencies>
+    <!-- compile scope -->
+    <dependency>
+      <groupId>com.cloudhopper</groupId>
+      <artifactId>ch-commons-util</artifactId>
+      <version>${ch-commons-util.version}</version>
+    </dependency>
+    <!-- provided scope -->
+    <!-- runtime scope -->
+    <!-- testing scope -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <version>${logback.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${logback.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>${commons-io.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <properties>
+    <main.java.package>com.cloudhopper.commons.io</main.java.package>
+    <ch-commons-util.version>[6.0.0,)</ch-commons-util.version>
+    <commons-io.version>2.0.1</commons-io.version>
+  </properties>
+
+</project>
+

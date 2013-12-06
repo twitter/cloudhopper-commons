@@ -1,0 +1,29 @@
+Cloudhopper
+Commons IO Library
+--------------------------------------------------------------------------------
+2.3.0 - 2013-11-06
+  * Upgrade parent pom from public 1.5 to oss 1.4
+  * Upgrade ch-commons-util dependency to 6.0.0
+
+2.2.2 - 2011-09-01
+  * Upgrade parent pom from 1.0 to 1.5
+  * New Version class now added with upgrade parent pom
+
+2.2.1 - 2011-08-31
+  * Close channels in SimpleNIOFileStore. We were leaking open file descriptors.
+
+2.2 - 2011-08-11
+  * Added metaData field to Id.
+
+2.1 - 2011-07-06
+  * Removed host from FileStore Id. Added size to Id metadata.
+  * Removed file server and Netty dependency.
+
+2.0 - 2011-06-14
+  * New build process (from ant to maven)
+  * Moved src/demo/java into src/test/java directory (for maven)
+  * Many new classes to primarily support ch-flamingo.
+  * Removed log4j dependendency - switched to SLF4J
+
+1.0 - 2009-04-01
+  * Initial release extracted from ch-commons-util
