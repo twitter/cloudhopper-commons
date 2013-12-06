@@ -1,0 +1,67 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.cloudhopper</groupId>
+  <artifactId>ch-commons-util</artifactId>
+  <packaging>jar</packaging>
+  <version>6.0.2-SNAPSHOT</version>
+  <name>ch-commons-util</name>
+  <description>Common Java utility classes used across Cloudhopper-based projects</description>
+  <url>https://github.com/twitter/cloudhopper-commons-util</url>
+  <inceptionYear>2012</inceptionYear>
+    
+  <scm>
+      <url>https://github.com/twitter/cloudhopper-commons-util</url>
+      <connection>scm:git:https://github.com/twitter/cloudhopper-commons-util.git</connection>
+    <tag>HEAD</tag>
+  </scm>
+  
+  <parent>
+    <groupId>com.cloudhopper</groupId>
+    <artifactId>ch-maven-parent-oss</artifactId>
+    <version>1.3</version>
+  </parent>
+
+  <dependencies>
+    <!-- compile scope -->
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>${joda-time.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <!-- provided scope -->
+    <!-- runtime scope -->
+    <!-- testing scope -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <version>${logback.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${logback.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <properties>
+    <main.java.package>com.cloudhopper.commons.util</main.java.package>
+    <junit.version>4.10</junit.version>
+    <joda-time.version>[2.0,)</joda-time.version>
+    <slf4j.version>[1.7,)</slf4j.version>
+    <logback.version>[1.0,)</logback.version>
+  </properties>
+</project>
