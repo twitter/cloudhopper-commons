@@ -1,0 +1,27 @@
+Cloudhopper, Inc.
+http://www.cloudhopper.com/
+Apache Jakarta HttpClient 4.x Utility Library
+--------------------------------------------------------------------------------
+1.5.0 - 2013-11-15
+  * Upgrade parent pom from public to oss 1.4
+  * Upgrade to Maven Central version of httpclient
+  * Upgrade to Maven Central version of grizzly-server
+  * Added a runtime dependency to org.slf4j.jcl-over-slf4j for httpclient
+
+1.4.1 - 2011-09-18
+  * Updated build process.
+
+1.4 - 2010-10-20
+  * Added keystore and truststore support to HttpClientFactory
+
+1.3 - 2010-10-15
+  * Added keystore and truststore HTTPS scheme to SchemeFactory
+
+1.2 - 2010-01-31
+  * Added normal HTTPS scheme for SchemeFactory
+
+1.1 - 2010-01-27
+  * Added ability to handle multiple HTTP status codes as "expected"
+
+1.0 - 2010-01-03
+  * Initial release
