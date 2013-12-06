@@ -1,0 +1,59 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.cloudhopper</groupId>
+  <artifactId>ch-commons-gsm</artifactId>
+  <packaging>jar</packaging>
+  <version>3.0.1-SNAPSHOT</version>
+  <name>ch-commons-gsm</name>
+  <description>Utility Java classes for working with GSM mobile technologies (usually SMS or MMS)</description>
+  <url>https://github.com/twitter/cloudhopper-commons-gsm</url>
+  <inceptionYear>2012</inceptionYear>
+
+  <scm>
+      <url>https://github.com/twitter/cloudhopper-commons-gsm</url>
+      <connection>scm:git:https://github.com/twitter/cloudhopper-commons-gsm.git</connection>
+    <tag>HEAD</tag>
+  </scm>
+
+  <parent>
+    <groupId>com.cloudhopper</groupId>
+    <artifactId>ch-maven-parent-oss</artifactId>
+    <version>1.3</version>
+  </parent>
+
+  <dependencies>
+    <!-- compile scope -->
+    <dependency>
+      <groupId>com.cloudhopper</groupId>
+      <artifactId>ch-commons-util</artifactId>
+      <version>[6.0.0,)</version>
+    </dependency>
+    <!-- provided scope -->
+    <!-- runtime scope -->
+    <!-- testing scope -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <version>${logback.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${logback.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  
+  <properties>
+    <main.java.package>com.cloudhopper.commons.gsm</main.java.package>
+  </properties>
+  
+</project>
