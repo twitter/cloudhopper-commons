@@ -12,7 +12,7 @@
   <scm>
     <url>https://github.com/twitter/cloudhopper-commons</url>
     <connection>scm:git:https://github.com/twitter/cloudhopper-commons.git</connection>
-    <tag>HEAD</tag>
+    <tag>master</tag>
   </scm>
   
   <parent>
