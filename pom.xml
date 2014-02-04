@@ -11,7 +11,8 @@
     
   <scm>
     <url>https://github.com/twitter/cloudhopper-commons</url>
-    <connection>scm:git:https://github.com/twitter/cloudhopper-commons.git</connection>
+    <connection>scm:git:git://github.com/twitter/cloudhopper-commons.git</connection>
+    <developerConnection>scm:git:git@github.com:twitter/cloudhopper-commons.git</developerConnection>
     <tag>master</tag>
   </scm>
   
@@ -35,7 +36,47 @@
     <module>ch-sxmp</module>
   </modules>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.4.2</version>
+        <dependencies>
+	  <!-- These can be removed once these versions are integrated into the 
+	  maven-release-plugin. Currently, they are required if you are using
+	  git 1.8+ per the bugs here:
+	  http://jira.codehaus.org/browse/MRELEASE-812
+	  http://jira.codehaus.org/browse/SCM-686
+	  -->
+          <dependency>
+            <groupId>org.apache.maven.scm</groupId>
+            <artifactId>maven-scm-api</artifactId>
+            <version>1.8.1</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.maven.scm</groupId>
+            <artifactId>maven-scm-provider-gitexe</artifactId>
+            <version>1.8.1</version>
+          </dependency>
+	  <dependency>
+	    <groupId>org.apache.maven.scm</groupId>
+	    <artifactId>maven-scm-provider-git-commons</artifactId>
+	    <version>1.8.1</version>
+	  </dependency>
+	</dependencies>
+        <configuration>
+          <autoVersionSubmodules>true</autoVersionSubmodules>
+          <tagNameFormat>version-@{project.version}</tagNameFormat>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
   <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <copyright.year>2014</copyright.year> 
   </properties>
 
 </project>
