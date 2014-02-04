@@ -1,4 +1,4 @@
-Cloudhopper by Twitter
+Cloudhopper by Twitter [![Build Status](https://secure.travis-ci.org/twitter/cloudhopper-commons.png?branch=master)](http://travis-ci.org/twitter/cloudhopper-commons)
 ======================
 
 Common Java libraries used by the Cloudhopper family of mobile messaging applications at Twitter.
