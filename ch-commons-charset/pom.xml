@@ -4,7 +4,7 @@
   <groupId>com.cloudhopper</groupId>
   <artifactId>ch-commons-charset</artifactId>
   <packaging>jar</packaging>
-  <version>3.0.1-SNAPSHOT</version>
+  <version>3.0.3-SNAPSHOT</version>
   <name>ch-commons-charset</name>
   <description>Utility classes for converting between charsets (mostly "mobile" in nature) such as Unicode to GSM and vice versa</description>
   <url>https://github.com/twitter/cloudhopper-commons</url>

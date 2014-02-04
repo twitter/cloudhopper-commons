@@ -66,7 +66,7 @@ public class GSMCharset extends BaseCharset {
      */
     public static final char[] EXT_CHAR_TABLE = {
             0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, '\f', 0, 0, 0, 0, 0,
             0, 0, 0, 0, '^', 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
@@ -117,6 +117,7 @@ public class GSMCharset extends BaseCharset {
                     case '\u00D8':	// Ø
                     case '\u00F8':	// ø
                     case '\r':          // carriage return
+                    case '\u000c':      // form feed
                     case '\u00C5':	// Å
                     case '\u00E5':	// å
                     case '\u0394':	// Δ

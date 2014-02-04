@@ -50,6 +50,8 @@ public class GSMCharsetTest {
         // simple range check -- the '`' char is NOT in the GSM charset
         Assert.assertEquals(false, GSMCharset.canRepresent("`"));
         Assert.assertEquals(true, GSMCharset.canRepresent("[\\]^_"));
+        // form feed: uncommon but technically part of the spec
+        Assert.assertEquals(true, GSMCharset.canRepresent("\f"));
         
         // create a fully correct string from lookup tables
         // strings to decode/encode to/from UTF-8

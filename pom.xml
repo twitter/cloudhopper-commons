@@ -6,20 +6,20 @@
   <packaging>pom</packaging>
   <version>1.0</version>
   <name>ch-commons</name>
-  <description>Parent maven pom for opensource cloudhopper-commons projects</description>
+  <description>Parent Maven POM for open source cloudhopper-commons projects</description>
   <url>https://github.com/twitter/cloudhopper-commons</url>
-    
+
   <scm>
     <url>https://github.com/twitter/cloudhopper-commons</url>
     <connection>scm:git:git://github.com/twitter/cloudhopper-commons.git</connection>
     <developerConnection>scm:git:git@github.com:twitter/cloudhopper-commons.git</developerConnection>
     <tag>master</tag>
   </scm>
-  
+
   <parent>
     <groupId>com.cloudhopper</groupId>
     <artifactId>ch-maven-parent-oss</artifactId>
-    <version>1.4</version>
+    <version>1.5</version>
   </parent>
 
   <modules>
@@ -36,46 +36,7 @@
     <module>ch-sxmp</module>
   </modules>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-release-plugin</artifactId>
-        <version>2.4.2</version>
-        <dependencies>
-	  <!-- These can be removed once these versions are integrated into the 
-	  maven-release-plugin. Currently, they are required if you are using
-	  git 1.8+ per the bugs here:
-	  http://jira.codehaus.org/browse/MRELEASE-812
-	  http://jira.codehaus.org/browse/SCM-686
-	  -->
-          <dependency>
-            <groupId>org.apache.maven.scm</groupId>
-            <artifactId>maven-scm-api</artifactId>
-            <version>1.8.1</version>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.maven.scm</groupId>
-            <artifactId>maven-scm-provider-gitexe</artifactId>
-            <version>1.8.1</version>
-          </dependency>
-	  <dependency>
-	    <groupId>org.apache.maven.scm</groupId>
-	    <artifactId>maven-scm-provider-git-commons</artifactId>
-	    <version>1.8.1</version>
-	  </dependency>
-	</dependencies>
-        <configuration>
-          <autoVersionSubmodules>true</autoVersionSubmodules>
-          <tagNameFormat>version-@{project.version}</tagNameFormat>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <copyright.year>2014</copyright.year> 
   </properties>
 

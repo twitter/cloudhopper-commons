@@ -4,6 +4,10 @@ Cloudhopper by Twitter
 cloudhopper-commons-charset
 ---------------------------
 
+## 3.0.2 - 2014-01-24
+ - Disabled CharSequenceAccessor optimization test from failing on newer JDKs
+ - Include form feed (U+000C) in GSM charset (thanks to chadselph)
+
 ## 3.0.1 - 2012-11-06
  - Added T-Mobile NL charset to CharsetUtils and updated tests, also to Readme
  - Changed byte constant in T-Mobile NL charset to uppercase for readability

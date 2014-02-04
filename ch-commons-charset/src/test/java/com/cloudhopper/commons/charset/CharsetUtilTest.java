@@ -22,11 +22,13 @@ package com.cloudhopper.commons.charset;
 
 // third party imports
 import com.cloudhopper.commons.util.HexUtil;
-import java.util.Arrays;
-import java.util.Map;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Arrays;
+import java.util.Map;
 
 /**
  *
@@ -212,6 +214,11 @@ public class CharsetUtilTest {
         str0 = "$@\u00a3\u00a4\u00a5\u00a7\u00c4\u00c5\u00df\u00f1\u0393\u0394\u0398\u03a9\u20ac";
         bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_VFTR_GSM);
         Assert.assertArrayEquals(HexUtil.toByteArray("2440A3A4A5A7C4C5DFF1137F19151B65"), bytes);
+
+        // form feed is an escape code in GSM
+        str0 = "\f\f";
+        bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_GSM);
+        Assert.assertArrayEquals(HexUtil.toByteArray("1B0A1B0A"), bytes);
     }
 
     @Test
@@ -372,6 +379,11 @@ public class CharsetUtilTest {
         //str0 = "$@£¤¥§ÄÅßñΓΔΘΩ€";
         str0 = "$@\u00a3\u00a4\u00a5\u00a7\u00c4\u00c5\u00df\u00f1\u0393\u0394\u0398\u03a9\u20ac";
         str1 = CharsetUtil.decode(HexUtil.toByteArray("2440A3A4A5A7C4C5DFF1137F19151B65"), CharsetUtil.CHARSET_VFTR_GSM);
+        Assert.assertEquals(str0, str1);
+
+        // form feed GSM escape sequence
+        str0 = "\f\f";
+        str1 = CharsetUtil.decode(HexUtil.toByteArray("1B0A1B0A"), CharsetUtil.CHARSET_GSM);
         Assert.assertEquals(str0, str1);
     }
 
