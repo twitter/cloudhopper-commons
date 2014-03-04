@@ -29,6 +29,7 @@
     <module>ch-commons-sql</module>
     <module>ch-commons-rfs</module>
     <module>ch-commons-locale</module>
+    <module>ch-commons-ssl</module>
     <module>ch-commons-io</module>
     <module>ch-commons-xbean</module>
     <module>ch-httpclient-util</module>

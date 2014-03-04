@@ -47,6 +47,10 @@ cloudhopper-sxmp
 ----------------
 Library implementing the SXMP protocol. SXMP is like SMPP, but as readable XML.
 
+cloudhopper-commons-ssl
+-----------------------
+
+
 Installation
 ------------
 
