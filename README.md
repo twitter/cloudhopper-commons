@@ -50,6 +50,8 @@ Library implementing the SXMP protocol. SXMP is like SMPP, but as readable XML.
 cloudhopper-commons-ssl
 -----------------------
 
+Utility Java classes for working with SSL in Cloudhopper-based projects. Originally part of cloudhopper-smpp.
+
 
 Installation
 ------------
