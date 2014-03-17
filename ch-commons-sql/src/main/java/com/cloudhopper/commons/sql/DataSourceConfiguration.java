@@ -20,12 +20,17 @@ package com.cloudhopper.commons.sql;
  * #L%
  */
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Configuration of a DataSource to be used with a DataSourceManager.
  *
  * @author joelauer
  */
 public class DataSourceConfiguration implements Cloneable {
+
+    private static final Logger logger = LoggerFactory.getLogger(DataSourceConfiguration.class);
 
     private DataSourceProvider provider;
     private DatabaseVendor vendor;
@@ -96,10 +101,12 @@ public class DataSourceConfiguration implements Cloneable {
         if (this.username == null) {
             throw new SQLConfigurationException("username is a required property");
         }
+	/* password isn't required in many databases
         if (this.password == null) {
             throw new SQLConfigurationException("password is a required property");
         }
-        if (this.password == null) {
+	*/
+        if (this.name == null) {
             throw new SQLConfigurationException("name is a required property");
         }
         if (this.driver == null) {
@@ -471,6 +478,8 @@ public class DataSourceConfiguration implements Cloneable {
             subProtocol = url.substring(protocolPos+1, subProtocolPos);
         }
 
+	logger.debug("found protocol {} sub-protocol {} from url {}", protocol, subProtocol, url);
+
         // attempt to map JDBC url to set the vendor -- this will set the vendor
         // and also the driver if those properties have not yet been set
         if (protocol.equals("mysql")) {
@@ -481,6 +490,8 @@ public class DataSourceConfiguration implements Cloneable {
             setVendorIfNotSet(DatabaseVendor.MSSQL);
         } else if (protocol.equals("vertica")) {
 	    setVendorIfNotSet(DatabaseVendor.VERTICA);
+        } else if (protocol.equals("hsqldb")) {
+	    setVendorIfNotSet(DatabaseVendor.HSQLDB);
         } else {
             throw new SQLConfigurationException("Unsupported protocol '" + protocol + (!subProtocol.equals("") ? ":" + subProtocol : "") + "' in JDBC URL. Add mapping to DataSourceFactory?");
         }

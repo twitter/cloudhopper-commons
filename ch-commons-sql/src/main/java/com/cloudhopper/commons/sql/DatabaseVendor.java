@@ -36,7 +36,9 @@ public enum DatabaseVendor {
     /** MySQL, default driver com.mysql.jdbc.Driver */
     MYSQL("com.mysql.jdbc.Driver", "SELECT NOW()"),
     /** Vertica, default driver com.vertica.Driver */
-    VERTICA("com.vertica.Driver", "SELECT NOW()");
+    VERTICA("com.vertica.Driver", "SELECT NOW()"),
+    /** HSQLDB, default driver org.hsqldb.jdbcDriver */
+    HSQLDB("org.hsqldb.jdbcDriver", "SELECT CURRENT_TIME AS now FROM (VALUES(0))");
 
     private final String defaultDriver;
     private final String defaultValidationQuery;
