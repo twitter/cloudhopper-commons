@@ -4,7 +4,7 @@
   <groupId>com.cloudhopper</groupId>
   <artifactId>ch-commons-ssl</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0</version>
   <name>ch-commons-ssl</name>
   <description>Common SSL utilities Cloudhopper-based projects</description>
   <url>https://github.com/twitter/cloudhopper-commons</url>
@@ -49,4 +49,8 @@
   <properties>
     <main.java.package>com.cloudhopper.commons.ssl</main.java.package>
   </properties>
+
+  <scm>
+    <tag>version-1.0.0</tag>
+  </scm>
 </project>
