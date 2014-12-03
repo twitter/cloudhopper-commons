@@ -38,7 +38,8 @@ public class CompressionUtilTest {
         Assert.assertEquals(true, CompressionUtil.isAlgorithmSupported("gzip"));
         Assert.assertEquals(true, CompressionUtil.isAlgorithmSupported("zip"));
         Assert.assertEquals(false, CompressionUtil.isAlgorithmSupported("gzip2"));
-        //Assert.assertEquals(true, CompressionUtil.isAlgorithmSupported("lzma"));
+	Assert.assertEquals(false, CompressionUtil.isAlgorithmSupported("lzma"));
+	Assert.assertEquals(true, CompressionUtil.isAlgorithmSupported("bzip2"));
     }
 
     @Test
@@ -47,6 +48,8 @@ public class CompressionUtilTest {
         Assert.assertEquals(true, CompressionUtil.isFileExtensionSupported("zip"));
         Assert.assertEquals(false, CompressionUtil.isFileExtensionSupported("txt"));
         Assert.assertEquals(false, CompressionUtil.isFileExtensionSupported("gz2"));
+        Assert.assertEquals(false, CompressionUtil.isFileExtensionSupported("7z"));
+        Assert.assertEquals(true, CompressionUtil.isFileExtensionSupported("bz2"));
     }
 
     @Test
@@ -57,6 +60,11 @@ public class CompressionUtilTest {
     @Test
     public void gzipCompressAndUncompress() throws Exception {
         compressAndUncompress("gzip");
+    }
+
+    @Test
+    public void bzip2CompressAndUncompress() throws Exception {
+        compressAndUncompress("bzip2");
     }
 
     @Ignore

@@ -28,6 +28,12 @@
       <artifactId>slf4j-api</artifactId>
       <version>${slf4j.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+      <version>1.9</version>
+      <optional>true</optional> <!-- only used for BZIP2 support -->
+    </dependency>
     <!-- provided scope -->
     <!-- runtime scope -->
     <!-- testing scope -->

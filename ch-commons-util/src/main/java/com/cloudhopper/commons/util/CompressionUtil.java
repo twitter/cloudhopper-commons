@@ -20,7 +20,6 @@ package com.cloudhopper.commons.util;
  * #L%
  */
 
-//import SevenZip.LzmaAlone;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -32,6 +31,8 @@ import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +53,9 @@ public class CompressionUtil {
         /** poorly supported for now */
         //LZMA("lzma", "7z", new LzmaCompressor()),
         /** zip */
-        ZIP("zip", "zip", new ZipCompressor());
+        ZIP("zip", "zip", new ZipCompressor()),
+	/** bzip2 */
+	BZIP2("bzip2", "bz2", new Bzip2Compressor());
 
         private final String name;
         private final String fileExt;
@@ -543,9 +546,97 @@ public class CompressionUtil {
                 }
             }
         }
+       
+    }
 
+    /**
+     * Compressor using the BZIP2 compression algorithm.
+     */
+    private static class Bzip2Compressor implements Compressor {
 
-        
+        @Override
+        public void compress(File srcFile, File destFile) throws IOException {
+            FileInputStream in = null;
+            BZip2CompressorOutputStream out = null;
+
+            try {
+                // create an input stream from the source file
+                in = new FileInputStream(srcFile);
+                // create an output stream that's bzip2ped
+                out = new BZip2CompressorOutputStream(new FileOutputStream(destFile));
+
+                // transfer bytes from the input file to the BZIP2 output stream
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
+
+                // close the input stream
+                in.close();
+                in = null;
+
+                // finish and close the bzip2 file
+                out.finish();
+                out.close();
+                out = null;
+            } finally {
+                // make sure everything is closed
+                if (in != null) {
+                    try { in.close(); } catch (Exception e) { }
+                }
+                if (out != null) {
+                    logger.warn("Output stream for BZIP2 compressed file was not null -- indicates error with compression occurred");
+                    try { out.close(); } catch (Exception e) { }
+                }
+            }
+        }
+
+        @Override
+        public void compress(InputStream srcIn, OutputStream destOut) throws IOException {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public void uncompress(File srcFile, File destFile) throws IOException {
+            InputStream in = new FileInputStream(srcFile);
+            OutputStream out = new FileOutputStream(destFile);
+            uncompress(in, out);
+        }
+
+        @Override
+        public void uncompress(InputStream srcIn, OutputStream destOut) throws IOException {
+            BZip2CompressorInputStream in = null;
+
+            try {
+                // create an input stream from the source
+                in = new BZip2CompressorInputStream(srcIn);
+
+                // transfer bytes from the BZIP2 input file to the output stream
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    destOut.write(buf, 0, len);
+                }
+
+                // close the BZIP2 input stream
+                in.close();
+                in = null;
+
+                // close the output file
+                destOut.close();
+                destOut = null;
+            } finally {
+                // make sure everything is closed
+                if (in != null) {
+                    try { in.close(); } catch (Exception e) { }
+                }
+                if (destOut != null) {
+                    try { destOut.close(); } catch (Exception e) { }
+                }
+            }
+        }
+
     }
 
 
