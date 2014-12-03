@@ -22,15 +22,21 @@ package com.cloudhopper.jetty;
 
 import java.lang.management.ManagementFactory;
 import javax.management.MBeanServer;
-import org.eclipse.jetty.http.ssl.SslContextFactory;
+import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.jmx.MBeanContainer;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.HandlerCollection;
-import org.eclipse.jetty.server.nio.SelectChannelConnector;
-import org.eclipse.jetty.server.ssl.SslSelectChannelConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import org.eclipse.jetty.util.thread.ScheduledExecutorScheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,8 +58,16 @@ public class JettyHttpServerFactory {
             throw new Exception("At least one connector or sslConnector must be configured for an HttpServer");
         }
 
+	// create thread pool for max control
+        logger.info("Creating threadPool with minThreads [{}] and maxThreads [{}]...", configuration.getMinThreads(), configuration.getMaxThreads());
+        QueuedThreadPool threadPool = new QueuedThreadPool();
+        threadPool.setMinThreads(configuration.getMinThreads().intValue());
+        threadPool.setMaxThreads(configuration.getMaxThreads().intValue());
+        // make sure this is set to be a "daemon"
+        threadPool.setDaemon(true);
+
         // create a new jetty server instance
-        Server server = new Server();
+        Server server = new Server(threadPool);
 
         // enable jmx?
         String domain = "com.cloudhopper.jetty." + configuration.safeGetName();
@@ -61,32 +75,28 @@ public class JettyHttpServerFactory {
         MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
         MBeanContainer mBeanContainer = new MBeanContainer(mBeanServer);
         mBeanContainer.setDomain(domain);
-        server.getContainer().addEventListener(mBeanContainer);
-        mBeanContainer.start();
+        server.addBean(mBeanContainer);
 
-        // create thread pool for max control
-        logger.info("Creating threadPool with minThreads [{}] and maxThreads [{}]...", configuration.getMinThreads(), configuration.getMaxThreads());
-        QueuedThreadPool threadPool = new QueuedThreadPool();
-        threadPool.setMinThreads(configuration.getMinThreads().intValue());
-        threadPool.setMaxThreads(configuration.getMaxThreads().intValue());
-        // make sure this is set to be a "daemon"
-        threadPool.setDaemon(true);
-        server.setThreadPool(threadPool);
-
+	// create a scheduler? always necessary?
+	server.addBean(new ScheduledExecutorScheduler());
+	
         // add cleartext connectors
         for (HttpConnectorConfiguration connConfig : configuration.getConnectors()) {
             logger.info("Creating NIO connector on port [{}]...", connConfig.getPort());
-            // user higher performance NIO connector
-            SelectChannelConnector connector = new SelectChannelConnector();
+	    
+	    // use config defaults
+	    HttpConfiguration config = new HttpConfiguration();
+
+	    ServerConnector connector = new ServerConnector(server, new HttpConnectionFactory(config));
             if (connConfig.getHost() != null) {
                 connector.setHost(connConfig.getHost());
             }
-            connector.setPort(connConfig.getPort().intValue());
-            connector.setMaxIdleTime(connConfig.getMaxIdleTime());
-            connector.setStatsOn(connConfig.isTrackStats());
-            connector.setReuseAddress(connConfig.isReuseAddress());
-            server.addConnector(connector);
-        }
+	    connector.setPort(connConfig.getPort().intValue());
+	    connector.setIdleTimeout(connConfig.getMaxIdleTime());
+	    //statsOn?
+	    connector.setReuseAddress(connConfig.isReuseAddress());
+	    server.addConnector(connector);
+	}
 
         // add SSL connectors
         for (HttpSslConnectorConfiguration connConfig : configuration.getSslConnectors()) {
@@ -101,15 +111,15 @@ public class JettyHttpServerFactory {
             }
 
             logger.info("Configuring NIO SSL connector on port [{}] with keystoreFile [{}]", connConfig.getPort(), connConfig.getKeystoreFile());
-            factory.setKeyStore(connConfig.getKeystoreFile());
+            factory.setKeyStorePath(connConfig.getKeystoreFile());
             factory.setKeyStorePassword(connConfig.getKeystorePassword());
             factory.setKeyManagerPassword(connConfig.getKeystorePassword());
 
             // the truststore is either specific or the same as keystore
             if (connConfig.getTruststoreFile() == null) {
-                factory.setTrustStore(factory.getKeyStore());
+                factory.setTrustStorePath(factory.getKeyStorePath());
             } else {
-                factory.setTrustStore(connConfig.getTruststoreFile());
+                factory.setTrustStorePath(connConfig.getTruststoreFile());
             }
             if (connConfig.getTruststorePassword() == null) {
                 factory.setTrustStorePassword(connConfig.getKeystorePassword());
@@ -117,18 +127,31 @@ public class JettyHttpServerFactory {
                 factory.setTrustStorePassword(connConfig.getTruststorePassword());
             }
             
-            // user higher performance NIO SSL connector
-            SslSelectChannelConnector connector = new SslSelectChannelConnector(factory);
+	    // ? from example http://www.eclipse.org/jetty/documentation/current/embedding-jetty.html
+	    factory.setExcludeCipherSuites("SSL_RSA_WITH_DES_CBC_SHA",
+					   "SSL_DHE_RSA_WITH_DES_CBC_SHA", "SSL_DHE_DSS_WITH_DES_CBC_SHA",
+					   "SSL_RSA_EXPORT_WITH_RC4_40_MD5",
+					   "SSL_RSA_EXPORT_WITH_DES40_CBC_SHA",
+					   "SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA",
+					   "SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA");
+	    
+	    // SSL HTTP Configuration. Use config defaults.
+	    HttpConfiguration config = new HttpConfiguration();
+	    config.addCustomizer(new SecureRequestCustomizer());
+
+	    // SSL Connector
+	    ServerConnector connector = new ServerConnector(server,
+							    new SslConnectionFactory(factory, HttpVersion.HTTP_1_1.asString()),
+							    new HttpConnectionFactory(config));
             if (connConfig.getHost() != null) {
                 connector.setHost(connConfig.getHost());
             }
-            
-            connector.setPort(connConfig.getPort().intValue());
-            connector.setMaxIdleTime(connConfig.getMaxIdleTime());
-            connector.setStatsOn(connConfig.isTrackStats());
-            connector.setReuseAddress(connConfig.isReuseAddress());
-            server.addConnector(connector);
-        }
+	    connector.setPort(connConfig.getPort().intValue());
+	    connector.setIdleTimeout(connConfig.getMaxIdleTime());
+	    //statsOn?
+	    connector.setReuseAddress(connConfig.isReuseAddress());
+	    server.addConnector(connector);
+	}
         
         // prep server to handle multiple contexts, potentially with sessions
         ContextHandlerCollection contexts = new ContextHandlerCollection();
@@ -158,4 +181,5 @@ public class JettyHttpServerFactory {
         
         return httpd;
     }
+
 }
