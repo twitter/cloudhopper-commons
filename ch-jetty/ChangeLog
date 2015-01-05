@@ -1,5 +1,9 @@
 Common HTTP Server based on Jetty
 --------------------------------------------------------------------------------
+1.1.0 - 2015-01-05
+  * Upgrade jetty to 9.2.6.v20141205
+  * Ported to new Jetty 9 APIs 
+
 1.0.2 - 2013-11-06
   * Upgrade parent pom from public 1.5 to oss 1.4
   * Upgrade ch-commons-xbean dependency to 3.0.0

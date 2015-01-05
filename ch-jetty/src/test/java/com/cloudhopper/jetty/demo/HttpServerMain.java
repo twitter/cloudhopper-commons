@@ -35,13 +35,14 @@ public class HttpServerMain {
     static private final Logger logger = LoggerFactory.getLogger(HttpServerMain.class);
     
     static public void main(String args[]) throws Exception {
-        
-        HttpServerConfiguration config = new HttpServerConfiguration();
+        int port = args.length > 0 ? Integer.parseInt(args[0]) : 9080;
+
+	HttpServerConfiguration config = new HttpServerConfiguration();
         HttpConnectorConfiguration connConfig = new HttpConnectorConfiguration();
-        connConfig.setPort(9080);
+        connConfig.setPort(port);
         config.addConnector(connConfig);
         
-        JettyHttpServer server = JettyHttpServerFactory.create(config);
+        final JettyHttpServer server = JettyHttpServerFactory.create(config);
         
         logger.info("adding demo Hello servlet");
         HelloServlet helloServlet = new HelloServlet();
@@ -50,6 +51,15 @@ public class HttpServerMain {
         logger.info("starting server...");
         server.start();
         server.join();
+	
+	Runtime.getRuntime().addShutdownHook(new Thread() {
+		public void run() {
+		    try {
+			logger.info("stopping server...");
+			server.stop();
+		    } catch (Exception ignore) {}
+		}
+	    });
     }
     
 }
