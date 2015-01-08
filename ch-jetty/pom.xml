@@ -18,25 +18,30 @@
   <dependencies>
     <!-- compile scope -->
     <dependency>
+      <groupId>com.cloudhopper</groupId>
+      <artifactId>ch-commons-util</artifactId>
+      <version>6.0.1</version>
+      <exclusions>
+	<exclusion>
+	  <groupId>joda-time</groupId>
+	  <artifactId>joda-time</artifactId>
+	</exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>${slf4j.version}</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.1.0</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
       <version>${jetty.version}</version>
-      <exclusions>
-	<exclusion>
-	  <groupId>org.eclipse.jetty.orbit</groupId>
-	  <artifactId>javax.servlet</artifactId>
-	</exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
