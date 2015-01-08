@@ -27,10 +27,12 @@ package com.cloudhopper.jetty;
  */
 public class HttpSslConnectorConfiguration extends HttpConnectorConfiguration {
 
-    private String keystoreFile;
+    private String keystoreFile;            // relative to home directory
     private String keystorePassword;
-    private String truststoreFile;
+    private String keyManagerPassword;      // in case of it being different
+    private String truststoreFile;          // relative to home directory
     private String truststorePassword;
+    private String certAlias;
 
     public HttpSslConnectorConfiguration() {
         super();
@@ -52,6 +54,14 @@ public class HttpSslConnectorConfiguration extends HttpConnectorConfiguration {
         this.keystorePassword = value;
     }
 
+    public String getKeyManagerPassword() {
+        return keyManagerPassword;
+    }
+
+    public void setKeyManagerPassword(String keyManagerPassword) {
+        this.keyManagerPassword = keyManagerPassword;
+    }
+
     public String getTruststoreFile() {
         return this.truststoreFile;
     }
@@ -67,4 +77,13 @@ public class HttpSslConnectorConfiguration extends HttpConnectorConfiguration {
     public void setTruststorePassword(String value) {
         this.truststorePassword = value;
     }
+
+    public String getCertAlias() {
+        return certAlias;
+    }
+
+    public void setCertAlias(String certAlias) {
+        this.certAlias = certAlias;
+    }
+
 }
