@@ -20,7 +20,12 @@ package com.cloudhopper.jetty;
  * #L%
  */
 
+import com.cloudhopper.commons.util.CountingRejectedExecutionHandler;
+import com.cloudhopper.commons.util.NamingThreadFactory;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import javax.servlet.Servlet;
+import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.HandlerCollection;
@@ -55,7 +60,7 @@ public class JettyHttpServer {
     Server getServer() {
         return this.server;
     }
-    
+
     public void join() throws InterruptedException {
         this.server.join();
     }
@@ -72,7 +77,8 @@ public class JettyHttpServer {
             throw new NullPointerException("Internal server instance was null, server not configured perhaps?");
         }
 
-        logger.info("HttpServer [{}] version [{}]", configuration.safeGetName(), com.cloudhopper.jetty.Version.getLongVersion());
+        logger.info("HttpServer [{}] version [{}] using Jetty [{}]", configuration.safeGetName(), com.cloudhopper.jetty.Version.getLongVersion(),
+		    server.getVersion());
         logger.info("HttpServer [{}] on [{}] starting...", configuration.safeGetName(), configuration.getPortString());
 
         // try to start jetty server -- if it fails, it'll actually keep running
@@ -132,4 +138,62 @@ public class JettyHttpServer {
         rootServletContext.addServlet(servletHolder, uri);
     }
 
+    private ThreadPoolExecutor getThreadPool() {
+	return server.getThreadPool() instanceof JettyExecutorThreadPool ? ((JettyExecutorThreadPool)server.getThreadPool()).getExecutor() : null;
+    }
+
+    // some safe stats for monitoring
+    
+    public int getBusyThreads() {
+	return getThreadPool() == null ? -1 : getThreadPool().getActiveCount();
+    }
+
+    public int getIdleThreads() {
+	return getThreadPool() == null ? -1 :
+	    (getThreadPool().getPoolSize() - getThreadPool().getActiveCount());	
+    }
+
+    public int getMaxThreads() {
+	return getThreadPool() == null ? -1 : getThreadPool().getMaximumPoolSize();	
+    }
+
+    public int getMostThreads() {
+	return getThreadPool() == null ? -1 : getThreadPool().getLargestPoolSize();	
+    }
+
+    public int getFreeThreads() {
+	return getThreadPool() == null ? -1 :
+	    (getThreadPool().getMaximumPoolSize() - getThreadPool().getActiveCount());	
+    }
+
+    public long getRejectedConnections() {
+	return getThreadPool() == null ? -1 :
+	    ((getThreadPool().getRejectedExecutionHandler() != null &&
+	      getThreadPool().getRejectedExecutionHandler() instanceof CountingRejectedExecutionHandler) ?
+	     ((CountingRejectedExecutionHandler)getThreadPool().getRejectedExecutionHandler()).getRejected() : -1);
+    }
+    
+    // this should only be used as an estimate
+    public int getMaxQueuedConnections() {
+	return getThreadPool() == null ? -1 :
+	    ((getThreadPool().getQueue() instanceof ArrayBlockingQueue) ?
+	     ((ArrayBlockingQueue)getThreadPool().getQueue()).size() +
+	     ((ArrayBlockingQueue)getThreadPool().getQueue()).remainingCapacity() : -1);	     
+    }
+
+    public int getQueuedConnections() {
+	return getThreadPool() == null ? -1 : getThreadPool().getQueue().size();
+    }
+
+    public int getOpenConnections() {
+	if (this.server == null) return -1;
+	// fairly tough to calculate since we'll need to tally all connectors
+	// this should only be used as an estimate
+	int openConnections = 0;
+	for (Connector connector : server.getConnectors()) {
+	    openConnections += connector.getConnectedEndPoints().size();
+	}
+	return openConnections;
+    }
+    
 }

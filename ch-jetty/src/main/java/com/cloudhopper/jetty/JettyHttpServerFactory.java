@@ -20,10 +20,21 @@ package com.cloudhopper.jetty;
  * #L%
  */
 
+import com.cloudhopper.commons.util.CountingRejectedExecutionHandler;
+import com.cloudhopper.commons.util.NamingThreadFactory;
+import com.cloudhopper.commons.util.StringUtil;
 import java.lang.management.ManagementFactory;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import javax.management.MBeanServer;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.jmx.MBeanContainer;
+import org.eclipse.jetty.server.ConnectorStatistics;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
@@ -35,7 +46,6 @@ import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
-import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.util.thread.ScheduledExecutorScheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,21 +70,24 @@ public class JettyHttpServerFactory {
 
 	// create thread pool for max control
         logger.info("Creating threadPool with minThreads [{}] and maxThreads [{}]...", configuration.getMinThreads(), configuration.getMaxThreads());
-        QueuedThreadPool threadPool = new QueuedThreadPool();
-        threadPool.setMinThreads(configuration.getMinThreads().intValue());
-        threadPool.setMaxThreads(configuration.getMaxThreads().intValue());
-        // make sure this is set to be a "daemon"
-        threadPool.setDaemon(true);
-
+        // create connection queue based on what user picked for max queue size
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(configuration.getMinThreads(), configuration.getMaxThreads(),
+							     configuration.getThreadKeepAliveTimeout(), TimeUnit.MILLISECONDS,
+							     (configuration.getMaxQueueSize() < 0 ? new LinkedBlockingQueue<Runnable>() :
+							      (configuration.getMaxQueueSize() == 0 ? new SynchronousQueue<Runnable>() :
+							       new ArrayBlockingQueue<Runnable>(configuration.getMaxQueueSize()))),
+							     new NamingThreadFactory(configuration.getName() + "ThreadPool"),
+							     new CountingRejectedExecutionHandler());
+        JettyExecutorThreadPool threadPool = new JettyExecutorThreadPool(executor);
+	
         // create a new jetty server instance
         Server server = new Server(threadPool);
 
         // enable jmx?
-        String domain = "com.cloudhopper.jetty." + configuration.safeGetName();
-        logger.info("Creating jmx for domain [{}]...", domain);
+        logger.info("Creating jmx for domain [{}]...", configuration.getJmxDomain());
         MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
         MBeanContainer mBeanContainer = new MBeanContainer(mBeanServer);
-        mBeanContainer.setDomain(domain);
+        mBeanContainer.setDomain(configuration.getJmxDomain());
         server.addBean(mBeanContainer);
 
 	// create a scheduler? always necessary?
@@ -86,15 +99,16 @@ public class JettyHttpServerFactory {
 	    
 	    // use config defaults
 	    HttpConfiguration config = new HttpConfiguration();
-
+	    config.setSendServerVersion(true);
+	    
 	    ServerConnector connector = new ServerConnector(server, new HttpConnectionFactory(config));
             if (connConfig.getHost() != null) {
                 connector.setHost(connConfig.getHost());
             }
 	    connector.setPort(connConfig.getPort().intValue());
 	    connector.setIdleTimeout(connConfig.getMaxIdleTime());
-	    //statsOn?
 	    connector.setReuseAddress(connConfig.isReuseAddress());
+	    if (connConfig.isStatsEnabled()) connector.addBean(new ConnectorStatistics());
 	    server.addConnector(connector);
 	}
 
@@ -126,7 +140,17 @@ public class JettyHttpServerFactory {
             } else {
                 factory.setTrustStorePassword(connConfig.getTruststorePassword());
             }
-            
+	    
+	    if (!StringUtil.isEmpty(connConfig.getCertAlias())) {
+                factory.setCertAlias(connConfig.getCertAlias());
+            }
+
+            // jetty had/has a bug that prints out an error over and over if this is not explicitly set
+            factory.setNeedClientAuth(false);
+	    
+	    // SSLv3 BUG: https://www.openssl.org/~bodo/ssl-poodle.pdf
+	    factory.addExcludeProtocols("SSLv3");
+
 	    // ? from example http://www.eclipse.org/jetty/documentation/current/embedding-jetty.html
 	    factory.setExcludeCipherSuites("SSL_RSA_WITH_DES_CBC_SHA",
 					   "SSL_DHE_RSA_WITH_DES_CBC_SHA", "SSL_DHE_DSS_WITH_DES_CBC_SHA",
@@ -148,8 +172,8 @@ public class JettyHttpServerFactory {
             }
 	    connector.setPort(connConfig.getPort().intValue());
 	    connector.setIdleTimeout(connConfig.getMaxIdleTime());
-	    //statsOn?
 	    connector.setReuseAddress(connConfig.isReuseAddress());
+	    if (connConfig.isStatsEnabled()) connector.addBean(new ConnectorStatistics());
 	    server.addConnector(connector);
 	}
         
@@ -164,15 +188,20 @@ public class JettyHttpServerFactory {
         ServletContextHandler rootServletContext = new ServletContextHandler(contexts, "/", (configuration.isSessionsEnabled().booleanValue() ? ServletContextHandler.SESSIONS : ServletContextHandler.NO_SESSIONS));
         rootServletContext.setClassLoader(Thread.currentThread().getContextClassLoader());
         
-        // in order to add a servlet, it's pretty easy
-        // ServletHolder servletHolder = new ServletHolder(servlet);
-        // rootContext.addServlet(servletHolder, uriMapping);
-
         // add a statistics handler -- responsible for generating statistics
         //StatisticsHandler statsHandler = new StatisticsHandler();
         //rootContext.addHandler(statsHandler);
         
-        JettyHttpServer httpd = new JettyHttpServer(configuration, server, handlers, contexts, rootServletContext);
+        // server won't accept new connections, but will finish existing ones
+        if (configuration.getGracefulShutdownTime() != null) {
+            server.setStopTimeout(configuration.getGracefulShutdownTime());
+            logger.debug("{} has graceful shutdown period of {}ms", configuration.getName(), configuration.getGracefulShutdownTime());
+        }
+        // turn off - this registers jetty's internal shutdown hook, which if
+        // enabled will shut down jetty before we tell it to stop
+        if (!configuration.isJettyAutoShutdownDisabled()) server.setStopAtShutdown(true);
+
+	JettyHttpServer httpd = new JettyHttpServer(configuration, server, handlers, contexts, rootServletContext);
         
         // any post-configs
         if (configuration.getResourceBaseDirectory() != null) {

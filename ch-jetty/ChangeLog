@@ -1,5 +1,12 @@
 Common HTTP Server based on Jetty
 --------------------------------------------------------------------------------
+1.1.1 - 2015-01-09
+  * HttpConnectorConfiguration trackStats changed to statsEnabled. Changed default to true.
+  * nonBlockingSocketsEnabled added to HttpConnectorConfiguration. Defaults to true.
+  * Monitoring stats on the thread pool added to JettyHttpServer.
+  * Figured out how to replicate Jetty7 statsOn with ConnectorStatistics.
+  * Wrapped ExecutorThreadPool with a custom implemetation that exposes the ThreadPoolExecutor.
+
 1.1.0 - 2015-01-05
   * Upgrade jetty to 9.2.6.v20141205
   * Ported to new Jetty 9 APIs 

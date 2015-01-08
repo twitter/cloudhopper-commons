@@ -35,15 +35,18 @@ public class HttpConnectorConfiguration {
     private int maxIdleTime;
     // should we reuse an address (defaults to true)
     private boolean reuseAddress;
-    // should we keep track of stats (defaults to false)
-    private boolean trackStats;
+    // should we keep track of stats (defaults to true)
+    private boolean statsEnabled;
+    // should we use NIO (defaults to true)
+    private boolean nonBlockingSocketsEnabled;
 
     public HttpConnectorConfiguration() {
         this.port = null;
         this.host = null;
         this.maxIdleTime = 30000;
         this.reuseAddress = true;
-        this.trackStats = false;
+        this.statsEnabled = true;
+	this.nonBlockingSocketsEnabled = true;
     }
 
     public Integer getPort() {
@@ -78,11 +81,20 @@ public class HttpConnectorConfiguration {
         this.reuseAddress = reuseAddress;
     }
 
-    public boolean isTrackStats() {
-        return trackStats;
+    public boolean isStatsEnabled() {
+        return statsEnabled;
     }
 
-    public void setTrackStats(boolean trackStats) {
-        this.trackStats = trackStats;
+    public void setStatsEnabled(boolean statsEnabled) {
+        this.statsEnabled = statsEnabled;
     }
+
+    public boolean isNonBlockingSocketsEnabled() {
+	return nonBlockingSocketsEnabled;
+    }
+
+    public void setNonBlockingSocketsEnabled(boolean nonBlockingSocketsEnabled) {
+	this.nonBlockingSocketsEnabled = nonBlockingSocketsEnabled;
+    }
+    
 }

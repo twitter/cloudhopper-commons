@@ -33,28 +33,39 @@ public class HttpServerConfiguration {
     private static final Logger logger = LoggerFactory.getLogger(HttpServerConfiguration.class);
 
     // name of server such as "mainHttpServer" or "managementHttpServer"
-    private String name;
+    protected String name;
     // should sessions be enabled?
-    private Boolean sessionsEnabled;
+    protected Boolean sessionsEnabled;
     // resource base dir (for files, html, images, etc)
-    private String resourceBaseDirectory;
+    protected String resourceBaseDirectory;
     // list of connectors this server will bind to
-    private ArrayList<HttpConnectorConfiguration> connectors;
+    protected ArrayList<HttpConnectorConfiguration> connectors;
     // list of SSL connectors this server will bind to
-    private ArrayList<HttpSslConnectorConfiguration> sslConnectors;
+    protected ArrayList<HttpSslConnectorConfiguration> sslConnectors;
     // min number of threads to service requests
-    private Integer minThreads;
+    protected Integer minThreads;
     // max number of threads to service requests
-    private Integer maxThreads;
-    // servlets loaded from server configuration
-   // private HashMap<String, HttpServletLoaderConfiguration> servlets;
-
+    protected Integer maxThreads;
+    // queue size for handling connections that cannot be immediately handled
+    protected int maxQueueSize;
+    // time to keep an idle thread around
+    protected long threadKeepAliveTimeout;
+    // time for graceful shutdown (to finish serving existing connections while not allowing new
+    protected Integer gracefulShutdownTime;
+    // disable jetty's internal shutdown hook?  only do this if we'll explicitly call stop
+    protected boolean jettyAutoShutdownDisabled;
+    // jmx domain to use for mbean
+    protected String jmxDomain;
+    
     public HttpServerConfiguration() {
         this.sessionsEnabled = true;
         this.connectors = new ArrayList<HttpConnectorConfiguration>();
         this.sslConnectors = new ArrayList<HttpSslConnectorConfiguration>();
         this.minThreads = 5;
         this.maxThreads = 50;
+        this.threadKeepAliveTimeout = 60000;
+        this.jettyAutoShutdownDisabled = false;
+	this.jmxDomain = "com.cloudhopper.jetty." + safeGetName();
     }
 
     public String getResourceBaseDirectory() {
@@ -147,4 +158,45 @@ public class HttpServerConfiguration {
     public void setMaxThreads(Integer value) {
         this.maxThreads = value;
     }
+
+    public int getMaxQueueSize() {
+        return maxQueueSize;
+    }
+
+    public void setMaxQueueSize(int maxQueueSize) {
+        this.maxQueueSize = maxQueueSize;
+    }
+
+    public long getThreadKeepAliveTimeout() {
+        return threadKeepAliveTimeout;
+    }
+
+    public void setThreadKeepAliveTimeout(long threadKeepAliveTimeout) {
+        this.threadKeepAliveTimeout = threadKeepAliveTimeout;
+    }
+
+    public Integer getGracefulShutdownTime() {
+        return gracefulShutdownTime;
+    }
+
+    public void setGracefulShutdownTime(Integer time) {
+        this.gracefulShutdownTime = time;
+    }
+    
+    public boolean isJettyAutoShutdownDisabled() {
+        return this.jettyAutoShutdownDisabled;
+    }
+
+    public void setJettyAutoShutdownDisabled(boolean disabled) {
+        this.jettyAutoShutdownDisabled = disabled;
+    }
+
+    public void setJmxDomain(String value) {
+        this.jmxDomain = value;
+    }
+
+    public String getJmxDomain() {
+        return this.jmxDomain;
+    }
+    
 }
