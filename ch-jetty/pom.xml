@@ -1,0 +1,126 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.cloudhopper</groupId>
+  <artifactId>ch-jetty</artifactId>
+  <packaging>jar</packaging>
+  <version>1.1.1-SNAPSHOT</version>
+  <name>ch-jetty</name>
+  <description>Wrapper around Jetty HTTP Server that makes config and embedding easy.</description>
+  <url>https://github.com/twitter/cloudhopper-commons</url>
+
+  <parent>
+    <groupId>com.cloudhopper</groupId>
+    <artifactId>ch-commons</artifactId>
+    <version>1.0</version>
+  </parent>
+
+  <dependencies>
+    <!-- compile scope -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>${jetty.version}</version>
+      <exclusions>
+	<exclusion>
+	  <groupId>org.eclipse.jetty.orbit</groupId>
+	  <artifactId>javax.servlet</artifactId>
+	</exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-continuation</artifactId>
+      <version>${jetty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-http</artifactId>
+      <version>${jetty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-io</artifactId>
+      <version>${jetty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-util</artifactId>
+      <version>${jetty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-security</artifactId>
+      <version>${jetty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlet</artifactId>
+      <version>${jetty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlets</artifactId>
+      <version>${jetty.version}</version>
+      <exclusions>
+	<exclusion>
+	  <groupId>org.eclipse.jetty</groupId>
+	  <artifactId>jetty-client</artifactId>
+	</exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-jmx</artifactId>
+      <version>${jetty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-xml</artifactId>
+      <version>${jetty.version}</version>
+    </dependency>
+    <!-- provided scope -->
+    <!-- runtime scope -->
+    <!-- testing scope -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <version>${logback.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${logback.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.cloudhopper</groupId>
+      <artifactId>ch-commons-xbean</artifactId>
+      <version>[3.0.0,)</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <properties>
+    <main.java.package>com.cloudhopper.jetty</main.java.package>
+    <jetty.version>9.2.6.v20141205</jetty.version>
+  </properties>
+
+</project>
