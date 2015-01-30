@@ -3,6 +3,10 @@ Cloudhopper by Twitter
 
 cloudhopper-commons-util
 ------------------------
+## 6.0.2 - 2015-01-30
+ - StringUtil#substituteWithProperties fix for endStr > 1 character
+ - DefaultWindowFuture#completeHelper and #failedHelper fix for settin #done before
+   setting #response and #doneTimestamp
 
 ## 6.0.1 - 2012-10-30
  - Parent POM from to 1.3

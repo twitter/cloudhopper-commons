@@ -123,6 +123,8 @@ public class PropertiesReplacementUtil {
     static public InputStream replaceProperties(InputStream source, Properties props, String startStr, String endStr) throws IOException, SubstitutionException {
 	String template = streamToString(source);
 	String replaced = StringUtil.substituteWithProperties(template, startStr, endStr, props);
+	System.err.println(template);
+	System.err.println(replaced);
 	return new ByteArrayInputStream(replaced.getBytes());
     }
 
@@ -145,6 +147,8 @@ public class PropertiesReplacementUtil {
     static public InputStream replaceEnv(InputStream source) throws IOException, SubstitutionException {
 	String template = streamToString(source);
 	String replaced = StringUtil.substituteWithEnvironment(template);
+	System.err.println(template);
+	System.err.println(replaced);
 	return new ByteArrayInputStream(replaced.getBytes());
     }
 

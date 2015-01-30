@@ -157,6 +157,10 @@ public class StringUtilTest {
         String result = StringUtil.substituteWithProperties("$ENV{TEST1}", "$ENV{", "}", props);
         Assert.assertEquals("Hello World", result);
 
+        // simple substitution, different delimiters
+	result = StringUtil.substituteWithProperties("{{{TEST1}}}", "{{{", "}}}", props);
+        Assert.assertEquals("Hello World", result);
+
         // no substitution
         result = StringUtil.substituteWithProperties("no key here", "$ENV{", "}", props);
         Assert.assertEquals("no key here", result);

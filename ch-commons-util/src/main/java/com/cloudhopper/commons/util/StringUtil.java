@@ -119,7 +119,7 @@ public class StringUtil {
         while (pos >= 0) {
             // is there string data before the position that we should append to the result?
             if (pos > end+1) {
-                result.append(string0.substring(end+1, pos));
+                result.append(string0.substring(end+endStr.length(), pos));
             }
 
             // search for endStr starting from the end of the startStr
@@ -150,13 +150,13 @@ public class StringUtil {
             result.append(value);
 
             // find next occurrence after last end
-            pos = string0.indexOf(startStr, end+1);
+            pos = string0.indexOf(startStr, end+endStr.length());
         }
 
         // is there any string data we missed in the loop above?
-        if (end+1 < string0.length()) {
+        if (end+endStr.length() < string0.length()) {
             // append the remaining part of the string
-            result.append(string0.substring(end+1));
+            result.append(string0.substring(end+endStr.length()));
         }
 
         return result.toString();

@@ -229,10 +229,11 @@ public class DefaultWindowFuture<K,R,P> implements WindowFuture<K,R,P> {
             throw new IllegalArgumentException("A valid doneTime must be > 0 if trying to complete()");
         }
         // set to done, but don't handle duplicate calls
-        if (this.done.compareAndSet(false, true)) {
-            this.response.set(response);
-            this.doneTimestamp.set(doneTimestamp);
-        }
+        if (!this.done.get()) {
+	    this.response.set(response);
+	    this.doneTimestamp.set(doneTimestamp);
+	    this.done.set(true);
+	}
     }
     
     @Override
@@ -255,10 +256,11 @@ public class DefaultWindowFuture<K,R,P> implements WindowFuture<K,R,P> {
             throw new IllegalArgumentException("A valid doneTimestamp must be > 0 if trying to failed()");
         }
         // set to done, but don't handle duplicate calls
-        if (this.done.compareAndSet(false, true)) {
+        if (!this.done.get()) {
             this.cause.set(t);
-            this.doneTimestamp.set(doneTimestamp);
-        }
+	    this.doneTimestamp.set(doneTimestamp);
+	    this.done.set(true);
+	}
     }
     
     @Override
