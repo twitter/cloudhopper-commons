@@ -142,10 +142,28 @@ public class JettyHttpServer {
 	return server.getThreadPool() instanceof JettyExecutorThreadPool ? ((JettyExecutorThreadPool)server.getThreadPool()).getExecutor() : null;
     }
 
+    // pass thru lifecycle state
+
+    public boolean isFailed() { return server.isFailed(); }
+
+    public boolean isRunning() { return server.isRunning(); }
+
+    public boolean isStarted() { return server.isStarted(); }
+
+    public boolean isStarting() { return server.isStarting(); }
+
+    public boolean isStopped() { return server.isStopped(); }
+
+    public boolean isStopping() { return server.isStopping(); }
+    
     // some safe stats for monitoring
     
     public int getBusyThreads() {
 	return getThreadPool() == null ? -1 : getThreadPool().getActiveCount();
+    }
+
+    public int getCurrentThreads() {
+	return getThreadPool() == null ? -1 : getThreadPool().getPoolSize();
     }
 
     public int getIdleThreads() {
@@ -155,6 +173,10 @@ public class JettyHttpServer {
 
     public int getMaxThreads() {
 	return getThreadPool() == null ? -1 : getThreadPool().getMaximumPoolSize();	
+    }
+
+    public int getMinThreads() {
+	return getThreadPool() == null ? -1 : getThreadPool().getCorePoolSize();
     }
 
     public int getMostThreads() {

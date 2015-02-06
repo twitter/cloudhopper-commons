@@ -1,5 +1,9 @@
 Common HTTP Server based on Jetty
 --------------------------------------------------------------------------------
+1.1.2 - 2015-02-06
+  * Added pass thru lifecycle status methods
+  * Added more thread pool stats
+
 1.1.1 - 2015-01-09
   * HttpConnectorConfiguration trackStats changed to statsEnabled. Changed default to true.
   * nonBlockingSocketsEnabled added to HttpConnectorConfiguration. Defaults to true.
@@ -9,7 +13,7 @@ Common HTTP Server based on Jetty
 
 1.1.0 - 2015-01-05
   * Upgrade jetty to 9.2.6.v20141205
-  * Ported to new Jetty 9 APIs 
+  * Ported to new Jetty 9 APIs
 
 1.0.2 - 2013-11-06
   * Upgrade parent pom from public 1.5 to oss 1.4

@@ -2,6 +2,10 @@ Cloudhopper, Inc.
 http://www.cloudhopper.com/
 SXMP Library
 --------------------------------------------------------------------------------
+1.5.1 - 2015-02-06
+  * Upgrade to org.apache.httpcomponents httpclient to 4.2.6 and httpcore to 4.2.5
+    which removes deprecated methods and prepares for further version upgrades.
+
 1.5.0 - 2013-11-15
   * OptionalParamMap is now local and does not require cloudhopper-stratus-commons.
     However, this may break compatiblity if you are auto upgrading to this version.
