@@ -4,7 +4,7 @@
   <groupId>com.cloudhopper</groupId>
   <artifactId>ch-httpclient-util</artifactId>
   <packaging>jar</packaging>
-  <version>1.5.1</version>
+  <version>1.5.2-SNAPSHOT</version>
   <name>ch-httpclient-util</name>
   <description>Utilities for working with Apache HTTPComponents library</description>
   <url>https://github.com/twitter/cloudhopper-commons</url>
