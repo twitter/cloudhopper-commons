@@ -4,7 +4,7 @@
   <groupId>com.cloudhopper</groupId>
   <artifactId>ch-commons</artifactId>
   <packaging>pom</packaging>
-  <version>1.0</version>
+  <version>1.1</version>
   <name>ch-commons</name>
   <description>Parent Maven POM for open source cloudhopper-commons projects</description>
   <url>https://github.com/twitter/cloudhopper-commons</url>
