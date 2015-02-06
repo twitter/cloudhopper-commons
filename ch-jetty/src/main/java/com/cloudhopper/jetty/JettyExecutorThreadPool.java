@@ -25,7 +25,7 @@ import org.eclipse.jetty.util.thread.ExecutorThreadPool;
 
 /**
  * Jetty ThreadPool exposing the underlying ThreadPoolExecutor. Use with care.
- * This class wraps a {@link ThreadPoolExecutor} as a {@link ThreadPool}.
+ * This class wraps a ThreadPoolExecutor as a ThreadPool.
  * @author garth
  */
 public class JettyExecutorThreadPool extends ExecutorThreadPool {
