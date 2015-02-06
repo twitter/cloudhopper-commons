@@ -2,6 +2,10 @@ Cloudhopper, Inc.
 http://www.cloudhopper.com/
 Apache Jakarta HttpClient 4.x Utility Library
 --------------------------------------------------------------------------------
+1.5.1 - 2015-02-06
+  * Upgrade to org.apache.httpcomponents httpclient to 4.2.6 and httpcore to 4.2.5
+    which removes deprecated methods and prepares for further version upgrades.
+
 1.5.0 - 2013-11-15
   * Upgrade parent pom from public to oss 1.4
   * Upgrade to Maven Central version of httpclient
