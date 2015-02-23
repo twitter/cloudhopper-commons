@@ -53,6 +53,10 @@ public class CharsetUtilTest {
         Assert.assertArrayEquals(HexUtil.toByteArray("20AC"), bytes);
         Assert.assertArrayEquals(str0.getBytes("UTF-16BE"), bytes);
 
+        bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_UCS_2LE);
+        Assert.assertArrayEquals(HexUtil.toByteArray("AC20"), bytes);
+        Assert.assertArrayEquals(str0.getBytes("UTF-16LE"), bytes);
+
         bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_UTF_8);
         Assert.assertArrayEquals(HexUtil.toByteArray("E282AC"), bytes);
         Assert.assertArrayEquals(str0.getBytes("UTF-8"), bytes);
@@ -79,7 +83,7 @@ public class CharsetUtilTest {
         bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_TMOBILENL_GSM);
         Assert.assertArrayEquals(HexUtil.toByteArray("80"), bytes);
 
-        
+
         // longer string with @ symbol in-between
         str0 = "Hello @ World";
 
@@ -95,6 +99,11 @@ public class CharsetUtilTest {
         //logger.debug(HexUtil.toHexString(bytes));
         Assert.assertArrayEquals(HexUtil.toByteArray("00480065006C006C006F0020004000200057006F0072006C0064"), bytes);
         Assert.assertArrayEquals(str0.getBytes("UTF-16BE"), bytes);
+
+        bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_UCS_2LE);
+        //logger.debug(HexUtil.toHexString(bytes));
+        Assert.assertArrayEquals(HexUtil.toByteArray("480065006C006C006F0020004000200057006F0072006C006400"), bytes);
+        Assert.assertArrayEquals(str0.getBytes("UTF-16LE"), bytes);
 
         bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_UTF_8);
         //logger.debug(HexUtil.toHexString(bytes));
@@ -141,6 +150,11 @@ public class CharsetUtilTest {
         Assert.assertArrayEquals(HexUtil.toByteArray("004A006F006500790042006C00750065"), bytes);
         Assert.assertArrayEquals(str0.getBytes("UTF-16BE"), bytes);
 
+        bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_UCS_2LE);
+        //logger.debug(HexUtil.toHexString(bytes));
+        Assert.assertArrayEquals(HexUtil.toByteArray("4A006F006500790042006C0075006500"), bytes);
+        Assert.assertArrayEquals(str0.getBytes("UTF-16LE"), bytes);
+
         bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_UTF_8);
         //logger.debug(HexUtil.toHexString(bytes));
         Assert.assertArrayEquals(HexUtil.toByteArray("4A6F6579426C7565"), bytes);
@@ -182,6 +196,11 @@ public class CharsetUtilTest {
         //logger.debug(HexUtil.toHexString(bytes));
         Assert.assertArrayEquals(HexUtil.toByteArray("007B007D005B005D0024"), bytes);
         Assert.assertArrayEquals(str0.getBytes("UTF-16BE"), bytes);
+
+        bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_UCS_2LE);
+        //logger.debug(HexUtil.toHexString(bytes));
+        Assert.assertArrayEquals(HexUtil.toByteArray("7B007D005B005D002400"), bytes);
+        Assert.assertArrayEquals(str0.getBytes("UTF-16LE"), bytes);
 
         bytes = CharsetUtil.encode(str0, CharsetUtil.CHARSET_UTF_8);
         //logger.debug(HexUtil.toHexString(bytes));
@@ -390,7 +409,7 @@ public class CharsetUtilTest {
     @Test
     public void verifyDecodeDoesNotChangeByteArray() throws Exception {
         for (Map.Entry<String,Charset> entry : CharsetUtil.getCharsetMap().entrySet()) {
-            byte[] bytes = new byte[] { (byte)0x40, (byte)0x5F, (byte)0x24, (byte)0x78, (byte)0x02 };
+            byte[] bytes = new byte[] { (byte)0x40, (byte)0x5F, (byte)0x24, (byte)0x78, (byte)0x02, (byte)0x02};
             byte[] expectedBytes = Arrays.copyOf(bytes, bytes.length);
             String str0 = CharsetUtil.decode(bytes, entry.getValue());
             // test that the byte array wasn't changed
@@ -405,7 +424,7 @@ public class CharsetUtilTest {
             Assert.assertEquals("Charset " + entry.getKey() + " impl bad -- did not return null", null, CharsetUtil.decode(null, entry.getValue()));
         }
     }
-    
+
     @Test
     public void decodeToStringBuilderAllCharsets() throws Exception {
         // try every charset with simple A-Z, a-z, and 0-9 which should work in all charsets
@@ -419,7 +438,7 @@ public class CharsetUtilTest {
             Assert.assertEquals("Charset " + entry.getKey() + " impl broken", "T"+expectedString, sb.toString());
         }
     }
-    
+
     @Test
     public void decodeToStringAllCharsets() throws Exception {
         // try every charset with simple A-Z, a-z, and 0-9 which should work in all charsets
@@ -452,6 +471,7 @@ public class CharsetUtilTest {
         Assert.assertEquals("?", CharsetUtil.normalize(in, CharsetUtil.CHARSET_ISO_8859_1));
         Assert.assertEquals("\u20AC", CharsetUtil.normalize(in, CharsetUtil.CHARSET_ISO_8859_15));
         Assert.assertEquals("\u20AC", CharsetUtil.normalize(in, CharsetUtil.CHARSET_UCS_2));
+        Assert.assertEquals("\u20AC", CharsetUtil.normalize(in, CharsetUtil.CHARSET_UCS_2LE));
         Assert.assertEquals("\u20AC", CharsetUtil.normalize(in, CharsetUtil.CHARSET_UTF_8));
         Assert.assertEquals("\u20AC", CharsetUtil.normalize(in, CharsetUtil.CHARSET_TMOBILENL_GSM));
 
@@ -464,6 +484,7 @@ public class CharsetUtilTest {
         Assert.assertEquals("?", CharsetUtil.normalize(in, CharsetUtil.CHARSET_ISO_8859_1));
         Assert.assertEquals("?", CharsetUtil.normalize(in, CharsetUtil.CHARSET_ISO_8859_15));
         Assert.assertEquals("\u6025", CharsetUtil.normalize(in, CharsetUtil.CHARSET_UCS_2));
+        Assert.assertEquals("\u6025", CharsetUtil.normalize(in, CharsetUtil.CHARSET_UCS_2LE));
         Assert.assertEquals("\u6025", CharsetUtil.normalize(in, CharsetUtil.CHARSET_UTF_8));
         Assert.assertEquals("?", CharsetUtil.normalize(in, CharsetUtil.CHARSET_TMOBILENL_GSM));
     }
