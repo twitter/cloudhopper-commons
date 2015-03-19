@@ -158,7 +158,10 @@ public class JettyHttpServerFactory {
 					   "SSL_RSA_EXPORT_WITH_DES40_CBC_SHA",
 					   "SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA",
 					   "SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA");
-	    
+
+	    // Backwards compatibility because SSLv2Hello is disabled by default in Java >=7
+	    factory.setIncludeProtocols("TLSv1", "SSLv2Hello");
+
 	    // SSL HTTP Configuration. Use config defaults.
 	    HttpConfiguration config = new HttpConfiguration();
 	    config.addCustomizer(new SecureRequestCustomizer());
