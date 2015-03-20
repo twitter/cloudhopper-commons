@@ -149,7 +149,11 @@ public class JettyHttpServerFactory {
             factory.setNeedClientAuth(false);
 	    
 	    // SSLv3 BUG: https://www.openssl.org/~bodo/ssl-poodle.pdf
-	    factory.addExcludeProtocols("SSLv3");
+	    // This also overrides the Jetty SslContextFactory defaults to remove SSLv2Hello
+	    factory.setExcludeProtocols("SSL", "SSLv2", "SSLv3");
+
+	    // Backwards compatibility because SSLv2Hello is disabled by default in Java >=7
+	    factory.setIncludeProtocols("TLSv1", "TLSv1.1", "TLSv1.2", "SSLv2Hello");
 
 	    // ? from example http://www.eclipse.org/jetty/documentation/current/embedding-jetty.html
 	    factory.setExcludeCipherSuites("SSL_RSA_WITH_DES_CBC_SHA",
@@ -158,9 +162,6 @@ public class JettyHttpServerFactory {
 					   "SSL_RSA_EXPORT_WITH_DES40_CBC_SHA",
 					   "SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA",
 					   "SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA");
-
-	    // Backwards compatibility because SSLv2Hello is disabled by default in Java >=7
-	    factory.setIncludeProtocols("TLSv1", "SSLv2Hello");
 
 	    // SSL HTTP Configuration. Use config defaults.
 	    HttpConfiguration config = new HttpConfiguration();
