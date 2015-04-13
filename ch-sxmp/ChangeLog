@@ -2,6 +2,10 @@ Cloudhopper, Inc.
 http://www.cloudhopper.com/
 SXMP Library
 --------------------------------------------------------------------------------
+1.5.2 - 2015-04-13
+  * SxmpServletProcessor.doProcess static public for non-servlet implementations.
+  * Jar released to Maven Central in 1.5.1 was corrupt. Do not use.
+
 1.5.1 - 2015-02-06
   * Upgrade to org.apache.httpcomponents httpclient to 4.2.6 and httpcore to 4.2.5
     which removes deprecated methods and prepares for further version upgrades.
