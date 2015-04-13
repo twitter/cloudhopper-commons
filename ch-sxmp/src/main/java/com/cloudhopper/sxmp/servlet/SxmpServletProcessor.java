@@ -73,7 +73,7 @@ public class SxmpServletProcessor {
         }
     }
 
-    protected void doProcess(SxmpProcessor processor, InputStream in, PrintWriter out, String uri, String method, String contentType) throws IOException, HttpStatusCodeException {
+    public static void doProcess(SxmpProcessor processor, InputStream in, PrintWriter out, String uri, String method, String contentType) throws IOException, HttpStatusCodeException {
         // validate the user went to the correct URL
         // E.g. /api/sxmp/1.0
         // find the next position of last / (to extract version)
