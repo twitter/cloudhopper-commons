@@ -112,7 +112,11 @@ public class SxmpWriter {
     }
 
     static public void write(Writer out, Operation operation) throws SxmpErrorException, IOException {
-        writeXmlHeader(out, operation);
+	write(out, operation, true);
+    }
+    
+    static public void write(Writer out, Operation operation, boolean withXmlHeader) throws SxmpErrorException, IOException {
+        if (withXmlHeader) writeXmlHeader(out, operation);
         writeOperationStartTag(out, operation.getType());
 
         // let's validate this operation is valid
