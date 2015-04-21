@@ -31,7 +31,8 @@ public class SxmpErrorException extends Exception {
 
     private SxmpErrorCode errorCode;
     private String errorMessage;
-
+    private Operation.Type operationType;
+    
     public SxmpErrorException(SxmpErrorCode errorCode, String msg) {
         this(errorCode, msg, (Operation.Type)null);
     }
@@ -40,6 +41,18 @@ public class SxmpErrorException extends Exception {
         super("SXMP error (code [" + errorCode.getIntValue() + "] message [" + msg + "]");
         this.errorCode = errorCode;
         this.errorMessage = msg;
+	this.operationType = operationType;
+    }
+
+    public SxmpErrorException(SxmpErrorCode errorCode, String msg, Throwable cause) {
+        this(errorCode, msg, (Operation.Type)null, cause);
+    }
+
+    public SxmpErrorException(SxmpErrorCode errorCode, String msg, Operation.Type operationType, Throwable cause) {
+        super("SXMP error (code [" + errorCode.getIntValue() + "] message [" + msg + "]", cause);
+        this.errorCode = errorCode;
+        this.errorMessage = msg;
+	this.operationType = operationType;
     }
 
     public SxmpErrorCode getErrorCode() {
@@ -49,4 +62,9 @@ public class SxmpErrorException extends Exception {
     public String getErrorMessage() {
         return this.errorMessage;
     }
+
+    public Operation.Type getOperationType() {
+	return this.operationType;
+    }
+    
 }
