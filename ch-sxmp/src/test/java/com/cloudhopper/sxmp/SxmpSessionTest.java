@@ -21,8 +21,8 @@ package com.cloudhopper.sxmp;
  */
 
 import java.io.ByteArrayInputStream;
+import org.hamcrest.CoreMatchers;
 import org.junit.*;
-import org.junit.matchers.JUnitMatchers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -105,7 +105,7 @@ public class SxmpSessionTest {
         } catch (SAXException e) {
             // correct behavior
             //Assert.assertEquals(SxmpErrorCode.INVALID_XML, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Root element must be an [operation]"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("Root element must be an [operation]"));
             //Assert.assertNull(e.getOperation());
         }
     }
@@ -132,7 +132,7 @@ public class SxmpSessionTest {
 
         Assert.assertEquals(Operation.Type.SUBMIT, response.getType());
         Assert.assertEquals(SxmpErrorCode.UNSUPPORTED_OPERATION.getIntValue(), response.getErrorCode().intValue());
-        //Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Root element must be an [operation]"));
+        //Assert.assertThat(e.getMessage(), CoreMatchers.containsString("Root element must be an [operation]"));
     }
 
     @Test
@@ -178,7 +178,7 @@ public class SxmpSessionTest {
 
         Assert.assertEquals(Operation.Type.SUBMIT, response.getType());
         Assert.assertEquals(SxmpErrorCode.AUTHENTICATION_FAILURE.getIntValue(), response.getErrorCode().intValue());
-        //Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Root element must be an [operation]"));
+        //Assert.assertThat(e.getMessage(), CoreMatchers.containsString("Root element must be an [operation]"));
     }
 
     @Test
@@ -224,7 +224,7 @@ public class SxmpSessionTest {
 
         Assert.assertEquals(Operation.Type.SUBMIT, response.getType());
         Assert.assertEquals(SxmpErrorCode.EMPTY_VALUE.getIntValue(), response.getErrorCode().intValue());
-        //Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Root element must be an [operation]"));
+        //Assert.assertThat(e.getMessage(), CoreMatchers.containsString("Root element must be an [operation]"));
     }
 
     @Test
