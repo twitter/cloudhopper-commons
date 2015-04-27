@@ -3,6 +3,9 @@ Cloudhopper by Twitter
 
 cloudhopper-commons-util
 ------------------------
+## 6.0.3 - 2015-04-27
+ - Dependency version changes
+
 ## 6.0.2 - 2015-01-30
  - StringUtil#substituteWithProperties fix for endStr > 1 character
  - DefaultWindowFuture#completeHelper and #failedHelper fix for settin #done before
