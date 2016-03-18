@@ -135,30 +135,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
-        <version>2.4.2</version>
-        <dependencies>
-	  <!-- These can be removed once these versions are integrated into the 
-	  maven-release-plugin. Currently, they are required if you are using
-	  git 1.8+ per the bugs here:
-	  http://jira.codehaus.org/browse/MRELEASE-812
-	  http://jira.codehaus.org/browse/SCM-686
-	  -->
-          <dependency>
-            <groupId>org.apache.maven.scm</groupId>
-            <artifactId>maven-scm-api</artifactId>
-            <version>1.8.1</version>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.maven.scm</groupId>
-            <artifactId>maven-scm-provider-gitexe</artifactId>
-            <version>1.8.1</version>
-          </dependency>
-	  <dependency>
-	    <groupId>org.apache.maven.scm</groupId>
-	    <artifactId>maven-scm-provider-git-commons</artifactId>
-	    <version>1.8.1</version>
-	  </dependency>
-	</dependencies>
+        <version>${maven-release-plugin.version}</version>
         <configuration>
           <tagNameFormat>version-@{project.version}</tagNameFormat>
         </configuration>
@@ -166,7 +143,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <version>2.2</version>
+        <version>3.0.0</version>
         <executions>
           <execution>
             <id>attach-sources</id>
@@ -179,7 +156,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>2.4</version>
+        <version>2.6</version>
         <configuration>
           <archive>
             <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
@@ -195,17 +172,17 @@
           </archive>
         </configuration>
       </plugin>
-      <plugin>   
+      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <version>2.3.7</version>
+        <version>3.0.1</version>
         <executions>
           <execution>
             <id>bundle-manifest</id>
             <phase>process-classes</phase>
-            <goals>    
+            <goals>
               <goal>manifest</goal>
-            </goals>   
+            </goals>
           </execution>
         </executions>
         <configuration>
@@ -239,17 +216,8 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <version>${maven-eclipse-plugin.version}</version>
-        <configuration>
-          <downloadSources>true</downloadSources>
-          <downloadJavadocs>true</downloadJavadocs>
-        </configuration>
-      </plugin>
-      <plugin>
         <artifactId>maven-clean-plugin</artifactId>
-        <version>2.5</version>
+        <version>3.0.0</version>
         <configuration>
           <filesets>
             <fileset>
@@ -368,7 +336,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.4</version>
+            <version>1.6</version>
             <executions>
               <execution>
                 <id>sign-artifacts</id>
@@ -388,18 +356,17 @@
     <!-- Maven config -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <copyright.year>2014</copyright.year>
+    <copyright.year>2016</copyright.year>
     <maven.test.skip>false</maven.test.skip>
     <maven.integration.skip>true</maven.integration.skip>
     <license.skip>false</license.skip>
 
     <!-- Maven plugin component versions -->
-    <maven-release-plugin.version>2.1</maven-release-plugin.version>
-    <maven-license-plugin.version>1.9.0</maven-license-plugin.version>
-    <exec-maven-plugin.version>1.2</exec-maven-plugin.version>
+    <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+    <maven-license-plugin.version>2.1.1</maven-license-plugin.version>
+    <exec-maven-plugin.version>1.4.0</exec-maven-plugin.version>
     <netbeans-freeform-maven-plugin.version>2.0</netbeans-freeform-maven-plugin.version>
-    <maven-eclipse-plugin.version>2.8</maven-eclipse-plugin.version>
-    
+
     <!-- 3rd Party library dependency versions -->
     <main.java.package />
     <osgi.export-package>*</osgi.export-package>
@@ -410,5 +377,5 @@
     <netty.version>[3.2,)</netty.version>
     <slf4j.version>[1.5.0,)</slf4j.version>
   </properties>
-  
+
 </project>
