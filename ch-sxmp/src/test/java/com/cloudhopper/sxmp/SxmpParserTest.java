@@ -22,10 +22,10 @@ package com.cloudhopper.sxmp;
 
 import java.io.ByteArrayInputStream;
 import java.util.Map;
+import org.hamcrest.CoreMatchers;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.*;
-import org.junit.matchers.JUnitMatchers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXParseException;
@@ -54,7 +54,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
             // correct behavior
             Assert.assertEquals(SxmpErrorCode.INVALID_XML, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Root element must be an [operation]"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("Root element must be an [operation]"));
             Assert.assertNull(e.getOperation());
         }
     }
@@ -77,7 +77,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
             // correct behavior
             Assert.assertEquals(SxmpErrorCode.UNSUPPORTED_OPERATION, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Unsupported operation type"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("Unsupported operation type"));
             Assert.assertNull(e.getOperation());
         }
     }
@@ -101,7 +101,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
             // correct behavior
             Assert.assertEquals(SxmpErrorCode.UNSUPPORTED_ELEMENT, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Unsupported [test] element"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("Unsupported [test] element"));
             // this should also contain an operation since the root element was parsed
             Assert.assertNotNull(e.getOperation());
             PartialOperation partial = (PartialOperation)e.getOperation();
@@ -129,7 +129,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
             // correct behavior
             Assert.assertEquals(SxmpErrorCode.MULTIPLE_ELEMENTS_NOT_SUPPORTED, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Multiple [account] elements are not supported"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("Multiple [account] elements are not supported"));
             // this should also contain an operation since the root element was parsed
             Assert.assertNotNull(e.getOperation());
             PartialOperation partial = (PartialOperation)e.getOperation();
@@ -156,7 +156,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
             // correct behavior
             Assert.assertEquals(SxmpErrorCode.MISSING_REQUIRED_ELEMENT, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("The operation type [submit] requires a request element"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("The operation type [submit] requires a request element"));
             Assert.assertNotNull(e.getOperation());
             PartialOperation partial = (PartialOperation)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, partial.getType());
@@ -182,7 +182,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
             // correct behavior
             Assert.assertEquals(SxmpErrorCode.MISSING_REQUIRED_ATTRIBUTE, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("The attribute [username] is required with the [account] element"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("The attribute [username] is required with the [account] element"));
             Assert.assertNotNull(e.getOperation());
             PartialOperation partial = (PartialOperation)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, partial.getType());
@@ -208,7 +208,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
             // correct behavior
             Assert.assertEquals(SxmpErrorCode.MISSING_REQUIRED_ATTRIBUTE, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("The attribute [password] is required with the [account] element"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("The attribute [password] is required with the [account] element"));
             Assert.assertNotNull(e.getOperation());
             PartialOperation partial = (PartialOperation)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, partial.getType());
@@ -234,7 +234,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
             // correct behavior
             Assert.assertEquals(SxmpErrorCode.EMPTY_VALUE, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("The [username] attribute was empty in the [account] element"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("The [username] attribute was empty in the [account] element"));
             Assert.assertNotNull(e.getOperation());
             PartialOperation partial = (PartialOperation)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, partial.getType());
@@ -259,7 +259,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
             // correct behavior
             Assert.assertEquals(SxmpErrorCode.MISSING_REQUIRED_ELEMENT, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("The operation type [submit] requires a request element"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("The operation type [submit] requires a request element"));
             Assert.assertNotNull(e.getOperation());
             PartialOperation partial = (PartialOperation)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, partial.getType());
@@ -291,7 +291,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
             // correct behavior
             Assert.assertEquals(SxmpErrorCode.OPTYPE_MISMATCH, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("The operation type [deliver] does not match the [submitRequest] element"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("The operation type [deliver] does not match the [submitRequest] element"));
             Assert.assertNotNull(e.getOperation());
             PartialOperation partial = (PartialOperation)e.getOperation();
             Assert.assertEquals(Operation.Type.DELIVER, partial.getType());
@@ -322,7 +322,7 @@ public class SxmpParserTest {
             Assert.fail();
         } catch (SAXParseException e) {
             // correct behavior
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("must be terminated by the matching end-tag"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("must be terminated by the matching end-tag"));
         }
     }
 
@@ -351,7 +351,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
             // correct behavior
             Assert.assertEquals(SxmpErrorCode.MISSING_REQUIRED_ELEMENT, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("The [account] element is required before a [submitRequest] element"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("The [account] element is required before a [submitRequest] element"));
             Assert.assertNotNull(e.getOperation());
             PartialOperation partial = (PartialOperation)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, partial.getType());
@@ -384,7 +384,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.EMPTY_VALUE, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("The element [operatorId] must contain a value"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("The element [operatorId] must contain a value"));
             Assert.assertNotNull(e.getOperation());
             SubmitRequest submitRequest = (SubmitRequest)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, submitRequest.getType());
@@ -416,7 +416,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.UNABLE_TO_CONVERT_VALUE, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Unable to convert [f] to an integer for [operatorId]"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("Unable to convert [f] to an integer for [operatorId]"));
             Assert.assertNotNull(e.getOperation());
             SubmitRequest submitRequest = (SubmitRequest)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, submitRequest.getType());
@@ -448,7 +448,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.INVALID_VALUE, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("The [operatorId] must be greater than or equal to 0"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("The [operatorId] must be greater than or equal to 0"));
             Assert.assertNotNull(e.getOperation());
             SubmitRequest submitRequest = (SubmitRequest)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, submitRequest.getType());
@@ -480,7 +480,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.UNABLE_TO_CONVERT_VALUE, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Unable to convert [blah] to a boolean for [deliveryReport]"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("Unable to convert [blah] to a boolean for [deliveryReport]"));
             Assert.assertNotNull(e.getOperation());
             SubmitRequest submitRequest = (SubmitRequest)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, submitRequest.getType());
@@ -514,7 +514,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.UNABLE_TO_CONVERT_VALUE, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Network address contained an invalid character"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("Network address contained an invalid character"));
             Assert.assertNotNull(e.getOperation());
             SubmitRequest submitRequest = (SubmitRequest)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, submitRequest.getType());
@@ -549,7 +549,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.UNABLE_TO_CONVERT_VALUE, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("The address type [network2] is not valid"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("The address type [network2] is not valid"));
             Assert.assertNotNull(e.getOperation());
             SubmitRequest submitRequest = (SubmitRequest)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, submitRequest.getType());
@@ -584,7 +584,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.UNABLE_TO_CONVERT_VALUE, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("International address must start with"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("International address must start with"));
             Assert.assertNotNull(e.getOperation());
             SubmitRequest submitRequest = (SubmitRequest)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, submitRequest.getType());
@@ -621,7 +621,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.UNABLE_TO_CONVERT_VALUE, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("The address type [international2] is not valid"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("The address type [international2] is not valid"));
             Assert.assertNotNull(e.getOperation());
             SubmitRequest submitRequest = (SubmitRequest)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, submitRequest.getType());
@@ -659,7 +659,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.UNSUPPORTED_TEXT_ENCODING, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Unsupported text encoding [ISO2-8859-1] found"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("Unsupported text encoding [ISO2-8859-1] found"));
             Assert.assertNotNull(e.getOperation());
             SubmitRequest submitRequest = (SubmitRequest)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, submitRequest.getType());
@@ -697,7 +697,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.TEXT_HEX_DECODING_FAILED, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Unable to decode hex data into text"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("Unable to decode hex data into text"));
             Assert.assertNotNull(e.getOperation());
             SubmitRequest submitRequest = (SubmitRequest)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, submitRequest.getType());
@@ -738,7 +738,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.UNSUPPORTED_ELEMENT, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("The status element is not supported for this operation type"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("The status element is not supported for this operation type"));
             Assert.assertNotNull(e.getOperation());
             SubmitRequest submitRequest = (SubmitRequest)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, submitRequest.getType());
@@ -769,7 +769,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.MISSING_REQUIRED_ELEMENT, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("A destinationAddress value is mandatory"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("A destinationAddress value is mandatory"));
             Assert.assertNotNull(e.getOperation());
             SubmitRequest submitRequest = (SubmitRequest)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, submitRequest.getType());
@@ -798,7 +798,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.MISSING_REQUIRED_ELEMENT, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("A text value is mandatory"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("A text value is mandatory"));
             Assert.assertNotNull(e.getOperation());
             SubmitRequest submitRequest = (SubmitRequest)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, submitRequest.getType());
@@ -826,7 +826,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.UNSUPPORTED_ELEMENT, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Unsupported [destinationAddress] element found at depth"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("Unsupported [destinationAddress] element found at depth"));
             Assert.assertNotNull(e.getOperation());
             PartialOperation partial = (PartialOperation)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, partial.getType());
@@ -856,7 +856,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.UNSUPPORTED_ELEMENT, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Unsupported [badelement] element found at depth"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("Unsupported [badelement] element found at depth"));
             Assert.assertNotNull(e.getOperation());
             SubmitRequest submitRequest = (SubmitRequest)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, submitRequest.getType());
@@ -887,7 +887,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.UNSUPPORTED_ELEMENT, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Unsupported [badelement] element found at depth"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("Unsupported [badelement] element found at depth"));
             Assert.assertNotNull(e.getOperation());
             SubmitRequest submitRequest = (SubmitRequest)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, submitRequest.getType());
@@ -998,7 +998,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.INVALID_VALUE, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("priority_flag must be between 0 and 3"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("priority_flag must be between 0 and 3"));
             Assert.assertNotNull(e.getOperation());
             SubmitRequest submitRequest = (SubmitRequest)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, submitRequest.getType());
@@ -1208,7 +1208,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.INVALID_VALUE, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("priority_flag must be between 0 and 3"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("priority_flag must be between 0 and 3"));
             Assert.assertNotNull(e.getOperation());
             DeliverRequest deliverRequest = (DeliverRequest)e.getOperation();
             Assert.assertEquals(Operation.Type.DELIVER, deliverRequest.getType());
@@ -1276,7 +1276,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.MISSING_REQUIRED_ELEMENT, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("A status value is mandatory with a deliveryReportRequest"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("A status value is mandatory with a deliveryReportRequest"));
             Assert.assertNotNull(e.getOperation());
             DeliveryReportRequest deliveryRequest = (DeliveryReportRequest)e.getOperation();
             Assert.assertEquals(Operation.Type.DELIVERY_REPORT, deliveryRequest.getType());
@@ -1305,7 +1305,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.MISSING_REQUIRED_ELEMENT, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("A ticketId value is mandatory with a deliveryReportRequest"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("A ticketId value is mandatory with a deliveryReportRequest"));
             Assert.assertNotNull(e.getOperation());
             DeliveryReportRequest deliveryRequest = (DeliveryReportRequest)e.getOperation();
             Assert.assertEquals(Operation.Type.DELIVERY_REPORT, deliveryRequest.getType());
@@ -1413,7 +1413,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.UNSUPPORTED_ELEMENT, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("The [ticketId] element is not supported for this operation type"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("The [ticketId] element is not supported for this operation type"));
             Assert.assertNotNull(e.getOperation());
             DeliverResponse deliverResponse = (DeliverResponse)e.getOperation();
             Assert.assertEquals(Operation.Type.DELIVER, deliverResponse.getType());
@@ -1996,7 +1996,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.INVALID_XML, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("XML encoding mismatch"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("XML encoding mismatch"));
         }
     }
 
@@ -2025,7 +2025,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.UNSUPPORTED_TEXT_ENCODING, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Invalid encoding"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("Invalid encoding"));
         }
     }
 
@@ -2053,7 +2053,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.UNABLE_TO_CONVERT_VALUE, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Unable to decode json data"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("Unable to decode json data"));
             SubmitRequest submitRequest = (SubmitRequest)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, submitRequest.getType());
         }
@@ -2083,7 +2083,7 @@ public class SxmpParserTest {
             logger.error("error message: "+e.getMessage());
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.INVALID_VALUE, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Invalid optional parameters"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("Invalid optional parameters"));
             SubmitRequest submitRequest = (SubmitRequest)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, submitRequest.getType());
         }
@@ -2117,7 +2117,7 @@ public class SxmpParserTest {
             logger.error("error message: "+e.getMessage());
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.INVALID_VALUE, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Invalid optional parameters"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("Invalid optional parameters"));
             SubmitRequest submitRequest = (SubmitRequest)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, submitRequest.getType());
         }
@@ -2184,7 +2184,7 @@ public class SxmpParserTest {
         } catch (SxmpParsingException e) {
              // correct behavior
             Assert.assertEquals(SxmpErrorCode.UNSUPPORTED_ELEMENT, e.getErrorCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Unsupported [optionalParams] element"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("Unsupported [optionalParams] element"));
             SubmitRequest submitRequest = (SubmitRequest)e.getOperation();
             Assert.assertEquals(Operation.Type.SUBMIT, submitRequest.getType());
         }

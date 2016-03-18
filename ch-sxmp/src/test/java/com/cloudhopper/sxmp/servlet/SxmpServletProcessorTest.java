@@ -38,8 +38,8 @@ import org.custommonkey.xmlunit.DetailedDiff;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.hamcrest.Matcher;
+import org.hamcrest.CoreMatchers;
 import org.junit.*;
-import org.junit.matchers.JUnitMatchers;
 import org.junit.rules.ExpectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +63,7 @@ public class SxmpServletProcessorTest {
         } catch (HttpStatusCodeException e) {
             // correct behavior
             Assert.assertEquals(HttpStatus.SC_BAD_REQUEST, e.getStatusCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Unsupported API version"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("Unsupported API version"));
         }
     }
 
@@ -75,7 +75,7 @@ public class SxmpServletProcessorTest {
         } catch (HttpStatusCodeException e) {
             // correct behavior
             Assert.assertEquals(HttpStatus.SC_METHOD_NOT_ALLOWED, e.getStatusCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Only HTTP POST method"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("Only HTTP POST method"));
         }
     }
 
@@ -87,7 +87,7 @@ public class SxmpServletProcessorTest {
         } catch (HttpStatusCodeException e) {
             // correct behavior
             Assert.assertEquals(HttpStatus.SC_NOT_FOUND, e.getStatusCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Bad URL used"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("Bad URL used"));
         }
     }
 
@@ -99,7 +99,7 @@ public class SxmpServletProcessorTest {
         } catch (HttpStatusCodeException e) {
             // correct behavior
             Assert.assertEquals(HttpStatus.SC_BAD_REQUEST, e.getStatusCode());
-            Assert.assertThat(e.getMessage(), JUnitMatchers.containsString("Unsupported Content-Type"));
+            Assert.assertThat(e.getMessage(), CoreMatchers.containsString("Unsupported Content-Type"));
         }
     }
 
