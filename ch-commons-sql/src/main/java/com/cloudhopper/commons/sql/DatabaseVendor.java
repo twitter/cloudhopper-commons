@@ -35,8 +35,8 @@ public enum DatabaseVendor {
     POSTGRESQL("org.postgresql.Driver", "SELECT NOW()"),
     /** MySQL, default driver com.mysql.jdbc.Driver */
     MYSQL("com.mysql.jdbc.Driver", "SELECT NOW()"),
-    /** Vertica, default driver com.vertica.Driver */
-    VERTICA("com.vertica.Driver", "SELECT NOW()"),
+    /** Vertica, default driver com.vertica.jdbc.Driver */
+    VERTICA("com.vertica.jdbc.Driver", "SELECT NOW()"),
     /** HSQLDB, default driver org.hsqldb.jdbcDriver */
     HSQLDB("org.hsqldb.jdbcDriver", "SELECT CURRENT_TIME AS now FROM (VALUES(0))");
 
