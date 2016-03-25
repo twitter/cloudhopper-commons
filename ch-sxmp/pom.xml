@@ -4,7 +4,7 @@
   <groupId>com.cloudhopper</groupId>
   <artifactId>ch-sxmp</artifactId>
   <packaging>jar</packaging>
-  <version>1.5.5-SNAPSHOT</version>
+  <version>1.5.5</version>
   <name>ch-sxmp</name>
   <description>Library implementing the SXMP protocol</description>
   <url>https://github.com/twitter/cloudhopper-commons</url>
@@ -25,7 +25,7 @@
     <dependency>
       <groupId>com.cloudhopper</groupId>
       <artifactId>ch-commons-util</artifactId>
-      <version>6.0.4-SNAPSHOT</version>
+      <version>6.0.3</version>
     </dependency>
     <dependency>
       <groupId>com.cloudhopper</groupId>
@@ -110,5 +110,9 @@
     <main.java.package>com.cloudhopper.sxmp</main.java.package>
   </properties>
 
+
+  <scm>
+    <tag>ch-sxmp-1.55</tag>
+  </scm>
 </project>
 
