@@ -125,6 +125,6 @@
 
   <properties>
     <main.java.package>com.cloudhopper.jetty</main.java.package>
-    <jetty.version>9.2.17.v20160517</jetty.version>
+    <jetty.version>9.2.22.v20170606</jetty.version>
   </properties>
 </project>
