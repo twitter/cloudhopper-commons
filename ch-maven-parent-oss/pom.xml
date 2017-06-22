@@ -4,7 +4,7 @@
   <groupId>com.cloudhopper</groupId>
   <artifactId>ch-maven-parent-oss</artifactId>
   <packaging>pom</packaging>
-  <version>1.7-SNAPSHOT</version>
+  <version>1.7</version>
   <name>ch-maven-parent-oss</name>
   <description>Parent Maven POM for open source Cloudhopper projects</description>
   <url>https://github.com/twitter/cloudhopper-commons</url>
@@ -14,7 +14,7 @@
     <url>https://github.com/twitter/cloudhopper-commons</url>
     <connection>scm:git:git://github.com/twitter/cloudhopper-commons.git</connection>
     <developerConnection>scm:git:git@github.com:twitter/cloudhopper-commons.git</developerConnection>
-    <tag>master</tag>
+    <tag>ch-maven-parent-oss-1.7</tag>
   </scm>
   
   <organization>
