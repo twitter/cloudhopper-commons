@@ -4,7 +4,7 @@
   <groupId>com.cloudhopper</groupId>
   <artifactId>ch-jetty</artifactId>
   <packaging>jar</packaging>
-  <version>1.1.5</version>
+  <version>1.1.6-SNAPSHOT</version>
   <name>ch-jetty</name>
   <description>Wrapper around Jetty HTTP Server that makes config and embedding easy.</description>
   <url>https://github.com/twitter/cloudhopper-commons</url>
@@ -127,8 +127,4 @@
     <main.java.package>com.cloudhopper.jetty</main.java.package>
     <jetty.version>9.2.22.v20170606</jetty.version>
   </properties>
-
-  <scm>
-    <tag>ch-jetty-1.1.5</tag>
-  </scm>
 </project>
