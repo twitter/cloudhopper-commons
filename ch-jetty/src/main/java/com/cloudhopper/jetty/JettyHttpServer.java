@@ -21,7 +21,6 @@ package com.cloudhopper.jetty;
  */
 
 import com.cloudhopper.commons.util.CountingRejectedExecutionHandler;
-import com.cloudhopper.commons.util.NamingThreadFactory;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import javax.servlet.Servlet;

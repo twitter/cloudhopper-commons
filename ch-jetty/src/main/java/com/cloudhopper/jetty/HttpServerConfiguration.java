@@ -56,6 +56,8 @@ public class HttpServerConfiguration {
     protected boolean jettyAutoShutdownDisabled;
     // jmx domain to use for mbean
     protected String jmxDomain;
+    // should we track request stats?
+    protected Boolean requestStatsEnabled;
     
     public HttpServerConfiguration() {
         this.sessionsEnabled = true;
@@ -65,7 +67,8 @@ public class HttpServerConfiguration {
         this.maxThreads = 50;
         this.threadKeepAliveTimeout = 60000;
         this.jettyAutoShutdownDisabled = false;
-	this.jmxDomain = "com.cloudhopper.jetty." + safeGetName();
+        this.jmxDomain = "com.cloudhopper.jetty." + safeGetName();
+        this.requestStatsEnabled = false;
     }
 
     public String getResourceBaseDirectory() {
@@ -198,5 +201,13 @@ public class HttpServerConfiguration {
     public String getJmxDomain() {
         return this.jmxDomain;
     }
-    
+
+    public Boolean isRequestStatsEnabled() {
+        return requestStatsEnabled;
+    }
+
+    public void setRequestStatsEnabled(Boolean requestStatsEnabled) {
+        this.requestStatsEnabled = requestStatsEnabled;
+    }
+
 }
