@@ -20,7 +20,7 @@
     <groupId>com.cloudhopper</groupId>
     <artifactId>ch-maven-parent-oss</artifactId>
     <relativePath>ch-maven-parent-oss</relativePath>
-    <version>1.7-SNAPSHOT</version>
+    <version>1.8-SNAPSHOT</version>
   </parent>
 
   <modules>
