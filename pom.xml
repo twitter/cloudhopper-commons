@@ -19,7 +19,8 @@
   <parent>
     <groupId>com.cloudhopper</groupId>
     <artifactId>ch-maven-parent-oss</artifactId>
-    <version>1.7</version>
+    <relativePath>ch-maven-parent-oss</relativePath>
+    <version>1.7-SNAPSHOT</version>
   </parent>
 
   <modules>
