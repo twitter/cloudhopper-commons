@@ -44,6 +44,7 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.HandlerCollection;
+import org.eclipse.jetty.server.handler.StatisticsHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.ScheduledExecutorScheduler;
@@ -180,22 +181,21 @@ public class JettyHttpServerFactory {
 	    if (connConfig.isStatsEnabled()) connector.addBean(new ConnectorStatistics());
 	    server.addConnector(connector);
 	}
-        
+
         // prep server to handle multiple contexts, potentially with sessions
         ContextHandlerCollection contexts = new ContextHandlerCollection();
         HandlerCollection handlers = new HandlerCollection();
+        if (configuration.isRequestStatsEnabled()) {
+          handlers.addHandler(new StatisticsHandler());
+        }
         handlers.addHandler(contexts);
         server.setHandler(handlers);
-        
+
         // at this point, servlets will be added to "contexts" and resources
         // such as files will be added as a resource handler
         ServletContextHandler rootServletContext = new ServletContextHandler(contexts, "/", (configuration.isSessionsEnabled().booleanValue() ? ServletContextHandler.SESSIONS : ServletContextHandler.NO_SESSIONS));
         rootServletContext.setClassLoader(Thread.currentThread().getContextClassLoader());
-        
-        // add a statistics handler -- responsible for generating statistics
-        //StatisticsHandler statsHandler = new StatisticsHandler();
-        //rootContext.addHandler(statsHandler);
-        
+
         // server won't accept new connections, but will finish existing ones
         if (configuration.getGracefulShutdownTime() != null) {
             server.setStopTimeout(configuration.getGracefulShutdownTime());
@@ -205,13 +205,13 @@ public class JettyHttpServerFactory {
         // enabled will shut down jetty before we tell it to stop
         if (!configuration.isJettyAutoShutdownDisabled()) server.setStopAtShutdown(true);
 
-	JettyHttpServer httpd = new JettyHttpServer(configuration, server, handlers, contexts, rootServletContext);
-        
+        JettyHttpServer httpd = new JettyHttpServer(configuration, server, handlers, contexts, rootServletContext);
+
         // any post-configs
         if (configuration.getResourceBaseDirectory() != null) {
             httpd.addResourceBase(configuration.getResourceBaseDirectory());
         }
-        
+
         return httpd;
     }
 
