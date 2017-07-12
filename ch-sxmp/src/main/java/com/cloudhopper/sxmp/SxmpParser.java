@@ -25,11 +25,8 @@ import com.cloudhopper.sxmp.util.MobileAddressUtil;
 import com.cloudhopper.commons.util.StringUtil;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
-import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -39,7 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONObject;
@@ -118,13 +114,15 @@ public class SxmpParser {
     public Operation parse(InputStream in) throws SxmpParsingException, IOException, SAXException, ParserConfigurationException {
         // create a new SAX parser
         SAXParserFactory factory = SAXParserFactory.newInstance();
-        //factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 
-	SAXParser parser = factory.newSAXParser();
-	//_parser.getXMLReader().setFeature("http://xml.org/sax/features/validation", validating);
-	parser.getXMLReader().setFeature("http://xml.org/sax/features/namespaces", true);
-	parser.getXMLReader().setFeature("http://xml.org/sax/features/namespace-prefixes", true);
-	parser.getXMLReader().setFeature("http://javax.xml.XMLConstants/feature/secure-processing", true);
+        SAXParser parser = factory.newSAXParser();
+        parser.getXMLReader().setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        parser.getXMLReader().setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",false);
+        parser.getXMLReader().setFeature("http://xml.org/sax/features/external-general-entities", false);
+        parser.getXMLReader().setFeature("http://xml.org/sax/features/external-parameter-entities"	, false);
+        parser.getXMLReader().setFeature("http://xml.org/sax/features/namespaces", true);
+        parser.getXMLReader().setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+        parser.getXMLReader().setFeature("http://javax.xml.XMLConstants/feature/secure-processing", true);
 
         //_dtd=null;
         Handler handler = new Handler();
