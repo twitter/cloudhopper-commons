@@ -37,7 +37,7 @@ public class RFSMain {
     public static void main(String[] args) throws Exception {
 
         //String r = "sftp://joelauer@magnum";
-        String r = "ftp://stratus:HotDog@lyn-nms-001/data/logs/lyn-test?mode=active&mkdir=true";
+        String r = "ftp://user:pass@host/path/to/dir/";
 
         URL url = URLParser.parse(r);
 
