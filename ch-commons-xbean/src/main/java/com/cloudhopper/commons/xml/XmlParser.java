@@ -60,9 +60,9 @@ public class XmlParser {
 
         try {
             _parser = factory.newSAXParser();
-            //_parser.getXMLReader().setFeature("http://xml.org/sax/features/validation", validating);
-            _parser.getXMLReader().setFeature("http://xml.org/sax/features/namespaces", true);
-            _parser.getXMLReader().setFeature("http://xml.org/sax/features/namespace-prefixes", false);
+            //_parser.getXMLReader().setFeature("https://xml.org/sax/features/validation", validating);
+            _parser.getXMLReader().setFeature("https://xml.org/sax/features/namespaces", true);
+            _parser.getXMLReader().setFeature("https://xml.org/sax/features/namespace-prefixes", false);
         } catch (Exception e) {
             throw new Error(e.toString(), e);
         }
@@ -106,7 +106,7 @@ public class XmlParser {
             try
             {
                 if (validating)
-                    _parser.getXMLReader().setFeature("http://apache.org/xml/features/validation/schema", validating);
+                    _parser.getXMLReader().setFeature("https://apache.org/xml/features/validation/schema", validating);
             }
             catch (Exception e)
             {
@@ -116,9 +116,9 @@ public class XmlParser {
                     //logger.ignore(e);
             }
 
-            _parser.getXMLReader().setFeature("http://xml.org/sax/features/validation", validating);
-            _parser.getXMLReader().setFeature("http://xml.org/sax/features/namespaces", true);
-            _parser.getXMLReader().setFeature("http://xml.org/sax/features/namespace-prefixes", false);
+            _parser.getXMLReader().setFeature("https://xml.org/sax/features/validation", validating);
+            _parser.getXMLReader().setFeature("https://xml.org/sax/features/namespaces", true);
+            _parser.getXMLReader().setFeature("https://xml.org/sax/features/namespace-prefixes", false);
         }
         catch (Exception e)
         {
