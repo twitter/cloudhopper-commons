@@ -116,13 +116,13 @@ public class SxmpParser {
         SAXParserFactory factory = SAXParserFactory.newInstance();
 
         SAXParser parser = factory.newSAXParser();
-        parser.getXMLReader().setFeature("https://apache.org/xml/features/disallow-doctype-decl", true);
-        parser.getXMLReader().setFeature("https://apache.org/xml/features/nonvalidating/load-external-dtd",false);
-        parser.getXMLReader().setFeature("https://xml.org/sax/features/external-general-entities", false);
-        parser.getXMLReader().setFeature("https://xml.org/sax/features/external-parameter-entities"	, false);
-        parser.getXMLReader().setFeature("https://xml.org/sax/features/namespaces", true);
-        parser.getXMLReader().setFeature("https://xml.org/sax/features/namespace-prefixes", true);
-        parser.getXMLReader().setFeature("https://javax.xml.XMLConstants/feature/secure-processing", true);
+        parser.getXMLReader().setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        parser.getXMLReader().setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",false);
+        parser.getXMLReader().setFeature("http://xml.org/sax/features/external-general-entities", false);
+        parser.getXMLReader().setFeature("http://xml.org/sax/features/external-parameter-entities"	, false);
+        parser.getXMLReader().setFeature("http://xml.org/sax/features/namespaces", true);
+        parser.getXMLReader().setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+        parser.getXMLReader().setFeature("http://javax.xml.XMLConstants/feature/secure-processing", true);
 
         //_dtd=null;
         Handler handler = new Handler();
