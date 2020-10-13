@@ -53,7 +53,7 @@
 
   <properties>
     <main.java.package>com.cloudhopper.commons.util</main.java.package>
-    <junit.version>4.10</junit.version>
+    <junit.version>4.13.1</junit.version>
     <joda-time.version>2.8.2</joda-time.version>
     <slf4j.version>1.7.21</slf4j.version>
     <logback.version>1.1.7</logback.version>
