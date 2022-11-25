@@ -22,6 +22,8 @@ package com.cloudhopper.commons.util;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -173,7 +175,13 @@ public class MetaFieldUtil {
         for (Class classType : hierarchy) {
             
             // begin search for each field (variable)
-            for (Field f : classType.getDeclaredFields()) {
+            Field[] fields = classType.getDeclaredFields();
+            Arrays.sort(fields, new Comparator<Field>() {
+                public int compare(Field a, Field b) {
+                    return a.getName().compareTo(b.getName());
+                }
+            });
+            for (Field f :  fields) {
 
                 // is this field marked as a MetaField?
                 if (f.isAnnotationPresent(MetaField.class)) {
