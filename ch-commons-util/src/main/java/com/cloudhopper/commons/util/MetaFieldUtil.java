@@ -21,8 +21,8 @@ package com.cloudhopper.commons.util;
  */
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicReference;
 import org.slf4j.Logger;
