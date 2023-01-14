@@ -40,7 +40,7 @@
 
   <properties>
     <copyright.year>2014</copyright.year> 
-    <httpclient.version>4.2.6</httpclient.version>
+    <httpclient.version>4.5.14</httpclient.version>
     <httpcore.version>4.2.5</httpcore.version>
   </properties>
 
