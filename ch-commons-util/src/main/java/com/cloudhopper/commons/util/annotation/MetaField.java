@@ -39,6 +39,7 @@ public @interface MetaField {
     String name() default "";
     /** Description of field */
     String description() default "";
+    int order() default Integer.MAX_VALUE; // New property
     /** Level of field (matches what Log4J uses by name */
     Level level() default Level.INFO;
 }

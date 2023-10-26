@@ -127,17 +127,17 @@ class TestRef {
 }
 
 class Person {
-    @MetaField(name="First Name", description="The first name of this user")
+    @MetaField(name="First Name", description="The first name of this user", order = 1)
     private String firstName;
-    @MetaField(name="Last Name", description="")
+    @MetaField(name="Last Name", description="", order = 2)
     private String lastName;
-    @MetaField
+    @MetaField(order = 3)
     private String email;
-    @MetaField(name="ID")
+    @MetaField(name="ID", order = 4)
     private int id = -1;
-    @MetaField(name="Active?", description="Is this person actually active")
+    @MetaField(name="Active?", description="Is this person actually active", order = 5)
     private AtomicBoolean isActive = new AtomicBoolean(false);
-    @MetaField(description="Number of times logged in")
+    @MetaField(description="Number of times logged in", order = 6)
     private AtomicInteger loginCounter = new AtomicInteger(0);
 
     public void setFirstName(String value) { firstName = value; }
