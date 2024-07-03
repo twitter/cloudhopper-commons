@@ -21,28 +21,28 @@ package com.cloudhopper.sxmp;
  */
 
 import com.cloudhopper.commons.util.HexUtil;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.nio.charset.StandardCharsets;
 
 /**
- *
- * @author joelauer
+ * Post class to send a HTTP POST request.
+ * Optimized for better resource management and performance.
  */
 public class Post {
     private static final Logger logger = LoggerFactory.getLogger(Post.class);
 
-    static public void main(String[] args) throws Exception {
-
+    public static void main(String[] args) {
+        // Message to be sent
         String message = "Test With @ Character";
-	//String message = "Tell Twitter what you're doing!\nStd msg charges apply. Send 'stop' to quit.\nVisit twitter.com or email help@twitter.com for help.";
 
-        StringBuilder string0 = new StringBuilder(200)
+        // Build XML payload with message encoded in ISO-8859-1
+        String xmlPayload = new StringBuilder(200)
             .append("<?xml version=\"1.0\"?>\n")
             .append("<operation type=\"submit\">\n")
             .append(" <account username=\"customer1\" password=\"password1\"/>\n")
@@ -51,66 +51,43 @@ public class Post {
             .append("  <deliveryReport>true</deliveryReport>\n")
             .append("  <sourceAddress type=\"network\">40404</sourceAddress>\n")
             .append("  <destinationAddress type=\"international\">+13135551234</destinationAddress>\n")
-            .append("  <text encoding=\"ISO-8859-1\">" + HexUtil.toHexString(message.getBytes("ISO-8859-1")) + "</text>\n")
+            .append("  <text encoding=\"ISO-8859-1\">" + HexUtil.toHexString(message.getBytes(StandardCharsets.ISO_8859_1)) + "</text>\n")
             .append(" </submitRequest>\n")
             .append("</operation>\n")
-            .append("");
+            .toString();
 
-            /**
-            //.append("<!DOCTYPE chapter PUBLIC \"-//OASIS//DTD DocBook XML//EN\" \"../dtds/docbookx.dtd\">")
-            //.append("<!DOCTYPE chapter PUBLIC \"-//OASIS//DTD DocBook XML//EN\">")
-            .append("<submitRequest sequenceId=\"1000\">\n")
-            .append("   <!-- this is a comment -->\n")
-            .append("   <account username=\"testaccount\" password=\"testpassword\"/>\n")
-            .append("   <option />\n")
-            .append("   <messageRequest referenceId=\"MYMESSREF\">\n")
-            //.append("       <sourceAddress>+13135551212</sourceAddress>\n")
-            .append("       <destinationAddress>+13135551200</destinationAddress>\n")
-            .append("       <text><![CDATA[Hello World]]></text>\n")
-            .append("   </messageRequest>\n")
-            .append("</submitRequest>")
-            .append("");
-             */
-        
-        // Get target URL
+        // Target URL for the POST request
         String strURL = "http://localhost:9080/api/sxmp/1.0";
 
-        // Get file to be posted
-        //String strXMLFilename = args[1];
-        //File input = new File(strXMLFilename);
+        // Use try-with-resources to ensure HttpClient is closed properly
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            long totalStart = System.currentTimeMillis();  // Track total start time
 
-        HttpClient client = new DefaultHttpClient();
+            // Create and configure HttpPost object
+            HttpPost post = new HttpPost(strURL);
+            StringEntity entity = new StringEntity(xmlPayload, StandardCharsets.ISO_8859_1);
+            entity.setContentType("text/xml; charset=ISO-8859-1");
+            post.setEntity(entity);
 
-        long totalStart = System.currentTimeMillis();
+            long start = System.currentTimeMillis();  // Track request start time
 
-        for (int i = 0; i < 1; i++) {
-            long start = System.currentTimeMillis();
+            // Execute HTTP POST request and measure the response time
+            try (CloseableHttpResponse response = client.execute(post)) {
+                long stop = System.currentTimeMillis();  // Track request stop time
 
-            // execute request
-            try {
-                HttpPost post = new HttpPost(strURL);
-
-                StringEntity entity = new StringEntity(string0.toString(), "ISO-8859-1");
-                entity.setContentType("text/xml; charset=\"ISO-8859-1\"");
-                post.setEntity(entity);
-
-                ResponseHandler<String> responseHandler = new BasicResponseHandler();
-
-                String responseBody = client.execute(post, responseHandler);
-                long stop = System.currentTimeMillis();
-
+                // Log response details
                 logger.debug("----------------------------------------");
-                logger.debug("Response took " + (stop-start) + " ms");
-                logger.debug(responseBody);
+                logger.debug("Response took " + (stop - start) + " ms");
+                logger.debug("Response: {}", response.getEntity().getContent().toString());
                 logger.debug("----------------------------------------");
-            } finally {
-                // do nothing
             }
+
+            long totalEnd = System.currentTimeMillis();  // Track total end time
+            logger.debug("Total response time: " + (totalEnd - totalStart) + " ms");
+
+        } catch (Exception e) {
+            // Log any exceptions that occur during the request
+            logger.error("Error occurred while sending HTTP POST request", e);
         }
-
-        long totalEnd = System.currentTimeMillis();
-
-        logger.debug("Response took " + (totalEnd-totalStart) + " ms");
-
     }
 }
