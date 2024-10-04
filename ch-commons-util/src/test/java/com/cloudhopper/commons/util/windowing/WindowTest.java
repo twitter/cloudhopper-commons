@@ -315,7 +315,8 @@ public class WindowTest {
         public void run() {
             try {
                 for (int x = 0; x < requestsPerThread; x++) {
-                    Integer i = Integer.valueOf(""+id+""+x);
+                    //To get a distinct value of i, we multiply id by the total number of requests per thread and add x to it
+                    Integer i = Integer.valueOf(""+id*requestsPerThread+""+x);
                     String request = "Request"+i;
  //                   logger.debug("adding request " + i);
                     WindowFuture<Integer,String,String> requestFuture = window.offer(i, request, 1000);
