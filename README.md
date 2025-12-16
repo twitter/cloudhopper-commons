@@ -1,4 +1,4 @@
-Cloudhopper by Twitter [![Build Status](https://secure.travis-ci.org/twitter/cloudhopper-commons.png?branch=master)](http://travis-ci.org/twitter/cloudhopper-commons)
+Cloudhopper by X/Twitter [![Build Status](https://secure.travis-ci.org/twitter/cloudhopper-commons.png?branch=master)](http://travis-ci.org/twitter/cloudhopper-commons)
 ======================
 
 Common Java libraries used by the Cloudhopper family of mobile messaging applications at Twitter.
@@ -73,6 +73,6 @@ Most of the modules contain examples of how to use various parts of the librarie
 License
 -------
 
-Copyright (C) 2010-2014 Twitter, Inc.
+Copyright (C) 2010-2025 X/Twitter, Inc.
 
 This work is licensed under the Apache License, Version 2.0. See LICENSE for details.
